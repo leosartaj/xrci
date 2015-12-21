@@ -44,6 +44,31 @@ def icd_9_codes(dire=TRAINPATH, save=SAVEPATH):
                      'Ischemic cerebrovascular disease'])
 
     data = pd.DataFrame({'icd_9': icd_9, 'names': names, 'description': desc})
-    data.to_csv(_get_path(save, 'icd_9.csv'), index=False)
+    if save:
+        data.to_csv(_get_path(save, 'icd_9.csv'), index=False)
 
     return pd.DataFrame({'icd_9': icd_9, 'names': names, 'description': desc})
+
+
+def pro_label(dire=TRAINPATH, icd9=SAVEPATH, save=SAVEPATH):
+    """
+    Process train_labels.csv
+    Sort by Id
+    Replace icd_9 codes with the appropriate names
+    Replace NaN instances with -1.
+    """
+    labels = pd.read_csv(_get_path(dire, 'train_label.csv'))
+
+    lsort = labels.sort_values('id_', ascending=True)
+    lsort = lsort.reset_index()
+    del lsort['index']
+
+    icd_9 = pd.read_csv(_get_path(icd9, 'icd_9.csv'))
+    assert all(lsort.columns[1:]) == all(icd_9.icd_9)
+    lsort.columns = np.concatenate([[lsort.columns[0]], icd_9.names])
+
+    lsort = lsort.fillna(-1)
+    if save:
+        lsort.to_csv(_get_path(save, 'label.csv'), index=False)
+
+    return lsort
