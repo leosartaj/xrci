@@ -81,12 +81,19 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     """
     Process train_Static_data.csv
     Sort by Id
+    lower all the column names
+    lower all the column values of gender, maritalstatus, ethnicgroup,
+    admitspeciality
     """
     static = pd.read_csv(_get_path(dire, 'train_Static_data.csv'))
 
     static = static.sort_values('id', ascending=True)
     static = static.reset_index()
     del static['index']
+
+    static.columns = [col.lower() for col in static.columns]
+    static = static.applymap(lambda x: x.lower().replace(' ', '_').
+                             replace('-', '_') if isinstance(x, str) else x)
 
     if save:
         static.to_csv(_get_path(save, 'static.csv'), index=False)
@@ -123,7 +130,7 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
     return vitals
 
 
-def bootstrap(dire=TRAINPATH, save=PROPATH):
+def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
     Generates icd_9 DataFrame
@@ -138,4 +145,4 @@ def bootstrap(dire=TRAINPATH, save=PROPATH):
 
 
 if __name__ == '__main__':
-    bootstrap(*sys.argv[1:])
+    process(*sys.argv[1:])
