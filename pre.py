@@ -2,21 +2,21 @@
 Preprocessing of data
 """
 
-import os
+import os, sys
 
 import numpy as np
 import pandas as pd
 
 
 TRAINPATH = 'datasets/train'
-SAVEPATH = 'datasets/pro'
+PROPATH = 'datasets/pro'
 
 
 def _get_path(dire, fName):
     return os.path.join(os.path.expanduser(dire), fName)
 
 
-def icd_9_codes(dire=TRAINPATH, save=SAVEPATH):
+def icd_9_codes(dire=TRAINPATH, save=PROPATH):
     """
     Creates a dataframe mapping icd_9 codes
     to names and descriptions
@@ -29,6 +29,7 @@ def icd_9_codes(dire=TRAINPATH, save=SAVEPATH):
                       'cshf', 'sseps', 'sepshock', 'cdhf', 'intes_infec',
                       'pneitus', 'dhf', 'shf', 'sub_infrac', 'bas', 'tia',
                       'ischemic_cd'])
+    assert len(names) == len(icd_9)
     desc = np.array(['Pneumonia', 'Cerebral Artery Occlusion', 'Sepsis',
                      'Chronic Heart Failure', 'Heart Failure Unspecified',
                      'Acute Myocardial Infarction',
@@ -42,15 +43,16 @@ def icd_9_codes(dire=TRAINPATH, save=SAVEPATH):
                      'Subendocardial Infarction', 'Basilar Artery Syndrome',
                      'Transient Schemic Attack',
                      'Ischemic cerebrovascular disease'])
+    assert len(desc) == len(icd_9)
 
     data = pd.DataFrame({'icd_9': icd_9, 'names': names, 'description': desc})
     if save:
         data.to_csv(_get_path(save, 'icd_9.csv'), index=False)
 
-    return pd.DataFrame({'icd_9': icd_9, 'names': names, 'description': desc})
+    return data
 
 
-def pro_label(dire=TRAINPATH, icd9=SAVEPATH, save=SAVEPATH):
+def pro_label(dire=TRAINPATH, save=PROPATH):
     """
     Process train_labels.csv
     Sort by Id
@@ -63,12 +65,29 @@ def pro_label(dire=TRAINPATH, icd9=SAVEPATH, save=SAVEPATH):
     lsort = lsort.reset_index()
     del lsort['index']
 
-    icd_9 = pd.read_csv(_get_path(icd9, 'icd_9.csv'))
+    icd_9 = pd.read_csv(_get_path(save, 'icd_9.csv'))
     assert all(lsort.columns[1:]) == all(icd_9.icd_9)
-    lsort.columns = np.concatenate([[lsort.columns[0]], icd_9.names])
+    lsort.columns = np.concatenate([['id'], icd_9.names])
+    assert len(lsort.columns) == 20
 
     lsort = lsort.fillna(-1)
     if save:
         lsort.to_csv(_get_path(save, 'label.csv'), index=False)
 
     return lsort
+
+
+def bootsrap(dire=TRAINPATH, save=PROPATH):
+    """
+    Preprocesses all of the data
+    Generates icd_9 DataFrame
+    Process train_label.csv
+    """
+    if not os.path.isdir(save):
+        os.mkdir(save)
+    icd_9_codes(dire, save)
+    pro_label(dire, save)
+
+
+if __name__ == '__main__':
+    bootsrap(*sys.argv[1:])
