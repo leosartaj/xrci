@@ -77,7 +77,20 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     return lsort
 
 
-def bootsrap(dire=TRAINPATH, save=PROPATH):
+def pro_static(dire=TRAINPATH, save=PROPATH):
+    static = pd.read_csv(_get_path(dire, 'train_Static_data.csv'))
+
+    static = static.sort_values('id', ascending=True)
+    static = static.reset_index()
+    del static['index']
+
+    if save:
+        static.to_csv(_get_path(save, 'static.csv'), index=False)
+
+    return static
+
+
+def bootstrap(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
     Generates icd_9 DataFrame
@@ -87,6 +100,7 @@ def bootsrap(dire=TRAINPATH, save=PROPATH):
         os.mkdir(save)
     icd_9_codes(dire, save)
     pro_label(dire, save)
+    pro_static(dire, save)
 
 
 if __name__ == '__main__':
