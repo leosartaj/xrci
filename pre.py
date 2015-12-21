@@ -81,6 +81,9 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     """
     Process train_Static_data.csv
     Sort by Id
+    lower all the column names
+    lower all the column values of gender, maritalstatus, ethnicgroup,
+    admitspeciality
     """
     static = pd.read_csv(_get_path(dire, 'train_Static_data.csv'))
 
@@ -88,13 +91,46 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     static = static.reset_index()
     del static['index']
 
+    static.columns = [col.lower() for col in static.columns]
+    static = static.applymap(lambda x: x.lower().replace(' ', '_').
+                             replace('-', '_') if isinstance(x, str) else x)
+
     if save:
         static.to_csv(_get_path(save, 'static.csv'), index=False)
 
     return static
 
 
-def bootstrap(dire=TRAINPATH, save=PROPATH):
+def pro_vitals(dire=TRAINPATH, save=PROPATH):
+    """
+    Process train_RawVitalData.csv
+    Sort by Episode and ObservationDate
+    Drop SequenceNum (not needed)
+    Rename Episode to id and ObservationDate to timestamp
+    lower all the column names
+    lower values in measure column, replace ' ' by '_'
+    """
+    vitals = pd.read_csv(_get_path(dire, 'train_RawVitalData.csv'))
+
+    vitals = vitals.sort_values(['Episode', 'ObservationDate'], ascending=True)
+    vitals = vitals.reset_index()
+    del vitals['index']
+    del vitals['SequenceNum']
+
+    cols = vitals.columns
+    vitals.columns = np.concatenate([['id', 'timestamp'],
+                                     cols[2:].map(lambda x: x.lower())])
+
+    vitals['measure'] = vitals['measure'].map(lambda x: x.lower().
+                                             replace(' ', '_'))
+
+    if save:
+        vitals.to_csv(_get_path(save, 'vitals.csv'), index=False)
+
+    return vitals
+
+
+def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
     Generates icd_9 DataFrame
@@ -105,7 +141,8 @@ def bootstrap(dire=TRAINPATH, save=PROPATH):
     icd_9_codes(dire, save)
     pro_label(dire, save)
     pro_static(dire, save)
+    pro_vitals(dire, save)
 
 
 if __name__ == '__main__':
-    bootstrap(*sys.argv[1:])
+    process(*sys.argv[1:])
