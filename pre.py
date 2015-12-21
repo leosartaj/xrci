@@ -78,6 +78,10 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
 
 
 def pro_static(dire=TRAINPATH, save=PROPATH):
+    """
+    Process train_Static_data.csv
+    Sort by Id
+    """
     static = pd.read_csv(_get_path(dire, 'train_Static_data.csv'))
 
     static = static.sort_values('id', ascending=True)
@@ -104,4 +108,4 @@ def bootstrap(dire=TRAINPATH, save=PROPATH):
 
 
 if __name__ == '__main__':
-    bootsrap(*sys.argv[1:])
+    bootstrap(*sys.argv[1:])
