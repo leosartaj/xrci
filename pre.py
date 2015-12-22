@@ -152,19 +152,33 @@ def remove_rows(dire=TRAINPATH, save=PROPATH):
     return labs, rows
 
 
-def pro_labs(dire=PROPATH, save=PROPATH):
+def correct_lab_data(dire=PROPATH):
     """
-    EXPERIMENTAL
-    Process train_RawVitalData.csv
+    Removes Irregularities in CSV train_RawLabData.csv
+    call remove_rows first
+    """
+    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
+    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
+        for fOld in files:
+            with open(fOld) as Old:
+                for lines in Old.readlines():
+                    newFile.write(lines)
+
+
+def pro_labs_basic(dire=PROPATH, save=PROPATH):
+    """
+    Basic Processing train_RawVitalData.csv
+    Sort by Episode and ObservationDate
+    Drop SequenceNum (not needed)
     lower all the column names
     lower values in columns, replace ' ' by '_'
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
+    labs = pd.read_csv(_get_path(dire, 'labs_cut.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
     del labs['index']
-    #del vitals['SequenceNum']
+    del labs['SequenceNum']
 
     cols = labs.columns
 
@@ -180,29 +194,80 @@ def pro_labs(dire=PROPATH, save=PROPATH):
                                       map(lambda x: x.lower().replace(' ', '_')
                                           if not x is np.nan else x))
 
+    labs['clientresult'] = (labs['clientresult'].
+                                      map(lambda x: x.lower().replace(' ', '_')
+                                          if not x is np.nan else x))
+
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
 
     return labs
 
 
-def correctLabData(dire=PROPATH):
+def _pro_gfr(labs):
     """
-    Removes Irregularities in CSV train_RawLabData.csv
+    gfr correction
+    estimated_gfr-african_american and estimated_gfr-other are very similar
+    egfr_non-african_american and egfr_african_american are very similar
+    rename the other two as gfr
+    remove where clientresult is canceled
+    clean up values in clientresult to make them floats
     """
-    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
-    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
-        for fOld in files:
-            with open(fOld) as Old:
-                for lines in Old.readlines():
-                    newFile.write(lines)
+    gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
+
+    labs = labs[labs.description != gfr[1]]
+
+    labs = labs[labs.description != gfr[3]]
+
+    labs.ix[(labs.description == gfr[0]) | (labs.description == gfr[2]),
+            'description'] = 'gfr'
+
+    labs.ix[(labs.description == 'gfr') &
+            ((labs.clientresult == '>60') |
+             (labs.clientresult == '>60.00')), 'clientresult'] = 75
+
+    return labs
+
+
+def _pro_albumin(labs):
+    """
+    albumin correction
+    Range 3.5-5.5 g/dL (35-55 g/L) is normal
+    Clean clientresult
+    """
+    labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
+    return labs
+
+
+def pro_labs(dire=PROPATH, save=PROPATH):
+    """
+    Process train_RawVitalData.csv
+    Basic processing
+    Drop chstandard (62% null values)
+    Drop descriptions called_to
+    Drop clientresult canceled
+    Correct gfr columns
+    """
+    labs = pro_labs_basic(dire, None)
+
+    del labs['chstandard']
+    labs = labs[(labs.description != 'called_to')]
+    labs = labs[(labs.clientresult != 'canceled')]
+
+    labs = _pro_gfr(labs)
+    labs = _pro_albumin(labs)
+
+    if save:
+        labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+
+    return labs
 
 
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
-    Generates icd_9 DataFrame
-    Process train_label.csv
     """
     if not os.path.isdir(save):
         os.mkdir(save)
@@ -211,9 +276,9 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_static(dire, save)
     pro_vitals(dire, save)
     remove_rows(dire, save)
-    correctLabData(save)
+    correct_lab_data(save)
     pro_labs(save, save)
-    
+
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
