@@ -152,19 +152,33 @@ def remove_rows(dire=TRAINPATH, save=PROPATH):
     return labs, rows
 
 
-def pro_labs(dire=PROPATH, save=PROPATH):
+def correct_lab_data(dire=PROPATH):
     """
-    EXPERIMENTAL
-    Process train_RawVitalData.csv
+    Removes Irregularities in CSV train_RawLabData.csv
+    call remove_rows first
+    """
+    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
+    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
+        for fOld in files:
+            with open(fOld) as Old:
+                for lines in Old.readlines():
+                    newFile.write(lines)
+
+
+def pro_labs_basic(dire=PROPATH, save=PROPATH):
+    """
+    Basic Processing train_RawVitalData.csv
+    Sort by Episode and ObservationDate
+    Drop SequenceNum (not needed)
     lower all the column names
     lower values in columns, replace ' ' by '_'
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
+    labs = pd.read_csv(_get_path(dire, 'labs_cut.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
     del labs['index']
-    #del vitals['SequenceNum']
+    del labs['SequenceNum']
 
     cols = labs.columns
 
@@ -180,22 +194,46 @@ def pro_labs(dire=PROPATH, save=PROPATH):
                                       map(lambda x: x.lower().replace(' ', '_')
                                           if not x is np.nan else x))
 
+    labs['clientresult'] = (labs['clientresult'].
+                                      map(lambda x: x.lower().replace(' ', '_')
+                                          if not x is np.nan else x))
+
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
 
     return labs
 
 
-def correctLabData(dire=PROPATH):
+def pro_labs(dire=PROPATH, save=PROPATH):
     """
-    Removes Irregularities in CSV train_RawLabData.csv
+    Process train_RawVitalData.csv
+    Basic processing
+    Drop chstandard (62% null values)
+    Drop descriptions called_to
+    Correct gfr columns
     """
-    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
-    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
-        for fOld in files:
-            with open(fOld) as Old:
-                for lines in Old.readlines():
-                    newFile.write(lines)
+    labs = pro_labs_basic(dire, None)
+
+    del labs['chstandard']
+
+    labs = labs[(labs.description != 'called_to')]
+
+
+    labs[(labs.description != 'called_to')]
+
+    # gfr correction
+    gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
+
+    # gfr[0] and gfr[1] are very similar
+    labs = labs[labs.description != gfr[1]]
+    labs = labs[~((labs.description == gfr[0]) &
+                  (labs.clientresult == 'canceled'))]
+    #labs = labs.replace(gfr[0], 'gfr1') # renaming
+
+    if save:
+        labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+
+    return labs
 
 
 def process(dire=TRAINPATH, save=PROPATH):
@@ -213,7 +251,7 @@ def process(dire=TRAINPATH, save=PROPATH):
     remove_rows(dire, save)
     correctLabData(save)
     pro_labs(save, save)
-    
+
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
