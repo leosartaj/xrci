@@ -204,31 +204,60 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     return labs
 
 
+def _pro_gfr(labs):
+    """
+    gfr correction
+    estimated_gfr-african_american and estimated_gfr-other are very similar
+    egfr_non-african_american and egfr_african_american are very similar
+    rename the other two as gfr
+    remove where clientresult is canceled
+    clean up values in clientresult to make them floats
+    """
+    gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
+
+    labs = labs[labs.description != gfr[1]]
+
+    labs = labs[labs.description != gfr[3]]
+
+    labs.ix[(labs.description == gfr[0]) | (labs.description == gfr[2]),
+            'description'] = 'gfr'
+
+    labs.ix[(labs.description == 'gfr') &
+            ((labs.clientresult == '>60') |
+             (labs.clientresult == '>60.00')), 'clientresult'] = 75
+
+    return labs
+
+
+def _pro_albumin(labs):
+    """
+    albumin correction
+    Range 3.5-5.5 g/dL (35-55 g/L) is normal
+    Clean clientresult
+    """
+    labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
     Basic processing
     Drop chstandard (62% null values)
     Drop descriptions called_to
+    Drop clientresult canceled
     Correct gfr columns
     """
     labs = pro_labs_basic(dire, None)
 
     del labs['chstandard']
-
     labs = labs[(labs.description != 'called_to')]
+    labs = labs[(labs.clientresult != 'canceled')]
 
-
-    labs[(labs.description != 'called_to')]
-
-    # gfr correction
-    gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
-
-    # gfr[0] and gfr[1] are very similar
-    labs = labs[labs.description != gfr[1]]
-    labs = labs[~((labs.description == gfr[0]) &
-                  (labs.clientresult == 'canceled'))]
-    #labs = labs.replace(gfr[0], 'gfr1') # renaming
+    labs = _pro_gfr(labs)
+    labs = _pro_albumin(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
@@ -239,8 +268,6 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
-    Generates icd_9 DataFrame
-    Process train_label.csv
     """
     if not os.path.isdir(save):
         os.mkdir(save)
@@ -249,7 +276,7 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_static(dire, save)
     pro_vitals(dire, save)
     remove_rows(dire, save)
-    correctLabData(save)
+    correct_lab_data(save)
     pro_labs(save, save)
 
 
