@@ -130,6 +130,74 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
     return vitals
 
 
+def remove_rows(dire=TRAINPATH, save=PROPATH):
+    """
+    Returns the cleaned labs df and dirty rows in train_RawLabData.csv
+    Computes pd.DataFrame again and again until error free.
+    Very poor efficiency. Avoid it's usage.
+    """
+    fpath = _get_path(dire, 'train_RawLabData.csv')
+    rows = []
+    while True:
+        try:
+            labs = pd.read_csv(fpath, skiprows=rows)
+            break
+        except pd.parser.CParserError as e:
+            line = e.args[0]
+            row = line[line.index('line') + 5:line.index(',')]
+            rows.append(int(row) - 1)
+    if save:
+        labs.to_csv(_get_path(save, 'labs_cut.csv'), index=False)
+
+    return labs, rows
+
+
+def pro_labs(dire=PROPATH, save=PROPATH):
+    """
+    EXPERIMENTAL
+    Process train_RawVitalData.csv
+    lower all the column names
+    lower values in columns, replace ' ' by '_'
+    """
+    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
+
+    labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
+    labs = labs.reset_index()
+    del labs['index']
+    #del vitals['SequenceNum']
+
+    cols = labs.columns
+
+    labs.columns = np.concatenate([['id', 'timestamp'],
+                                     cols[2:].map(lambda x: x.lower())])
+
+    labs['description'] = labs['description'].map(lambda x: x.lower().
+                                                    replace(' ', '_'))
+    labs['observationdescription'] = (labs['observationdescription'].
+                                      map(lambda x: x.lower().replace(' ', '_')
+                                          if not x is np.nan else x))
+    labs['unitofmeasure'] = (labs['unitofmeasure'].
+                                      map(lambda x: x.lower().replace(' ', '_')
+                                          if not x is np.nan else x))
+
+    if save:
+        labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+
+    return labs
+
+
+def correctLabData(dire=PROPATH):
+    """
+    Removes Irregularities in CSV train_RawLabData.csv
+    """
+    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
+    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
+        for fOld in files:
+            with open(fOld) as Old:
+                for lines in Old.readlines():
+                    newFile.write(lines)
+
+
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
@@ -142,7 +210,10 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_label(dire, save)
     pro_static(dire, save)
     pro_vitals(dire, save)
-
+    remove_rows(dire, save)
+    correctLabData(save)
+    pro_labs(save, save)
+    
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
