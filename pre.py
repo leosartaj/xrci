@@ -146,7 +146,6 @@ def remove_rows(dire=TRAINPATH, save=PROPATH):
             line = e.args[0]
             row = line[line.index('line') + 5:line.index(',')]
             rows.append(int(row) - 1)
-
     if save:
         labs.to_csv(_get_path(save, 'labs_cut.csv'), index=False)
 
@@ -160,7 +159,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     lower all the column names
     lower values in columns, replace ' ' by '_'
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_cut.csv'))
+    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
@@ -187,6 +186,18 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     return labs
 
 
+def correctLabData(dire=PROPATH):
+    """
+    Removes Irregularities in CSV train_RawLabData.csv
+    """
+    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
+    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
+        for fOld in files:
+            with open(fOld) as Old:
+                for lines in Old.readlines():
+                    newFile.write(lines)
+
+
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
@@ -199,7 +210,10 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_label(dire, save)
     pro_static(dire, save)
     pro_vitals(dire, save)
-
+    remove_rows(dire, save)
+    correctLabData(save)
+    pro_labs(save, save)
+    
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
