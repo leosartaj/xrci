@@ -367,6 +367,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct alp columns
     Correct pot columns
     Correct anion_gap columns
+    Correct lymphocytes columns
+    Correct bun columns
     """
     labs = pro_labs_basic(dire, None)
 
