@@ -11,10 +11,12 @@ Cleaned
 * anion_gap
 * lymphocytes
 * bun
+* alt_(sgpt)
 
 Already clean
 =============
 * c-peptide
+* csf_protein
 
 Removed
 =======
