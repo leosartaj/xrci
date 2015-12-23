@@ -435,6 +435,35 @@ def _pro_glo(labs):
     return labs
 
 
+def _pro_index(labs):
+    """
+    hemolysis_index, icteric_index, lipemia_index correction
+    correct clientresults
+    """
+    hemo = labs.description == 'hemolysis_index'
+    labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
+    labs.ix[(hemo) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    ice = labs.description == 'icteric_index'
+    labs.ix[(ice) & (labs.clientresult == 'not_icteric'), 'clientresult'] = 0
+    labs.ix[(ice) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    lip = labs.description == 'lipemia_index'
+    labs.ix[(lip) & (labs.clientresult == 'no_lipemia'), 'clientresult'] = 0
+    labs.ix[(lip) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(lip) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(lip) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(lip) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -456,6 +485,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
+    Correct hemolysis_index, icteric_index, lipemia_index columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -478,6 +508,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
+    labs = _pro_index(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
