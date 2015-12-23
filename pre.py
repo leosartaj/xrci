@@ -269,6 +269,17 @@ def _pro_alp(labs):
     return labs
 
 
+def _pro_lymph(labs):
+    """
+    Clean Lymphocytes data 
+    Removed 0.0 lymphocytes data row
+    """
+    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))]
+    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0"))]
+    
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -291,6 +302,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_albumin(labs)
     labs = _pro_allen(labs)
     labs = _pro_alp(labs)
+    labs = _pro_lymph(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
@@ -311,7 +323,7 @@ def process(dire=TRAINPATH, save=PROPATH):
     remove_rows(dire, save)
     correct_lab_data(save)
     pro_labs(save, save)
-
+    
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
