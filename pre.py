@@ -210,8 +210,7 @@ def _pro_gfr(labs):
     estimated_gfr-african_american and estimated_gfr-other are very similar
     egfr_non-african_american and egfr_african_american are very similar
     rename the other two as gfr
-    remove where clientresult is canceled
-    clean up values in clientresult to make them floats
+    clean up values in clientresult
     """
     gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
 
@@ -269,6 +268,22 @@ def _pro_alp(labs):
     return labs
 
 
+def _pro_pot(labs):
+    """
+    potassium correction
+    All units are in meq/l
+    Normal range between 3.5-5.0 meq/l
+    correct clientresults
+    """
+    pot = labs.description == 'potassium'
+    labs.ix[pot, 'unitofmeasure'] = 'meq/l'
+    labs = labs.drop(labs[(pot) & (labs.clientresult == 'to_follow')].index)
+    labs.ix[labs.clientresult == '<20.0', 'clientresult'] = 20.0
+    labs.ix[labs.clientresult == '>_10.0', 'clientresult'] = 10.0
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -280,6 +295,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct albumin columns
     Correct Allen columns
     Correct alp columns
+    Correct pot columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -291,6 +307,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_albumin(labs)
     labs = _pro_allen(labs)
     labs = _pro_alp(labs)
+    labs = _pro_pot(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
