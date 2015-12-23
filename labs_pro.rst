@@ -13,6 +13,7 @@ Cleaned
 * bun
 * alt_(sgpt)
 * ast_(sgot)
+* chloride
 
 Already clean
 =============
