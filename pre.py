@@ -435,9 +435,9 @@ def _pro_glo(labs):
     return labs
 
 
-def _pro_hemo(labs):
+def _pro_index(labs):
     """
-    hemolysis_index correction
+    hemolysis_index, icteric_index correction
     correct clientresults
     """
     hemo = labs.description == 'hemolysis_index'
@@ -446,6 +446,14 @@ def _pro_hemo(labs):
     labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
     labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
     labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    ice = labs.description == 'icteric_index'
+    labs.ix[(ice) & (labs.clientresult == 'not_icteric'), 'clientresult'] = 0
+    labs.ix[(ice) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
     return labs
 
 
@@ -470,7 +478,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
-    Correct hemolysis_index columns
+    Correct hemolysis_index, icteric_index columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -493,7 +501,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
-    labs = _pro_hemo(labs)
+    labs = _pro_index(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
