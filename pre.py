@@ -311,6 +311,17 @@ def _pro_pot(labs):
 
     return labs
 
+def _pro_bun(labs):
+    """
+    Correcting BUN(Blood Urea Nitrogen data)
+    Normal range : 5 - 20 mg/dL
+    BUN to creatinine ratio : 6-25
+    On dialysis can have higher values as 40-60
+    """
+    labs.ix[((labs.description == "bun") & (labs.clientresult == "<_2")), 'clientresult'] = 2
+
+    return labs
+
 
 def _pro_anion_gap(labs):
     """
@@ -358,6 +369,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_alp(labs)
     labs = _pro_pot(labs)
     labs = _pro_anion_gap(labs)
+    labs = _pro_bun(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
