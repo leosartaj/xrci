@@ -173,7 +173,7 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     lower all the column names
     lower values in columns, replace ' ' by '_'
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_cut.csv'))
+    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
@@ -204,14 +204,40 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     return labs
 
 
+def fill_see_below(labs, desc):
+    """
+    fills the see_below clientresults
+    uses bfill method
+    bfill's only for same descriptions
+    """
+    see = labs.clientresult == 'see_below'
+    if type(desc) == str:
+        desc = labs.description == desc
+    ids = labs[(desc) & (see)].id.unique()
+    for i in ids:
+        labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
+        labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
+
+    return labs
+
+
+def _remove_desc(labs):
+    """
+    Removes descriptions not required from labs
+    """
+    labs = labs[(labs.description != 'called_to')]
+    labs = labs[(labs.description != 'influenza_type_b')]
+
+    return labs
+
+
 def _pro_gfr(labs):
     """
     gfr correction
     estimated_gfr-african_american and estimated_gfr-other are very similar
     egfr_non-african_american and egfr_african_american are very similar
     rename the other two as gfr
-    remove where clientresult is canceled
-    clean up values in clientresult to make them floats
+    clean up values in clientresult
     """
     gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
 
@@ -242,6 +268,7 @@ def _pro_allen(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
     return labs
 
 
@@ -277,6 +304,40 @@ def _pro_lymph(labs):
     labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))]
     labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0"))]
     
+
+def _pro_pot(labs):
+    """
+    potassium correction
+    All units are in meq/l
+    Normal range between 3.5-5.0 meq/l
+    correct clientresults
+    """
+    pot = labs.description == 'potassium'
+    labs.ix[pot, 'unitofmeasure'] = 'meq/l'
+    labs = labs.drop(labs[(pot) & (labs.clientresult == 'to_follow')].index)
+    labs.ix[labs.clientresult == '<20.0', 'clientresult'] = 20.0
+    labs.ix[labs.clientresult == '>_10.0', 'clientresult'] = 10.0
+
+    return labs
+
+
+def _pro_anion_gap(labs):
+    """
+    anion gap correction
+    All units are in meq/l
+    Normal range between 3-11 meq/l
+    serum anion gap range 8-16 meq/l
+    <11 is generally considered normal
+    urine anion gap >20 kidney unable to excrete ammonia
+    if negative and the serum ag positive then gastro problems
+    correct clientresults
+    """
+    ag = labs.description == 'anion_gap'
+    labs.ix[ag, 'unitofmeasure'] = 'meq/l'
+    labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
+    labs = fill_see_below(labs, ag)
+
+
     return labs
 
 
@@ -285,23 +346,28 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Process train_RawVitalData.csv
     Basic processing
     Drop chstandard (62% null values)
-    Drop descriptions called_to
     Drop clientresult canceled
+    Remove descriptions
     Correct gfr columns
     Correct albumin columns
     Correct Allen columns
     Correct alp columns
+    Correct pot columns
+    Correct anion_gap columns
     """
     labs = pro_labs_basic(dire, None)
 
     del labs['chstandard']
-    labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.clientresult != 'canceled')]
+
+    labs = _remove_desc(labs)
 
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
     labs = _pro_allen(labs)
     labs = _pro_alp(labs)
+    labs = _pro_pot(labs)
+    labs = _pro_anion_gap(labs)
     labs = _pro_lymph(labs)
 
     if save:
