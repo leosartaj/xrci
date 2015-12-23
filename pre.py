@@ -229,6 +229,22 @@ def _pro_gfr(labs):
     return labs
 
 
+def _pro_allen(labs):
+    """
+    Allen's Test Correction
+    Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
+    Clean clientresult for allen's test
+    """
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "collected_by_respiratory.")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult.isnull())), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "na")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == ".")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+    return labs
+
+
 def _pro_albumin(labs):
     """
     albumin correction
@@ -262,6 +278,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop clientresult canceled
     Correct gfr columns
     Correct albumin columns
+    Correct Allen columns
     Correct alp columns
     """
     labs = pro_labs_basic(dire, None)
@@ -272,6 +289,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
+    labs = _pro_allen(labs)
     labs = _pro_alp(labs)
 
     if save:
