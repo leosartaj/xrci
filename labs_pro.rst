@@ -17,6 +17,7 @@ Cleaned
 * creatinine_(enz)
 * calcium
 * c02_content
+* globulin
 
 Already clean
 =============
