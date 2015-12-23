@@ -10,6 +10,7 @@ Cleaned
 * potassium
 * anion_gap
 * lymphocytes
+* bun
 
 Already clean
 =============
