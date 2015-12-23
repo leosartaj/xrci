@@ -302,8 +302,9 @@ def _pro_lymph(labs):
     Removed 0.0 lymphocytes data row
     Normal values for the lymphocytes percentage is 28 to 55
     """
-    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))]
-    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0"))]
+    lym = labs.description == "lymphocytes"
+    labs = labs[~((lym) & (labs.clientresult == "0.0"))]
+    labs = labs[~((lym) & (labs.clientresult == "0"))]
 
     return labs
 
