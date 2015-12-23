@@ -284,6 +284,42 @@ def _pro_pot(labs):
     return labs
 
 
+def _pro_anion_gap(labs):
+    """
+    anion gap correction
+    All units are in meq/l
+    Normal range between 3-11 meq/l
+    serum anion gap range 8-16 meq/l
+    <11 is generally considered normal
+    urine anion gap >20 kidney unable to excrete ammonia
+    if negative and the serum ag positive then gastro problems
+    correct clientresults
+    """
+    ag = labs.description == 'anion_gap'
+    labs.ix[ag, 'unitofmeasure'] = 'meq/l'
+    labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
+    labs = _fill_see_below(labs, ag)
+
+    return labs
+
+
+def _fill_see_below(labs, desc):
+    """
+    fills the see_below clientresults
+    uses bfill method
+    bfill's only for same descriptions
+    """
+    see = labs.clientresult == 'see_below'
+    if type(desc) == str:
+        desc = labs.description == desc
+    ids = labs[(desc) & (see)].id.unique()
+    for i in ids:
+        labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
+        labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -296,6 +332,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct Allen columns
     Correct alp columns
     Correct pot columns
+    Correct anion_gap columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -308,6 +345,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_allen(labs)
     labs = _pro_alp(labs)
     labs = _pro_pot(labs)
+    labs = _pro_anion_gap(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
