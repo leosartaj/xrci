@@ -9,6 +9,7 @@ Cleaned
 * alkaline_phosphatase
 * potassium
 * anion_gap
+* lymphocytes
 
 Already clean
 =============
