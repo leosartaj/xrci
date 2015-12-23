@@ -241,6 +241,18 @@ def _pro_albumin(labs):
     return labs
 
 
+def _pro_alp(labs):
+    """
+    alkaline_phosphatase correction also called ALP or ALKP
+    Rename to alp
+    All units are in u/l
+    """
+    labs.ix[(labs.description == 'alkaline_phosphatase'), 'description'] = 'alp'
+    labs.ix[(labs.description == 'alp'), 'unitofmeasure'] = 'u/l'
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -249,6 +261,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop descriptions called_to
     Drop clientresult canceled
     Correct gfr columns
+    Correct albumin columns
+    Correct alp columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -258,6 +272,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
+    labs = _pro_alp(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
