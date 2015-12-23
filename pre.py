@@ -435,6 +435,20 @@ def _pro_glo(labs):
     return labs
 
 
+def _pro_hemo(labs):
+    """
+    hemolysis_index correction
+    correct clientresults
+    """
+    hemo = labs.description == 'hemolysis_index'
+    labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
+    labs.ix[(hemo) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -456,6 +470,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
+    Correct hemolysis_index columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -478,6 +493,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
+    labs = _pro_hemo(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
