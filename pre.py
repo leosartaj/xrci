@@ -173,7 +173,7 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     lower all the column names
     lower values in columns, replace ' ' by '_'
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_cut.csv'))
+    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
@@ -200,6 +200,23 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+
+    return labs
+
+
+def fill_see_below(labs, desc):
+    """
+    fills the see_below clientresults
+    uses bfill method
+    bfill's only for same descriptions
+    """
+    see = labs.clientresult == 'see_below'
+    if type(desc) == str:
+        desc = labs.description == desc
+    ids = labs[(desc) & (see)].id.unique()
+    for i in ids:
+        labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
+        labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
 
     return labs
 
@@ -298,24 +315,7 @@ def _pro_anion_gap(labs):
     ag = labs.description == 'anion_gap'
     labs.ix[ag, 'unitofmeasure'] = 'meq/l'
     labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
-    labs = _fill_see_below(labs, ag)
-
-    return labs
-
-
-def _fill_see_below(labs, desc):
-    """
-    fills the see_below clientresults
-    uses bfill method
-    bfill's only for same descriptions
-    """
-    see = labs.clientresult == 'see_below'
-    if type(desc) == str:
-        desc = labs.description == desc
-    ids = labs[(desc) & (see)].id.unique()
-    for i in ids:
-        labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
-        labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
+    labs = fill_see_below(labs, ag)
 
     return labs
 
