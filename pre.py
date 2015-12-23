@@ -204,13 +204,13 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     return labs
 
 
-def fill_see_below(labs, desc):
+def bfill(labs, desc, key):
     """
-    fills the see_below clientresults
+    fills the 'key' clientresults
     uses bfill method
     bfill's only for same descriptions
     """
-    see = labs.clientresult == 'see_below'
+    see = labs.clientresult == key
     if type(desc) == str:
         desc = labs.description == desc
     ids = labs[(desc) & (see)].id.unique()
@@ -298,7 +298,7 @@ def _pro_alp(labs):
 
 def _pro_lymph(labs):
     """
-    Clean Lymphocytes data 
+    Clean Lymphocytes data
     Removed 0.0 lymphocytes data row
     Normal values for the lymphocytes percentage is 28 to 55
     """
@@ -322,6 +322,7 @@ def _pro_pot(labs):
     labs.ix[labs.clientresult == '>_10.0', 'clientresult'] = 10.0
 
     return labs
+
 
 def _pro_bun(labs):
     """
@@ -349,7 +350,26 @@ def _pro_anion_gap(labs):
     ag = labs.description == 'anion_gap'
     labs.ix[ag, 'unitofmeasure'] = 'meq/l'
     labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
-    labs = fill_see_below(labs, ag)
+    labs = bfill(labs, ag, 'see_below')
+
+    return labs
+
+
+def _pro_alt_ast(labs):
+    """
+    Very related tests
+    alt (sgpt) correction
+    Normal range between 10-40 u/l for males and 7-35 u/l for females
+    ast (sgot) correction
+    Normal range between 14-20 u/l for males and 10-36 u/l for females
+    correct clientresults
+    """
+    alt = labs.description == 'alt_(sgpt)'
+    labs.ix[(alt) & (labs.clientresult == '<_6'), 'clientresult'] = 6.
+    labs = bfill(labs, alt, 'see_below')
+
+    ast = labs.description == 'ast_(sgot)'
+    labs = bfill(labs, ast, 'see_below')
 
     return labs
 
@@ -369,6 +389,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct anion_gap columns
     Correct lymphocytes columns
     Correct bun columns
+    Correct alt_(sgpt), ast_(sgot) columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -385,6 +406,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_anion_gap(labs)
     labs = _pro_lymph(labs)
     labs = _pro_bun(labs)
+    labs = _pro_alt_ast(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
