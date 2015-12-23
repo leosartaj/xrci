@@ -340,7 +340,6 @@ def _pro_anion_gap(labs):
     labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
     labs = fill_see_below(labs, ag)
 
-
     return labs
 
 
@@ -392,7 +391,7 @@ def process(dire=TRAINPATH, save=PROPATH):
     remove_rows(dire, save)
     correct_lab_data(save)
     pro_labs(save, save)
-    
+
 
 if __name__ == '__main__':
     process(*sys.argv[1:])
