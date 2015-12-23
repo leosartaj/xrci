@@ -435,6 +435,15 @@ def _pro_glo(labs):
     return labs
 
 
+def _pro_unit(labs):
+    """
+    Make units same
+    Sodium meq/l
+    """
+    labs.ix[labs.description == 'sodium', 'unitofmeasure'] = 'meq/l'
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -442,6 +451,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop chstandard (62% null values)
     Drop clientresult canceled
     Remove descriptions
+    Correct units
     Correct gfr columns
     Correct albumin columns
     Correct Allen columns
@@ -464,6 +474,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 
     labs = _remove_desc(labs)
 
+    labs = _pro_unit(labs)
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
     labs = _pro_allen(labs)

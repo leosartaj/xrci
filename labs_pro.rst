@@ -18,6 +18,7 @@ Cleaned
 * calcium
 * c02_content
 * globulin
+* sodium
 
 Already clean
 =============
