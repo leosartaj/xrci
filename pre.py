@@ -437,7 +437,7 @@ def _pro_glo(labs):
 
 def _pro_index(labs):
     """
-    hemolysis_index, icteric_index correction
+    hemolysis_index, icteric_index, lipemia_index correction
     correct clientresults
     """
     hemo = labs.description == 'hemolysis_index'
@@ -453,6 +453,13 @@ def _pro_index(labs):
     labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
     labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
     labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    lip = labs.description == 'lipemia_index'
+    labs.ix[(lip) & (labs.clientresult == 'no_lipemia'), 'clientresult'] = 0
+    labs.ix[(lip) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(lip) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(lip) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(lip) & (labs.clientresult == 'highly'), 'clientresult'] = 4
 
     return labs
 
@@ -478,7 +485,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
-    Correct hemolysis_index, icteric_index columns
+    Correct hemolysis_index, icteric_index, lipemia_index columns
     """
     labs = pro_labs_basic(dire, None)
 

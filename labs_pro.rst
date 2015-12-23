@@ -18,7 +18,7 @@ Cleaned
 * calcium
 * c02_content
 * globulin
-* hemolysis_index
+* hemolysis_index, icteric_index, lipemia_index
 
 Already clean
 =============
