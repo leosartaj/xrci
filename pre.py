@@ -408,6 +408,19 @@ def _pro_cal(labs):
     return labs
 
 
+def _pro_co2(labs):
+    """
+    Co2 content correction
+    Normal range between 23-30 meq/l
+    correct clientresults
+    """
+    co2 = labs.description == 'co2_content'
+    labs.ix[(co2) & (labs.clientresult == '<_5'), 'clientresult'] = 5.
+    labs.ix[(co2) & (labs.clientresult == '<_10'), 'clientresult'] = 2.
+    labs = bfill(labs, co2, 'see_below')
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -427,6 +440,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct chloride columns
     Correct creatinine_(enz) columns
     Correct calcium columns
+    Correct co2_content columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -447,6 +461,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_chloride(labs)
     labs = _pro_creatinine(labs)
     labs = _pro_cal(labs)
+    labs = _pro_co2(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
