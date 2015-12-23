@@ -13,6 +13,8 @@ Cleaned
 * bun
 * alt_(sgpt)
 * ast_(sgot)
+* chloride
+* creatinine_(enz)
 
 Already clean
 =============

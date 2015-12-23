@@ -335,6 +335,27 @@ def _pro_bun(labs):
 
     return labs
 
+def _pro_chloride(labs):
+    """
+    Chloride clientresult and unitofmeasure correction
+    Normal range : 96 - 106 mEq/l
+    Metabolic acidosis
+    """
+    labs.ix[(labs.description == 'chloride'), 'unitofmeasure'] = 'meq/l'
+    labs.ix[((labs.description == 'chloride') & (labs.clientresult == '<15')), 'clientresult'] = 15
+
+    return labs
+
+def _pro_creatinine(labs):
+    """
+    Creatinine clientresult corrected
+    Normal values : 0.51 - 1.2
+    """
+    labs.ix[((labs.description == 'creatinine_(enz)') & (labs.clientresult == '<_0.10')), 'clientresult'] = '0.10'
+    crt = labs.description == 'creatinine_(enz)'
+    labs = bfill(labs, crt, 'see_below')
+    return labs
+
 
 def _pro_anion_gap(labs):
     """
@@ -390,6 +411,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct lymphocytes columns
     Correct bun columns
     Correct alt_(sgpt), ast_(sgot) columns
+    Correct chloride columns
+    Correct creatinine_(enz) columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -407,6 +430,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_lymph(labs)
     labs = _pro_bun(labs)
     labs = _pro_alt_ast(labs)
+    labs = _pro_chloride(labs)
+    labs = _pro_creatinine(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
