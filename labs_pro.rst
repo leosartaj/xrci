@@ -12,6 +12,7 @@ Cleaned
 * lymphocytes
 * bun
 * alt_(sgpt)
+* ast_(sgot)
 
 Already clean
 =============

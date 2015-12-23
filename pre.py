@@ -354,15 +354,21 @@ def _pro_anion_gap(labs):
     return labs
 
 
-def _pro_alt(labs):
+def _pro_alt_ast(labs):
     """
+    Very related tests
     alt (sgpt) correction
     Normal range between 10-40 u/l for males and 7-35 u/l for females
+    ast (sgot) correction
+    Normal range between 14-20 u/l for males and 10-36 u/l for females
     correct clientresults
     """
     alt = labs.description == 'alt_(sgpt)'
     labs.ix[(alt) & (labs.clientresult == '<_6'), 'clientresult'] = 6.
     labs = bfill(labs, alt, 'see_below')
+
+    ast = labs.description == 'ast_(sgot)'
+    labs = bfill(labs, ast, 'see_below')
 
     return labs
 
@@ -382,7 +388,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct anion_gap columns
     Correct lymphocytes columns
     Correct bun columns
-    Correct alt_(sgpt) columns
+    Correct alt_(sgpt), ast_(sgot) columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -399,7 +405,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_anion_gap(labs)
     labs = _pro_lymph(labs)
     labs = _pro_bun(labs)
-    labs = _pro_alt(labs)
+    labs = _pro_alt_ast(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
