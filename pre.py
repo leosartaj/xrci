@@ -221,6 +221,16 @@ def fill_see_below(labs, desc):
     return labs
 
 
+def _remove_desc(labs):
+    """
+    Removes descriptions not required from labs
+    """
+    labs = labs[(labs.description != 'called_to')]
+    labs = labs[(labs.description != 'influenza_type_b')]
+
+    return labs
+
+
 def _pro_gfr(labs):
     """
     gfr correction
@@ -258,6 +268,7 @@ def _pro_allen(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
     return labs
 
 
@@ -325,8 +336,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Process train_RawVitalData.csv
     Basic processing
     Drop chstandard (62% null values)
-    Drop descriptions called_to
     Drop clientresult canceled
+    Remove descriptions
     Correct gfr columns
     Correct albumin columns
     Correct Allen columns
@@ -337,8 +348,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = pro_labs_basic(dire, None)
 
     del labs['chstandard']
-    labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.clientresult != 'canceled')]
+
+    labs = _remove_desc(labs)
 
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)

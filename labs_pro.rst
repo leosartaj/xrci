@@ -8,3 +8,4 @@ Basic processed lab tests in labs file
 * potassium
 * anion_gap
 * c-peptide
+* influenza_type_b
