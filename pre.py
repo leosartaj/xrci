@@ -395,6 +395,46 @@ def _pro_alt_ast(labs):
     return labs
 
 
+def _pro_cal(labs):
+    """
+    Calcium correction
+    Normal range between 8.84-10.4 mg/dl for adults
+    6.7-10.7 mg/dl for children
+    correct clientresults
+    """
+    cal = labs.description == 'calcium'
+    labs.ix[(cal) & (labs.clientresult == '<_5.0'), 'clientresult'] = 5.
+    labs.ix[(cal) & (labs.clientresult == '<_2.0'), 'clientresult'] = 2.
+    return labs
+
+
+def _pro_co2(labs):
+    """
+    Co2 content correction
+    Normal range between 23-30 meq/l
+    correct clientresults
+    """
+    co2 = labs.description == 'co2_content'
+    labs.ix[(co2) & (labs.clientresult == '<_5'), 'clientresult'] = 5.
+    labs.ix[(co2) & (labs.clientresult == '<_10'), 'clientresult'] = 2.
+    labs = bfill(labs, co2, 'see_below')
+    return labs
+
+
+def _pro_glo(labs):
+    """
+    Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
+    Globulin correction
+    unitofmeasure g/dl
+    Lot of ranges provided, 2.3-3.5 g/dl
+    correct clientresults
+    """
+    glo = labs.description == 'globulin'
+    labs.ix[glo, 'unitofmeasure'] = 'g/dl'
+    labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -413,6 +453,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct alt_(sgpt), ast_(sgot) columns
     Correct chloride columns
     Correct creatinine_(enz) columns
+    Correct calcium columns
+    Correct co2_content columns
+    Correct globulin columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -432,6 +475,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_alt_ast(labs)
     labs = _pro_chloride(labs)
     labs = _pro_creatinine(labs)
+    labs = _pro_cal(labs)
+    labs = _pro_co2(labs)
+    labs = _pro_glo(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

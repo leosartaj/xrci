@@ -15,6 +15,9 @@ Cleaned
 * ast_(sgot)
 * chloride
 * creatinine_(enz)
+* calcium
+* c02_content
+* globulin
 
 Already clean
 =============
