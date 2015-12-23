@@ -395,6 +395,19 @@ def _pro_alt_ast(labs):
     return labs
 
 
+def _pro_cal(labs):
+    """
+    Calcium correction
+    Normal range between 8.84-10.4 mg/dl for adults
+    6.7-10.7 mg/dl for children
+    correct clientresults
+    """
+    cal = labs.description == 'calcium'
+    labs.ix[(cal) & (labs.clientresult == '<_5.0'), 'clientresult'] = 5.
+    labs.ix[(cal) & (labs.clientresult == '<_2.0'), 'clientresult'] = 2.
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -413,6 +426,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct alt_(sgpt), ast_(sgot) columns
     Correct chloride columns
     Correct creatinine_(enz) columns
+    Correct calcium columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -432,6 +446,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_alt_ast(labs)
     labs = _pro_chloride(labs)
     labs = _pro_creatinine(labs)
+    labs = _pro_cal(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
