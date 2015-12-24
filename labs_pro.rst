@@ -52,6 +52,7 @@ Already clean
 * psa,_total
 * glucose_poc_result
 * vancomycin_random
+* mitogen_nil
 
 Removed
 =======
@@ -62,3 +63,5 @@ Removed
 * hepatitis_b_sur_ag
 * hcv_antibody
 * abo
+* rh_intep
+* absc_intep

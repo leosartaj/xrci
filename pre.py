@@ -233,6 +233,8 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
     labs = labs[(labs.description != 'hcv_antibody')]
     labs = labs[(labs.description != 'abo')] # similar to abo_intep
+    labs = labs[(labs.description != 'rh_intep')]
+    labs = labs[(labs.description != 'absc_intep')]
 
     return labs
 
