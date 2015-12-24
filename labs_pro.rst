@@ -55,6 +55,7 @@ Already clean
 * direct_bilirubin (0.0-0.3 normal values)
 * ldh (normal values 140-280)
 * ps (normal values 2.5-3 ng/ml)
+* vancomycin_trough (10-20 ug/mL)
 
 Removed
 =======
@@ -68,3 +69,8 @@ Removed
 * specimen_type
 * tests_cancelled
 * time_of_collection
+* cortisol_pm(only 1 row)
+* serum_cryptococcal_antigen,_screen (all values see_below)
+* culture,_fungus_blood
+* fungus_culture,_blood
+* source,_fungus_cx_blood

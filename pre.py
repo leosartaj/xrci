@@ -236,6 +236,11 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'specimen_type')]
     labs = labs[(labs.description != 'tests_cancelled')]
     labs = labs[(labs.description != 'time_of_collection')]
+    labs = labs[(labs.description != 'cortisol_pm')]
+    labs = labs[(labs.description != 'serum_cryptococcal_antigen,_screen')]
+    labs = labs[(labs.description != 'culture,_fungus_blood')]
+    labs = labs[(labs.description != 'fungus_culture,_blood')]
+    labs = labs[(labs.description != 'source,_fungus_cx_blood')]
     return labs
 
 
