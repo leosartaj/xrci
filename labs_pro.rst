@@ -21,6 +21,7 @@ Cleaned
 * hemolysis_index, icteric_index, lipemia_index
 * glucose
 * total_bilirubin
+* total_protein
 
 Already clean
 =============

@@ -462,6 +462,15 @@ def _pro_glo(labs):
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
     return labs
 
+def _pro_protein(labs):
+    """
+    Correct protein clientresult
+    normal range : 6.0 to 8.3 mg/dL
+    """
+    pr.ix[pr.clientresult == '<3.0', 'clientresult'] = 3.0
+
+    return labs
+
 
 def _pro_index(labs):
     """
@@ -516,6 +525,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
     Correct total_bilirubin columns
+    Correct total_protein columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -541,6 +551,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
     labs = _pro_bilirubin(labs)
+    labs = _pro_protein(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
