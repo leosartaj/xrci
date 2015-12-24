@@ -25,6 +25,8 @@ Cleaned
 * glucose
 * urobilinogen
 * amorphous_urates
+* bacteria
+* epithelial_cells
 
 Already clean
 =============

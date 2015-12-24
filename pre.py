@@ -503,11 +503,13 @@ def _pro_ur(labs):
     return labs
 
 
-def _pro_au(labs):
+def _pro_au_bac(labs):
     """
     amorphous_urates correction
     crystals in urine, higher is not good
-    correct clientresults
+
+    bacteria correction
+    epithelial_cells correction
     """
     au = labs.description == 'amorphous_urates'
     labs.ix[(au) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
@@ -516,6 +518,23 @@ def _pro_au(labs):
     labs.ix[(au) & (labs.clientresult == 'moderate'), 'clientresult'] = 3
     labs.ix[(au) & (labs.clientresult == 'many'), 'clientresult'] = 4
     labs.ix[(au) & (labs.clientresult == 'massive'), 'clientresult'] = 5
+
+    bac = labs.description == 'bacteria'
+    labs.ix[(bac) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(bac) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(bac) & (labs.clientresult == 'few'), 'clientresult'] = 2
+    labs.ix[(bac) & (labs.clientresult == 'moderate'), 'clientresult'] = 3
+    labs.ix[(bac) & (labs.clientresult == 'many'), 'clientresult'] = 4
+    labs.ix[(bac) & (labs.clientresult == 'massive'), 'clientresult'] = 5
+
+    ec = labs.description == 'epithelial_cells'
+    labs.ix[(ec) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(ec) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(ec) & (labs.clientresult == 'occasional'), 'clientresult'] = 2
+    labs.ix[(ec) & (labs.clientresult == 'few'), 'clientresult'] = 3
+    labs.ix[(ec) & (labs.clientresult == 'moderate'), 'clientresult'] = 4
+    labs.ix[(ec) & (labs.clientresult == 'many'), 'clientresult'] = 5
+    labs.ix[(ec) & (labs.clientresult == 'massive'), 'clientresult'] = 6
 
     return labs
 
@@ -576,7 +595,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
     Correct urobilinogen columns
-    Correct amorphous_urates columns
+    Correct amorphous_urates, bacteria, epithelial_cells columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -605,7 +624,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
     labs = _pro_ur(labs)
-    labs = _pro_au(labs)
+    labs = _pro_au_bac(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
