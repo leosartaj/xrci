@@ -421,6 +421,23 @@ def _pro_co2(labs):
     return labs
 
 
+def _pro_glucose(labs):
+    """
+    Corrected glucose values
+    Range : 70 -100 mg/dL
+    """
+    glu = labs.description == 'glucose'
+    labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
+    labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
+    labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
+    labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
+    labs = labs[~((glu) & (labs.clientresult == 'slight_hemolysis'))]
+    labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -486,6 +503,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct co2_content columns
     Correct globulin columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
+    Correct glucose columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -509,6 +527,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
     labs = _pro_index(labs)
+    labs = _pro_glucose(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
