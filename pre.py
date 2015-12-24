@@ -228,6 +228,20 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
+    labs = labs[(labs.description != 'notified')]
+    labs = labs[(labs.description != 'slide_review')]
+    labs = labs[(labs.description != 'urine_microscopic')]
+    labs = labs[(labs.description != 'date_of_collection')]
+    labs = labs[(labs.description != 'reason_for_cancellation')]
+    labs = labs[(labs.description != 'specimen_type')]
+    labs = labs[(labs.description != 'tests_cancelled')]
+    labs = labs[(labs.description != 'time_of_collection')]
+    labs = labs[(labs.description != 'cortisol_pm')]
+    labs = labs[(labs.description != 'serum_cryptococcal_antigen,_screen')]
+    labs = labs[(labs.description != 'culture,_fungus_blood')]
+    labs = labs[(labs.description != 'fungus_culture,_blood')]
+    labs = labs[(labs.description != 'source,_fungus_cx_blood')]
+    labs = labs[(labs.description != 'respiratory_bacterial_culture')]
     labs = labs[(labs.description != 'risk_of_prostate_cancer')]
     labs = labs[(labs.description != 'amikacin_______$')]
     labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
@@ -429,6 +443,22 @@ def _pro_cat(labs):
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
 
+    Removed see_below in troponin_i
+
+    Indexed anisocytosis values
+
+    Indexed microcytic values
+
+    Indexed ovalocytes values
+
+    Indexed poikilocytosis values
+
+    Indexed polychromasia values
+
+    mapped c._difficile_dna_pcr values
+
+    corrected see_below in bnp
+
     hiv_ab/ag correction
     hepatitis_b_sur_ab correction
     hepatitis_b_core_antibody correction
@@ -528,6 +558,26 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
+    tri = labs.description == 'troponin_i'
+    labs.ix[((tri) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
+
+    mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') | 
+            (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia'))
+    labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
+    labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
+    labs.ix[((mic) & (labs.clientresult == 'slight')), 'clientresult'] = 1
+    labs.ix[((mic) & (labs.clientresult == 'slight-mod')), 'clientresult'] = 1.5
+    labs.ix[((mic) & (labs.clientresult == 'mild')), 'clientresult'] = 1.5
+    labs.ix[((mic) & (labs.clientresult == 'moderate')), 'clientresult'] = 2
+    labs.ix[((mic) & (labs.clientresult == 'marked')), 'clientresult'] = 3
+
+    pcr = labs.description == 'c._difficile_dna_pcr'
+    labs.ix[((pcr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
+    labs.ix[((pcr) & (labs.clientresult == 'positive')), 'clientresult'] = 1
+
+    bnp = labs.description == 'bnp'
+    labs.ix[((bnp) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
 
     hiv = labs.description == 'hiv_ag/ab'
     labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
