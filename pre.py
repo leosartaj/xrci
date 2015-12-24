@@ -361,6 +361,9 @@ def _pro_clean_clientresults(labs):
 
     rbc
     normal range : 4.2 - 5.4 million/ul 
+    
+    rdw
+    normal range : 11.5 - 14.5 %
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -374,6 +377,7 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mpv_previously_reported_as:___10.4_fm'), 'clientresult'] = 10.4
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_rdw_previously_reported_as:___17.6__h_%'), 'clientresult'] = 17.6
 
     labs = bfill(labs, 'co2_content', 'see_below')
     labs = bfill(labs, 'alt_(sgpt)', 'see_below')

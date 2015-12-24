@@ -43,6 +43,7 @@ Cleaned
 * mpv
 * platelet_count
 * rbc
+* rdw
 
 Already clean
 =============
