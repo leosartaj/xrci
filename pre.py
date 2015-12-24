@@ -364,7 +364,7 @@ def _pro_clean_clientresults(labs):
 
     Creatinine clientresult corrected
     Normal values : 0.51 - 1.2
-    
+
     Corrected mch
     normal range : 27-36
 
@@ -373,7 +373,7 @@ def _pro_clean_clientresults(labs):
 
     Corrected mcv data
     normal range : 77 - 95
-    
+
     Corrected hematocrit
     normal range : 38.8 - 50 %
 
@@ -383,6 +383,7 @@ def _pro_clean_clientresults(labs):
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == '&#x20;'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == 'see_below'), 'clientresult'] = np.nan
 
     glo = labs.description == 'globulin'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
@@ -392,15 +393,6 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
-
-    labs = bfill(labs, 'co2_content', 'see_below')
-    labs = bfill(labs, 'alt_(sgpt)', 'see_below')
-    labs = bfill(labs, 'ast_(sgot)', 'see_below')
-    labs = bfill(labs, 'anion_gap', 'see_below')
-    labs = bfill(labs, 'creatinine_(enz)', 'see_below')
-    labs = bfill(labs, 'mch', 'see_below')
-    labs = bfill(labs, 'hct', 'see_below')
-    labs = bfill(labs, 'hgb', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
@@ -443,8 +435,6 @@ def _pro_cat(labs):
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
 
-    Removed see_below in troponin_i
-
     Indexed anisocytosis values
 
     Indexed microcytic values
@@ -456,8 +446,6 @@ def _pro_cat(labs):
     Indexed polychromasia values
 
     mapped c._difficile_dna_pcr values
-
-    corrected see_below in bnp
 
     hiv_ab/ag correction
     hepatitis_b_sur_ab correction
@@ -559,10 +547,7 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
 
-    tri = labs.description == 'troponin_i'
-    labs.ix[((tri) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
-
-    mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') | 
+    mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia'))
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
@@ -576,15 +561,11 @@ def _pro_cat(labs):
     labs.ix[((pcr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
     labs.ix[((pcr) & (labs.clientresult == 'positive')), 'clientresult'] = 1
 
-    bnp = labs.description == 'bnp'
-    labs.ix[((bnp) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
-
     hiv = labs.description == 'hiv_ag/ab'
     labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
     labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
     hbab = (labs.description == 'hepatitis_b_sur_ab')
-    labs.ix[((hbab) & (labs.clientresult == "see_below")), 'clientresult'] = np.nan
     labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
     labs.ix[((hbab) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
