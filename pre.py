@@ -438,6 +438,17 @@ def _pro_glucose(labs):
     return labs
 
 
+def _pro_bilirubin(labs):
+    """
+    Corrected clientresult in bilirubin
+    Normal range : 0.3 to 1.9 mg/dL
+    """
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -504,6 +515,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct globulin columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
+    Correct total_bilirubin columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -528,6 +540,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_glo(labs)
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_bilirubin(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
