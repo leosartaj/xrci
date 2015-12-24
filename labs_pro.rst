@@ -22,7 +22,6 @@ Cleaned
 * protein_qualitative
 * specific_gravity
 * hemolysis_index, icteric_index, lipemia_index
-* po2c
 * samplesite (possibly irrelavant, only need sampletype)
 * glucose
 * urobilinogen
@@ -44,6 +43,7 @@ Already clean
 * ph_urine
 * so2c
 * c-reactive protein
+* po2c
 
 Removed
 =======

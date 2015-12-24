@@ -256,23 +256,6 @@ def _pro_gfr(labs):
     return labs
 
 
-def _pro_allen(labs):
-    """
-    Allen's Test Correction
-    Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
-    Clean clientresult for allen's test
-    """
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "collected_by_respiratory.")), 'clientresult'] = 1
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult.isnull())), 'clientresult'] = 1
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "na")), 'clientresult'] = 1
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == ".")), 'clientresult'] = 1
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
-    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
-
-    return labs
-
-
 def _pro_albumin(labs):
     """
     albumin correction
@@ -285,26 +268,14 @@ def _pro_albumin(labs):
     return labs
 
 
-def _pro_alp(labs):
-    """
-    alkaline_phosphatase correction also called ALP or ALKP
-    Rename to alp
-    All units are in u/l
-    """
-    labs.ix[(labs.description == 'alkaline_phosphatase'), 'description'] = 'alp'
-    labs.ix[(labs.description == 'alp'), 'unitofmeasure'] = 'u/l'
-
-    return labs
-
-
 def _pro_lymph(labs):
     """
     Clean Lymphocytes data
     Removed 0.0 lymphocytes data row
     Normal values for the lymphocytes percentage is 28 to 55
     """
-    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))]
-    labs = labs[~((labs.description == "lymphocytes") & (labs.clientresult == "0"))]
+    labs.ix[((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))] = np.nan
+    labs.ix[((labs.description == "lymphocytes") & (labs.clientresult == "0"))] = np.nan
 
     return labs
 
@@ -424,23 +395,6 @@ def _pro_co2(labs):
     return labs
 
 
-def _pro_glucose(labs):
-    """
-    Corrected glucose values
-    Range : 70 -100 mg/dL
-    """
-    glu = labs.description == 'glucose'
-    labs.ix[((glu) & (labs.clientresult == 'slight_hemolysis')), 'clientresult'] = np.nan
-    labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
-    labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
-    labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
-    labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
-    labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
-    labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
-
-    return labs
-
-
 def _pro_bilirubin(labs):
     """
     Corrected clientresult in bilirubin
@@ -472,7 +426,6 @@ def _pro_protein(labs):
     normal range : 6.0 to 8.3 mg/dL
     """
     labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
-
     return labs
 
 
@@ -482,33 +435,6 @@ def _pro_magnesium(labs):
     Normal range : 1.5 - 2.5
     """
     labs.ix[((labs.description == 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
-
-    return labs
-
-
-def _pro_unit(labs):
-    """
-    Make units same
-    Sodium meq/l
-    """
-    labs.ix[labs.description == 'sodium', 'unitofmeasure'] = 'meq/l'
-    return labs
-
-
-def _pro_pq(labs):
-    """
-    protein_qualitative correction
-    lower value is normal, higher is troublesome for the patient
-    correct clientresults
-    """
-    pq = labs.description == 'protein_qualitative'
-    labs.ix[(pq) & (labs.clientresult == 'negative'), 'clientresult'] = 0
-    labs.ix[(pq) & (labs.clientresult == 'neg'), 'clientresult'] = 0
-    labs.ix[(pq) & (labs.clientresult == 'trace'), 'clientresult'] = 0.5
-    labs.ix[(pq) & (labs.clientresult == '1+'), 'clientresult'] = 1
-    labs.ix[(pq) & (labs.clientresult == '2+'), 'clientresult'] = 2
-    labs.ix[(pq) & (labs.clientresult == '3+'), 'clientresult'] = 3
-
     return labs
 
 
@@ -547,14 +473,66 @@ def _pro_ur(labs):
     return labs
 
 
-def _pro_au_bac(labs):
+def _pro_anc(labs):
     """
+    Corrected Absolute_neutrophill_count_automated
+    normal range : 1.5 to 8.00
+    """
+    labs.ix[((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))] = np.nan
+    return labs
+
+
+def _pro_cat(labs):
+    """
+    Label categorical data with codes
+    hemolysis_index, icteric_index, lipemia_index correction
+
     amorphous_urates correction
     crystals in urine, higher is not good
 
     bacteria correction
     epithelial_cells correction
+
+    sample type labs
+    no unit of measure
+    replaced other clientresult values with NaN
+    mapped remaining values to integers
+
+    sample site labs
+    no unit of measure
+    replaced unknown and other clientresult values with NaN
+    mapped remaining values to integers
+
+    protein_qualitative correction
+    lower value is normal, higher is troublesome for the patient
+
+    Corrected glucose values
+    Range : 70 -100 mg/dL
+
+    Allen's Test Correction
+    Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
     """
+    hemo = labs.description == 'hemolysis_index'
+    labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
+    labs.ix[(hemo) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    ice = labs.description == 'icteric_index'
+    labs.ix[(ice) & (labs.clientresult == 'not_icteric'), 'clientresult'] = 0
+    labs.ix[(ice) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    lip = labs.description == 'lipemia_index'
+    labs.ix[(lip) & (labs.clientresult == 'no_lipemia'), 'clientresult'] = 0
+    labs.ix[(lip) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(lip) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(lip) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(lip) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
     au = labs.description == 'amorphous_urates'
     labs.ix[(au) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
     labs.ix[(au) & (labs.clientresult == 'rare'), 'clientresult'] = 1
@@ -580,66 +558,14 @@ def _pro_au_bac(labs):
     labs.ix[(ec) & (labs.clientresult == 'many'), 'clientresult'] = 5
     labs.ix[(ec) & (labs.clientresult == 'massive'), 'clientresult'] = 6
 
-    return labs
+    samp = labs.description == 'sampletype'
+    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
 
-
-def _pro_anc(labs):
-    """
-    Corrected Absolute_neutrophill_count_automated
-    normal range : 1.5 to 8.00
-    """
-    labs = labs[~((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))]
-
-    return labs
-
-
-def _pro_index(labs):
-    """
-    hemolysis_index, icteric_index, lipemia_index correction
-    correct clientresults
-    """
-    hemo = labs.description == 'hemolysis_index'
-    labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
-    labs.ix[(hemo) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
-    labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
-    labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
-    labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
-
-    ice = labs.description == 'icteric_index'
-    labs.ix[(ice) & (labs.clientresult == 'not_icteric'), 'clientresult'] = 0
-    labs.ix[(ice) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
-    labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
-    labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
-    labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
-
-    lip = labs.description == 'lipemia_index'
-    labs.ix[(lip) & (labs.clientresult == 'no_lipemia'), 'clientresult'] = 0
-    labs.ix[(lip) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
-    labs.ix[(lip) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
-    labs.ix[(lip) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
-    labs.ix[(lip) & (labs.clientresult == 'highly'), 'clientresult'] = 4
-
-    return labs
-
-
-def _pro_po2c(labs):
-    """
-    po2c correction
-    unitofmeasure mmhg
-    ranges > 80 mmhg
-    correct clientresults
-    """
-    labs.ix[labs.description == 'po2c' , 'unitofmeasure'] = 'mmhg'
-    return labs
-
-
-def _pro_samplesite(labs):
-    """
-    sample site labs
-    no unit of measure
-    replaced unknown and other clientresult values with NaN
-    mapped remaining values to integers
-    """
     samp = labs.description == 'samplesite'
     labs.ix[samp & (labs.clientresult == 'unknown'), 'clientresult'] = np.nan
     labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
@@ -654,23 +580,30 @@ def _pro_samplesite(labs):
     labs.ix[samp & (labs.clientresult == 'l_brachial'), 'clientresult'] = 8
     labs.ix[samp & (labs.clientresult == 'l_femoral'), 'clientresult'] = 9
 
-    return labs
+    pq = labs.description == 'protein_qualitative'
+    labs.ix[(pq) & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'trace'), 'clientresult'] = 0.5
+    labs.ix[(pq) & (labs.clientresult == '1+'), 'clientresult'] = 1
+    labs.ix[(pq) & (labs.clientresult == '2+'), 'clientresult'] = 2
+    labs.ix[(pq) & (labs.clientresult == '3+'), 'clientresult'] = 3
 
+    glu = labs.description == 'glucose'
+    labs.ix[((glu) & (labs.clientresult == 'slight_hemolysis')), 'clientresult'] = np.nan
+    labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
+    labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
+    labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
+    labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
 
-def _pro_sampletype(labs):
-    """
-    sample type labs
-    no unit of measure
-    replaced other clientresult values with NaN
-    mapped remaining values to integers
-    """
-    samp = labs.description == 'sampletype'
-    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
-    labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0
-    labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
-    labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
-    labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
-    labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "collected_by_respiratory.")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult.isnull())), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "na")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == ".")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
+    labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
 
     return labs
 
@@ -678,9 +611,7 @@ def _pro_sampletype(labs):
 def _pro_creatine_kinase(labs):
     """
     Correct client result values
-    Changed all units to u/l
     """
-    labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
     labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
     labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
     return labs
@@ -693,11 +624,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop chstandard (62% null values)
     Drop clientresult canceled
     Remove descriptions
-    Correct units
     Correct gfr columns
     Correct albumin columns
-    Correct Allen columns
-    Correct alp columns
     Correct pot columns
     Correct anion_gap columns
     Correct lymphocytes columns
@@ -710,13 +638,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct globulin columns
     Correct protein_qualitative columns
     Correct specific_gravity columns
-    Correct hemolysis_index, icteric_index, lipemia_index columns
-    Correct po2c columns
-    Mapped SampleSite values
+    Correct categorical columns
     Correct glucose columns
     Correct urobilinogen columns
-    Correct amorphous_urates, bacteria, epithelial_cells columns
-    Mapped Sampletype values
     Correct creatine_kinase values
     Correct total_bilirubin columns
     Correct total_protein columns
@@ -731,11 +655,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 
     labs = _remove_desc(labs)
 
-    labs = _pro_unit(labs)
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
-    labs = _pro_allen(labs)
-    labs = _pro_alp(labs)
     labs = _pro_pot(labs)
     labs = _pro_anion_gap(labs)
     labs = _pro_lymph(labs)
@@ -746,15 +667,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
-    labs = _pro_pq(labs)
     labs = _pro_sg(labs)
-    labs = _pro_index(labs)
-    labs = _pro_po2c(labs)
-    labs = _pro_samplesite(labs)
-    labs = _pro_glucose(labs)
+    labs = _pro_cat(labs)
     labs = _pro_ur(labs)
-    labs = _pro_au_bac(labs)
-    labs = _pro_sampletype(labs)
     labs = _pro_creatine_kinase(labs)
     labs = _pro_bilirubin(labs)
     labs = _pro_protein(labs)
