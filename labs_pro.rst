@@ -37,3 +37,4 @@ Already clean
 Removed
 =======
 * influenza_type_b
+* differential_information
