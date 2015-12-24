@@ -503,6 +503,23 @@ def _pro_ur(labs):
     return labs
 
 
+def _pro_au(labs):
+    """
+    amorphous_urates correction
+    crystals in urine, higher is not good
+    correct clientresults
+    """
+    au = labs.description == 'amorphous_urates'
+    labs.ix[(au) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(au) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(au) & (labs.clientresult == 'few'), 'clientresult'] = 2
+    labs.ix[(au) & (labs.clientresult == 'moderate'), 'clientresult'] = 3
+    labs.ix[(au) & (labs.clientresult == 'many'), 'clientresult'] = 4
+    labs.ix[(au) & (labs.clientresult == 'massive'), 'clientresult'] = 5
+
+    return labs
+
+
 def _pro_index(labs):
     """
     hemolysis_index, icteric_index, lipemia_index correction
@@ -559,6 +576,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
     Correct urobilinogen columns
+    Correct amorphous_urates columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -587,6 +605,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
     labs = _pro_ur(labs)
+    labs = _pro_au(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

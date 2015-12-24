@@ -24,6 +24,7 @@ Cleaned
 * hemolysis_index, icteric_index, lipemia_index
 * glucose
 * urobilinogen
+* amorphous_urates
 
 Already clean
 =============
