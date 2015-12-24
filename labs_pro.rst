@@ -55,3 +55,4 @@ Removed
 * influenza_type_b
 * differential_information
 * risk_of_prostate_cancer
+* amikacin_______$

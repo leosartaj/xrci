@@ -229,6 +229,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
     labs = labs[(labs.description != 'risk_of_prostate_cancer')]
+    labs = labs[(labs.description != 'amikacin_______$')]
 
     return labs
 
@@ -338,6 +339,7 @@ def _pro_clean_clientresults(labs):
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == '&#x20;'), 'clientresult'] = np.nan
 
     glo = labs.description == 'globulin'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
