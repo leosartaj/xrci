@@ -355,6 +355,10 @@ def _pro_clean_clientresults(labs):
 
     mpv
     normal range : 7.5 - 11.5
+
+    platelet_count
+    normal range : 150 - 450
+
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -378,6 +382,7 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'hct', 'see_below')
     labs = bfill(labs, 'hgb', 'see_below')
     labs = bfill(labs, 'mpv', 'see_below')
+    labs = bfill(labs, 'platelet_count', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan

@@ -41,6 +41,7 @@ Cleaned
 * mch
 * mcv
 * mpv
+* platelet_count
 
 Already clean
 =============
