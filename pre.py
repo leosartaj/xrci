@@ -557,6 +557,24 @@ def _pro_samplesite(labs):
 	return labs
 
 
+def _pro_sampletype(labs):
+	"""
+	sample type labs
+	no unit of measure
+	replaced other clientresult values with NaN
+	mapped remaining values to integers
+	"""
+	samp = labs.description == 'sampletype'
+	labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+	labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0 
+	labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
+	labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
+	labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
+	labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
+
+	return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -585,6 +603,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct po2c columns
     Mapped SampleSite values
     Correct glucose columns
+    Mapped Sampletype values
     """
     labs = pro_labs_basic(dire, None)
 
@@ -614,6 +633,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_po2c(labs)
     labs = _pro_samplesite(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_sampletype(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

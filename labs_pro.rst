@@ -23,8 +23,9 @@ Cleaned
 * specific_gravity
 * hemolysis_index, icteric_index, lipemia_index
 * po2c
-* samplesite
+* samplesite (possibly irrelavant, only need sampletype)
 * glucose
+* sampletype (related to samplesite)
 
 Already clean
 =============
