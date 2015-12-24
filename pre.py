@@ -242,6 +242,23 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'fungus_culture,_blood')]
     labs = labs[(labs.description != 'source,_fungus_cx_blood')]
     labs = labs[(labs.description != 'respiratory_bacterial_culture')]
+    labs = labs[(labs.description != 'risk_of_prostate_cancer')]
+    labs = labs[(labs.description != 'amikacin_______$')]
+    labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
+    labs = labs[(labs.description != 'hcv_antibody')]
+    labs = labs[(labs.description != 'abo')] # similar to abo_intep
+    labs = labs[(labs.description != 'rh_intep')]
+    labs = labs[(labs.description != 'absc_intep')]
+    labs = labs[(labs.description != 'nil')]
+    labs = labs[(labs.description != 'culture_wound')]
+    labs = labs[(labs.description != 'gram_stain')]
+    labs = labs[(labs.description != 'adatetime')]
+    labs = labs[(labs.description != 'drawdate')]
+    labs = labs[(labs.description != 'drawopid')]
+    labs = labs[(labs.description != 'drawtime')]
+    labs = labs[(labs.description != 'opid')]
+    labs = labs[(labs.description != 'pattemp')]
+
     return labs
 
 
@@ -347,9 +364,25 @@ def _pro_clean_clientresults(labs):
 
     Creatinine clientresult corrected
     Normal values : 0.51 - 1.2
+    
+    Corrected mch
+    normal range : 27-36
+
+	Corrected Eosinophils
+    normal range : 0 to 6.0 %
+
+    Corrected mcv data
+    normal range : 77 - 95
+    
+    Corrected hematocrit
+    normal range : 38.8 - 50 %
+
+    Corrected hgb
+    normal range :  12.0 to 17.5
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == '&#x20;'), 'clientresult'] = np.nan
 
     glo = labs.description == 'globulin'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
@@ -357,12 +390,17 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
     labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
     labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
 
     labs = bfill(labs, 'co2_content', 'see_below')
     labs = bfill(labs, 'alt_(sgpt)', 'see_below')
     labs = bfill(labs, 'ast_(sgot)', 'see_below')
     labs = bfill(labs, 'anion_gap', 'see_below')
     labs = bfill(labs, 'creatinine_(enz)', 'see_below')
+    labs = bfill(labs, 'mch', 'see_below')
+    labs = bfill(labs, 'hct', 'see_below')
+    labs = bfill(labs, 'hgb', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
@@ -421,6 +459,12 @@ def _pro_cat(labs):
 
     corrected see_below in bnp
 
+    hiv_ab/ag correction
+    hepatitis_b_sur_ab correction
+    hepatitis_b_core_antibody correction
+
+    abo_intep correction
+    quantiferon_tb_gold correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -534,6 +578,32 @@ def _pro_cat(labs):
 
     bnp = labs.description == 'bnp'
     labs.ix[((bnp) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
+
+    hiv = labs.description == 'hiv_ag/ab'
+    labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
+    labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    hbab = (labs.description == 'hepatitis_b_sur_ab')
+    labs.ix[((hbab) & (labs.clientresult == "see_below")), 'clientresult'] = np.nan
+    labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
+    labs.ix[((hbab) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    ha = labs.description == 'hepatitis_b_core_antibody'
+    labs.ix[((ha) & (labs.clientresult == "grayzone")), 'clientresult'] = np.nan
+    labs.ix[((ha) & ((labs.clientresult == "non_reactive") | (labs.clientresult == "nonreactive"))), 'clientresult'] = 0
+    labs.ix[((ha) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    abo = labs.description == 'abo_intep'
+    labs.ix[((abo) & (labs.clientresult == "o")), 'clientresult'] = 0
+    labs.ix[((abo) & (labs.clientresult == "a")), 'clientresult'] = 1
+    labs.ix[((abo) & (labs.clientresult == "b")), 'clientresult'] = 2
+    labs.ix[((abo) & (labs.clientresult == "ab")), 'clientresult'] = 3
+
+    qtg = labs.description == 'quantiferon_tb_gold'
+    labs.ix[((qtg) & (labs.clientresult == "indeterminate")), 'clientresult'] = np.nan
+    labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
+
     return labs
 
 
