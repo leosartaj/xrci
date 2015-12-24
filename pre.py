@@ -256,30 +256,6 @@ def _pro_gfr(labs):
     return labs
 
 
-def _pro_albumin(labs):
-    """
-    albumin correction
-    Range 3.5-5.5 g/dL (35-55 g/L) is normal
-    Clean clientresult
-    """
-    labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
-    labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
-    labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
-    return labs
-
-
-def _pro_lymph(labs):
-    """
-    Clean Lymphocytes data
-    Removed 0.0 lymphocytes data row
-    Normal values for the lymphocytes percentage is 28 to 55
-    """
-    labs.ix[((labs.description == "lymphocytes") & (labs.clientresult == "0.0"))] = np.nan
-    labs.ix[((labs.description == "lymphocytes") & (labs.clientresult == "0"))] = np.nan
-
-    return labs
-
-
 def _pro_pot(labs):
     """
     potassium correction
@@ -288,197 +264,101 @@ def _pro_pot(labs):
     correct clientresults
     """
     pot = labs.description == 'potassium'
-    labs.ix[pot, 'unitofmeasure'] = 'meq/l'
-    labs = labs.drop(labs[(pot) & (labs.clientresult == 'to_follow')].index)
-    labs.ix[labs.clientresult == '<20.0', 'clientresult'] = 20.0
-    labs.ix[labs.clientresult == '>_10.0', 'clientresult'] = 10.0
-
+    labs.ix[(pot) & (labs.clientresult == 'to_follow'), 'clientresult'] = np.nan
     return labs
 
 
-def _pro_bun(labs):
+def _pro_clean_clientresults(labs):
     """
+    creatine_kinase
+
+    Corrected Absolute_neutrophill_count_automated
+    normal range : 1.5 to 8.00
+
+    urobilinogen correction
+    range 0-8 mg/dl (units given are different but range appears same)
+
+    specific_gravity correction
+    density of urine to water
+    range 1.002-1.030 if kidneys normal
+
+    Correct Phosphorus clientresult
+    normal range : 2.4 - 4.1 mg/dL
+
+    Correct magnesium clientresult
+    Normal range : 1.5 - 2.5
+
+    Correct protein clientresult
+    normal range : 6.0 to 8.3 mg/dL
+
+    Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
+    Globulin correction
+    unitofmeasure g/dl
+    Lot of ranges provided, 2.3-3.5 g/dl
+
+    Corrected clientresult in bilirubin
+    Normal range : 0.3 to 1.9 mg/dL
+
+    Co2 content correction
+    Normal range between 23-30 meq/l
+
+    Chloride clientresult and unitofmeasure correction
+    Normal range : 96 - 106 mEq/l
+    Metabolic acidosis
+
     Correcting BUN(Blood Urea Nitrogen data)
     Normal range : 5 - 20 mg/dL
     BUN to creatinine ratio : 6-25
     On dialysis can have higher values as 40-60
-    """
-    labs.ix[((labs.description == "bun") & (labs.clientresult == "<_2")), 'clientresult'] = 2
 
-    return labs
+    Clean Lymphocytes data
+    Removed 0.0 lymphocytes data row
+    Normal values for the lymphocytes percentage is 28 to 55
 
+    albumin correction
+    Range 3.5-5.5 g/dL (35-55 g/L) is normal
 
-def _pro_chloride(labs):
-    """
-    Chloride clientresult and unitofmeasure correction
-    Normal range : 96 - 106 mEq/l
-    Metabolic acidosis
-    """
-    labs.ix[(labs.description == 'chloride'), 'unitofmeasure'] = 'meq/l'
-    labs.ix[((labs.description == 'chloride') & (labs.clientresult == '<15')), 'clientresult'] = 15
-
-    return labs
-
-
-def _pro_creatinine(labs):
-    """
-    Creatinine clientresult corrected
-    Normal values : 0.51 - 1.2
-    """
-    labs.ix[((labs.description == 'creatinine_(enz)') & (labs.clientresult == '<_0.10')), 'clientresult'] = '0.10'
-    crt = labs.description == 'creatinine_(enz)'
-    labs = bfill(labs, crt, 'see_below')
-    return labs
-
-
-def _pro_anion_gap(labs):
-    """
-    anion gap correction
-    All units are in meq/l
-    Normal range between 3-11 meq/l
-    serum anion gap range 8-16 meq/l
-    <11 is generally considered normal
-    urine anion gap >20 kidney unable to excrete ammonia
-    if negative and the serum ag positive then gastro problems
-    correct clientresults
-    """
-    ag = labs.description == 'anion_gap'
-    labs.ix[ag, 'unitofmeasure'] = 'meq/l'
-    labs.ix[(ag) & (labs.clientresult == '<5'), 'clientresult'] = 5.
-    labs = bfill(labs, ag, 'see_below')
-
-    return labs
-
-
-def _pro_alt_ast(labs):
-    """
     Very related tests
     alt (sgpt) correction
     Normal range between 10-40 u/l for males and 7-35 u/l for females
     ast (sgot) correction
     Normal range between 14-20 u/l for males and 10-36 u/l for females
     correct clientresults
+
+    anion gap correction
+    Normal range between 3-11 meq/l
+    serum anion gap range 8-16 meq/l
+    <11 is generally considered normal
+    urine anion gap >20 kidney unable to excrete ammonia
+    if negative and the serum ag positive then gastro problems
+
+    Creatinine clientresult corrected
+    Normal values : 0.51 - 1.2
     """
-    alt = labs.description == 'alt_(sgpt)'
-    labs.ix[(alt) & (labs.clientresult == '<_6'), 'clientresult'] = 6.
-    labs = bfill(labs, alt, 'see_below')
 
-    ast = labs.description == 'ast_(sgot)'
-    labs = bfill(labs, ast, 'see_below')
+    labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
 
-    return labs
-
-
-def _pro_cal(labs):
-    """
-    Calcium correction
-    Normal range between 8.84-10.4 mg/dl for adults
-    6.7-10.7 mg/dl for children
-    correct clientresults
-    """
-    cal = labs.description == 'calcium'
-    labs.ix[(cal) & (labs.clientresult == '<_5.0'), 'clientresult'] = 5.
-    labs.ix[(cal) & (labs.clientresult == '<_2.0'), 'clientresult'] = 2.
-    return labs
-
-
-def _pro_co2(labs):
-    """
-    Co2 content correction
-    Normal range between 23-30 meq/l
-    correct clientresults
-    """
-    co2 = labs.description == 'co2_content'
-    labs.ix[(co2) & (labs.clientresult == '<_5'), 'clientresult'] = 5.
-    labs.ix[(co2) & (labs.clientresult == '<_10'), 'clientresult'] = 2.
-    labs = bfill(labs, co2, 'see_below')
-    return labs
-
-
-def _pro_bilirubin(labs):
-    """
-    Corrected clientresult in bilirubin
-    Normal range : 0.3 to 1.9 mg/dL
-    """
-    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
-    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
-
-    return labs
-
-
-def _pro_glo(labs):
-    """
-    Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
-    Globulin correction
-    unitofmeasure g/dl
-    Lot of ranges provided, 2.3-3.5 g/dl
-    correct clientresults
-    """
     glo = labs.description == 'globulin'
-    labs.ix[glo, 'unitofmeasure'] = 'g/dl'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
-    return labs
 
+    labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
+    labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
 
-def _pro_protein(labs):
-    """
-    Correct protein clientresult
-    normal range : 6.0 to 8.3 mg/dL
-    """
-    labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
-    return labs
+    labs = bfill(labs, 'co2_content', 'see_below')
+    labs = bfill(labs, 'alt_(sgpt)', 'see_below')
+    labs = bfill(labs, 'ast_(sgot)', 'see_below')
+    labs = bfill(labs, 'anion_gap', 'see_below')
+    labs = bfill(labs, 'creatinine_(enz)', 'see_below')
 
+    lym = labs.description == 'lymphocytes'
+    labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
+    labs.ix[(lym) & (labs.clientresult == "0")] = np.nan
 
-def _pro_magnesium(labs):
-    """
-    Correct magnesium clientresult
-    Normal range : 1.5 - 2.5
-    """
-    labs.ix[((labs.description == 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
-    return labs
+    ch = ['<', '>', '_', '=']
+    for c in ch:
+        labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
-
-def _pro_phosph(labs):
-    """
-    Correct Phosphorus clientresult
-    normal range : 2.4 - 4.1 mg/dL
-    """
-    labs.ix[((labs.description == 'inorganic_phosphorus') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
-
-    return labs
-
-
-def _pro_sg(labs):
-    """
-    specific_gravity correction
-    density of urine to water
-    range 1.002-1.030 if kidneys normal
-    correct clientresults
-    """
-    sg = labs.description == 'specific_gravity'
-    labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
-    labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
-    labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
-
-    return labs
-
-
-def _pro_ur(labs):
-    """
-    urobilinogen correction
-    range 0-8 mg/dl (units given are different but range appears same)
-    correct clientresults
-    """
-    labs.ix[(labs.description == 'urobilinogen') & (labs.clientresult == '>=8.0'), 'clientresult'] = 8.0
-    return labs
-
-
-def _pro_anc(labs):
-    """
-    Corrected Absolute_neutrophill_count_automated
-    normal range : 1.5 to 8.00
-    """
-    labs.ix[((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))] = np.nan
     return labs
 
 
@@ -608,15 +488,6 @@ def _pro_cat(labs):
     return labs
 
 
-def _pro_creatine_kinase(labs):
-    """
-    Correct client result values
-    """
-    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
-    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
-    return labs
-
-
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -625,28 +496,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop clientresult canceled
     Remove descriptions
     Correct gfr columns
-    Correct albumin columns
     Correct pot columns
-    Correct anion_gap columns
-    Correct lymphocytes columns
-    Correct bun columns
-    Correct alt_(sgpt), ast_(sgot) columns
-    Correct chloride columns
-    Correct creatinine_(enz) columns
-    Correct calcium columns
-    Correct co2_content columns
-    Correct globulin columns
-    Correct protein_qualitative columns
-    Correct specific_gravity columns
     Correct categorical columns
-    Correct glucose columns
-    Correct urobilinogen columns
-    Correct creatine_kinase values
-    Correct total_bilirubin columns
-    Correct total_protein columns
-    Correct magnesium columns
-    Correct inoragnic_phosphorus
-    Corrected ANC
+    Correct clientresults
     """
     labs = pro_labs_basic(dire, None)
 
@@ -656,26 +508,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _remove_desc(labs)
 
     labs = _pro_gfr(labs)
-    labs = _pro_albumin(labs)
     labs = _pro_pot(labs)
-    labs = _pro_anion_gap(labs)
-    labs = _pro_lymph(labs)
-    labs = _pro_bun(labs)
-    labs = _pro_alt_ast(labs)
-    labs = _pro_chloride(labs)
-    labs = _pro_creatinine(labs)
-    labs = _pro_cal(labs)
-    labs = _pro_co2(labs)
-    labs = _pro_glo(labs)
-    labs = _pro_sg(labs)
     labs = _pro_cat(labs)
-    labs = _pro_ur(labs)
-    labs = _pro_creatine_kinase(labs)
-    labs = _pro_bilirubin(labs)
-    labs = _pro_protein(labs)
-    labs = _pro_magnesium(labs)
-    labs = _pro_phosph(labs)
-    labs = _pro_anc(labs)
+    labs = _pro_clean_clientresults(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
