@@ -21,6 +21,8 @@ Cleaned
 * sodium
 * protein_qualitative
 * specific_gravity
+* hemolysis_index, icteric_index, lipemia_index
+* glucose
 
 Already clean
 =============

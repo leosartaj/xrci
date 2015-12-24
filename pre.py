@@ -421,6 +421,23 @@ def _pro_co2(labs):
     return labs
 
 
+def _pro_glucose(labs):
+    """
+    Corrected glucose values
+    Range : 70 -100 mg/dL
+    """
+    glu = labs.description == 'glucose'
+    labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
+    labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
+    labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
+    labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
+    labs = labs[~((glu) & (labs.clientresult == 'slight_hemolysis'))]
+    labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -473,6 +490,33 @@ def _pro_sg(labs):
     labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
     labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
 
+
+def _pro_index(labs):
+    """
+    hemolysis_index, icteric_index, lipemia_index correction
+    correct clientresults
+    """
+    hemo = labs.description == 'hemolysis_index'
+    labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
+    labs.ix[(hemo) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(hemo) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(hemo) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(hemo) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    ice = labs.description == 'icteric_index'
+    labs.ix[(ice) & (labs.clientresult == 'not_icteric'), 'clientresult'] = 0
+    labs.ix[(ice) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(ice) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(ice) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(ice) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
+    lip = labs.description == 'lipemia_index'
+    labs.ix[(lip) & (labs.clientresult == 'no_lipemia'), 'clientresult'] = 0
+    labs.ix[(lip) & (labs.clientresult == 'slightly'), 'clientresult'] = 1
+    labs.ix[(lip) & (labs.clientresult == 'moderately'), 'clientresult'] = 2
+    labs.ix[(lip) & (labs.clientresult == 'grossly'), 'clientresult'] = 3
+    labs.ix[(lip) & (labs.clientresult == 'highly'), 'clientresult'] = 4
+
     return labs
 
 
@@ -500,6 +544,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct globulin columns
     Correct protein_qualitative columns
     Correct specific_gravity columns
+    Correct hemolysis_index, icteric_index, lipemia_index columns
+    Correct glucose columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -525,6 +571,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_glo(labs)
     labs = _pro_pq(labs)
     labs = _pro_sg(labs)
+    labs = _pro_index(labs)
+    labs = _pro_glucose(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
