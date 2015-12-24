@@ -352,6 +352,9 @@ def _pro_clean_clientresults(labs):
 
     Monocytes
     normal range : 0.0 - 13.0
+
+    mpv
+    normal range : 7.5 - 11.5
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -364,6 +367,7 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mpv_previously_reported_as:___10.4_fm'), 'clientresult'] = 10.4
 
     labs = bfill(labs, 'co2_content', 'see_below')
     labs = bfill(labs, 'alt_(sgpt)', 'see_below')
@@ -373,10 +377,12 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'mch', 'see_below')
     labs = bfill(labs, 'hct', 'see_below')
     labs = bfill(labs, 'hgb', 'see_below')
+    labs = bfill(labs, 'mpv', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
     labs.ix[(lym) & (labs.clientresult == "0")] = np.nan
+    labs.ix[labs.clientresult == 'specimen_drawn_from_arterial_line.'] = np.nan
 
     ch = ['<', '>', '_', '=']
     for c in ch:
