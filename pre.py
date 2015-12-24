@@ -370,6 +370,10 @@ def _pro_clean_clientresults(labs):
 
     inr
     normal range : 0.8 -2.0 (heart related ) those who have mechanical heart can have 2-3
+
+    prothrombin_time
+    normal range : 12-13 secs
+
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -398,6 +402,7 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'rbc', 'see_below')
     labs = bfill(labs, 'aptt', 'see_below')
     labs = bfill(labs, 'inr', 'see_below')
+    labs = bfill(labs, 'prothrombin_time', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -407,6 +412,10 @@ def _pro_clean_clientresults(labs):
     rbc = labs.description == 'rbc'
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+
+    pt = labs.description == 'prothrombin_time'
+    labs.ix[(pt) & (labs.clientresult == 'unpt') 'clientresult'] = np.nan
+
     ch = ['<', '>', '_', '=']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]

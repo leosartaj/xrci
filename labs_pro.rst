@@ -46,6 +46,8 @@ Cleaned
 * rdw
 * aptt
 * inr
+* prothrombin_time
+
 Already clean
 =============
 * c-peptide
