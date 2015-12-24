@@ -231,6 +231,11 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'notified')]
     labs = labs[(labs.description != 'slide_review')]
     labs = labs[(labs.description != 'urine_microscopic')]
+    labs = labs[(labs.description != 'date_of_collection')]
+    labs = labs[(labs.description != 'reason_for_cancellation')]
+    labs = labs[(labs.description != 'specimen_type')]
+    labs = labs[(labs.description != 'tests_cancelled')]
+    labs = labs[(labs.description != 'time_of_collection')]
     return labs
 
 

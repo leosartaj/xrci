@@ -63,3 +63,8 @@ Removed
 * notified
 * slide_review (all values see below)
 * urine_microscopic
+* date_of_collection
+* reason_for_cancellation
+* specimen_type
+* tests_cancelled
+* time_of_collection
