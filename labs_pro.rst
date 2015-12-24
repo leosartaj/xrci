@@ -50,6 +50,7 @@ Already clean
 * c-reactive protein
 * po2c
 * basophils
+* monocytes
 
 Removed
 =======

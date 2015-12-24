@@ -349,6 +349,9 @@ def _pro_clean_clientresults(labs):
 
     Corrected hgb
     normal range :  12.0 to 17.5
+
+    Monocytes
+    normal range : 0.0 - 13.0
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
