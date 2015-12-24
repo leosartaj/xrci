@@ -20,6 +20,7 @@ Cleaned
 * globulin
 * hemolysis_index, icteric_index, lipemia_index
 * po2c
+* samplesite
 
 Already clean
 =============
