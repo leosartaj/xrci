@@ -22,17 +22,28 @@ Cleaned
 * protein_qualitative
 * specific_gravity
 * hemolysis_index, icteric_index, lipemia_index
+* po2c
+* samplesite (possibly irrelavant, only need sampletype)
 * glucose
 * urobilinogen
 * amorphous_urates
 * bacteria
 * epithelial_cells
+* sampletype (related to samplesite)
+* creatine kinase (multiple normal values)
+* total_bilirubin
+* total_protein
+* magnesium
+* inorganic_phosphorus
+* absolute_neutrophil_count_automated
 
 Already clean
 =============
 * c-peptide
 * csf_protein
 * ph_urine
+* so2c
+* c-reactive protein
 
 Removed
 =======

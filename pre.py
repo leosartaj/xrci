@@ -336,6 +336,7 @@ def _pro_bun(labs):
 
     return labs
 
+
 def _pro_chloride(labs):
     """
     Chloride clientresult and unitofmeasure correction
@@ -346,6 +347,7 @@ def _pro_chloride(labs):
     labs.ix[((labs.description == 'chloride') & (labs.clientresult == '<15')), 'clientresult'] = 15
 
     return labs
+
 
 def _pro_creatinine(labs):
     """
@@ -439,6 +441,17 @@ def _pro_glucose(labs):
     return labs
 
 
+def _pro_bilirubin(labs):
+    """
+    Corrected clientresult in bilirubin
+    Normal range : 0.3 to 1.9 mg/dL
+    """
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -450,6 +463,26 @@ def _pro_glo(labs):
     glo = labs.description == 'globulin'
     labs.ix[glo, 'unitofmeasure'] = 'g/dl'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
+    return labs
+
+
+def _pro_protein(labs):
+    """
+    Correct protein clientresult
+    normal range : 6.0 to 8.3 mg/dL
+    """
+    labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
+
+    return labs
+
+
+def _pro_magnesium(labs):
+    """
+    Correct magnesium clientresult
+    Normal range : 1.5 - 2.5
+    """
+    labs.ix[((labs.description == 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
+
     return labs
 
 
@@ -475,6 +508,16 @@ def _pro_pq(labs):
     labs.ix[(pq) & (labs.clientresult == '1+'), 'clientresult'] = 1
     labs.ix[(pq) & (labs.clientresult == '2+'), 'clientresult'] = 2
     labs.ix[(pq) & (labs.clientresult == '3+'), 'clientresult'] = 3
+
+    return labs
+
+
+def _pro_phosph(labs):
+    """
+    Correct Phosphorus clientresult
+    normal range : 2.4 - 4.1 mg/dL
+    """
+    labs.ix[((labs.description == 'inorganic_phosphorus') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
 
     return labs
 
@@ -540,6 +583,16 @@ def _pro_au_bac(labs):
     return labs
 
 
+def _pro_anc(labs):
+    """
+    Corrected Absolute_neutrophill_count_automated
+    normal range : 1.5 to 8.00
+    """
+    labs = labs[~((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))]
+
+    return labs
+
+
 def _pro_index(labs):
     """
     hemolysis_index, icteric_index, lipemia_index correction
@@ -569,6 +622,70 @@ def _pro_index(labs):
     return labs
 
 
+def _pro_po2c(labs):
+    """
+    po2c correction
+    unitofmeasure mmhg
+    ranges > 80 mmhg
+    correct clientresults
+    """
+    labs.ix[labs.description == 'po2c' , 'unitofmeasure'] = 'mmhg'
+    return labs
+
+
+def _pro_samplesite(labs):
+    """
+    sample site labs
+    no unit of measure
+    replaced unknown and other clientresult values with NaN
+    mapped remaining values to integers
+    """
+    samp = labs.description == 'samplesite'
+    labs.ix[samp & (labs.clientresult == 'unknown'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'r_radial'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'a-line'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'l_radial'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'r_brachial'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'swan'), 'clientresult'] = 4
+    labs.ix[samp & (labs.clientresult == 'r_femoral'), 'clientresult'] = 5
+    labs.ix[samp & (labs.clientresult == 'ua-line'), 'clientresult'] = 6
+    labs.ix[samp & (labs.clientresult == 'cord'), 'clientresult'] = 7
+    labs.ix[samp & (labs.clientresult == 'l_brachial'), 'clientresult'] = 8
+    labs.ix[samp & (labs.clientresult == 'l_femoral'), 'clientresult'] = 9
+
+    return labs
+
+
+def _pro_sampletype(labs):
+    """
+    sample type labs
+    no unit of measure
+    replaced other clientresult values with NaN
+    mapped remaining values to integers
+    """
+    samp = labs.description == 'sampletype'
+    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
+
+    return labs
+
+
+def _pro_creatine_kinase(labs):
+    """
+    Correct client result values
+    Changed all units to u/l
+    """
+    labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
+    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
+    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -594,9 +711,18 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct protein_qualitative columns
     Correct specific_gravity columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
+    Correct po2c columns
+    Mapped SampleSite values
     Correct glucose columns
     Correct urobilinogen columns
     Correct amorphous_urates, bacteria, epithelial_cells columns
+    Mapped Sampletype values
+    Correct creatine_kinase values
+    Correct total_bilirubin columns
+    Correct total_protein columns
+    Correct magnesium columns
+    Correct inoragnic_phosphorus
+    Corrected ANC
     """
     labs = pro_labs_basic(dire, None)
 
@@ -623,9 +749,18 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_pq(labs)
     labs = _pro_sg(labs)
     labs = _pro_index(labs)
+    labs = _pro_po2c(labs)
+    labs = _pro_samplesite(labs)
     labs = _pro_glucose(labs)
     labs = _pro_ur(labs)
     labs = _pro_au_bac(labs)
+    labs = _pro_sampletype(labs)
+    labs = _pro_creatine_kinase(labs)
+    labs = _pro_bilirubin(labs)
+    labs = _pro_protein(labs)
+    labs = _pro_magnesium(labs)
+    labs = _pro_phosph(labs)
+    labs = _pro_anc(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
