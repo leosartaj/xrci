@@ -19,11 +19,13 @@ Cleaned
 * c02_content
 * globulin
 * sodium
+* protein_qualitative
 
 Already clean
 =============
 * c-peptide
 * csf_protein
+* ph_urine
 
 Removed
 =======

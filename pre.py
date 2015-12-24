@@ -444,6 +444,23 @@ def _pro_unit(labs):
     return labs
 
 
+def _pro_pq(labs):
+    """
+    protein_qualitative correction
+    lower value is normal, higher is troublesome for the patient
+    correct clientresults
+    """
+    pq = labs.description == 'protein_qualitative'
+    labs.ix[(pq) & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'trace'), 'clientresult'] = 0.5
+    labs.ix[(pq) & (labs.clientresult == '1+'), 'clientresult'] = 1
+    labs.ix[(pq) & (labs.clientresult == '2+'), 'clientresult'] = 2
+    labs.ix[(pq) & (labs.clientresult == '3+'), 'clientresult'] = 3
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -466,6 +483,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
+    Correct protein_qualitative columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -489,6 +507,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
+    labs = _pro_pq(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
