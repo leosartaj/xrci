@@ -230,6 +230,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'differential_information')]
     labs = labs[(labs.description != 'risk_of_prostate_cancer')]
     labs = labs[(labs.description != 'amikacin_______$')]
+    labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
 
     return labs
 
@@ -396,6 +397,7 @@ def _pro_cat(labs):
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
 
     hiv_ab/ag correction
+    hepatitis_b_sur_ab correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -493,6 +495,11 @@ def _pro_cat(labs):
     hiv = labs.description == 'hiv_ag/ab'
     labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
     labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    hbab = (labs.description == 'hepatitis_b_sur_ab')
+    labs.ix[((hbab) & (labs.clientresult == "see_below")), 'clientresult'] = np.nan
+    labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
+    labs.ix[((hbab) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
     return labs
 

@@ -36,6 +36,7 @@ Cleaned
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
 * hiv_ag/ab
+* hepatitis_b_sur_ab
 
 Already clean
 =============
@@ -56,3 +57,4 @@ Removed
 * differential_information
 * risk_of_prostate_cancer
 * amikacin_______$
+* hepatitis_b_sur_ag
