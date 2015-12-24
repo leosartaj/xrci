@@ -44,6 +44,7 @@ Cleaned
 * platelet_count
 * rbc
 * rdw
+* aptt
 
 Already clean
 =============

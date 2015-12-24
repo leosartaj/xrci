@@ -364,6 +364,11 @@ def _pro_clean_clientresults(labs):
     
     rdw
     normal range : 11.5 - 14.5 %
+
+    aptt
+    normal range : 70 - 120 secs (liver diseases)
+
+
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -390,7 +395,8 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'mpv', 'see_below')
     labs = bfill(labs, 'platelet_count', 'see_below')
     labs = bfill(labs, 'rbc', 'see_below')
-
+    labs = bfill(labs, 'aptt', 'see_below')
+    
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
     labs.ix[(lym) & (labs.clientresult == "0"), 'clientresult'] = np.nan

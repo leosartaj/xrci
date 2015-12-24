@@ -8,3 +8,4 @@ Not processed Labs
 * mchc
 * ig_%(immunoglobulin)
 * rbc
+* wbc
