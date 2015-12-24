@@ -26,12 +26,14 @@ Cleaned
 * samplesite (possibly irrelavant, only need sampletype)
 * glucose
 * sampletype (related to samplesite)
+* creatine kinase (multiple normal values)
 
 Already clean
 =============
 * c-peptide
 * csf_protein
 * ph_urine
+* so2c
 
 Removed
 =======

@@ -575,6 +575,17 @@ def _pro_sampletype(labs):
 	return labs
 
 
+def _pro_creatine_kinase(labs):
+	"""
+	Correct client result values
+	Changed all units to u/l
+	"""
+	labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
+	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
+	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
+	return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -604,6 +615,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Mapped SampleSite values
     Correct glucose columns
     Mapped Sampletype values
+    Correct creatine_kinase values
     """
     labs = pro_labs_basic(dire, None)
 
@@ -634,6 +646,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_samplesite(labs)
     labs = _pro_glucose(labs)
     labs = _pro_sampletype(labs)
+    labs = _pro_creatine_kinase(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
