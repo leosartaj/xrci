@@ -1,2 +1,5 @@
 datasets/
 *.pyc
+*.rst~
+*.py~
+.fuse_hidden*

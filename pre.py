@@ -570,6 +570,70 @@ def _pro_index(labs):
     return labs
 
 
+def _pro_po2c(labs):
+    """
+    po2c correction
+    unitofmeasure mmhg
+    ranges > 80 mmhg
+    correct clientresults
+    """
+    labs.ix[labs.description == 'po2c' , 'unitofmeasure'] = 'mmhg'
+    return labs
+
+
+def _pro_samplesite(labs):
+	"""
+	sample site labs
+	no unit of measure
+	replaced unknown and other clientresult values with NaN
+	mapped remaining values to integers
+	"""
+	samp = labs.description == 'samplesite'
+	labs.ix[samp & (labs.clientresult == 'unknown'), 'clientresult'] = np.nan
+	labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+	labs.ix[samp & (labs.clientresult == 'r_radial'), 'clientresult'] = 0 
+	labs.ix[samp & (labs.clientresult == 'a-line'), 'clientresult'] = 1
+	labs.ix[samp & (labs.clientresult == 'l_radial'), 'clientresult'] = 2
+	labs.ix[samp & (labs.clientresult == 'r_brachial'), 'clientresult'] = 3
+	labs.ix[samp & (labs.clientresult == 'swan'), 'clientresult'] = 4
+	labs.ix[samp & (labs.clientresult == 'r_femoral'), 'clientresult'] = 5
+	labs.ix[samp & (labs.clientresult == 'ua-line'), 'clientresult'] = 6
+	labs.ix[samp & (labs.clientresult == 'cord'), 'clientresult'] = 7
+	labs.ix[samp & (labs.clientresult == 'l_brachial'), 'clientresult'] = 8
+	labs.ix[samp & (labs.clientresult == 'l_femoral'), 'clientresult'] = 9
+
+	return labs
+
+
+def _pro_sampletype(labs):
+	"""
+	sample type labs
+	no unit of measure
+	replaced other clientresult values with NaN
+	mapped remaining values to integers
+	"""
+	samp = labs.description == 'sampletype'
+	labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+	labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0 
+	labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
+	labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
+	labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
+	labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
+
+	return labs
+
+
+def _pro_creatine_kinase(labs):
+	"""
+	Correct client result values
+	Changed all units to u/l
+	"""
+	labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
+	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
+	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
+	return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -595,7 +659,11 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct protein_qualitative columns
     Correct specific_gravity columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
+    Correct po2c columns
+    Mapped SampleSite values
     Correct glucose columns
+    Mapped Sampletype values
+    Correct creatine_kinase values
     Correct total_bilirubin columns
     Correct total_protein columns
     Correct magnesium columns
@@ -627,7 +695,11 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_pq(labs)
     labs = _pro_sg(labs)
     labs = _pro_index(labs)
+    labs = _pro_po2c(labs)
+    labs = _pro_samplesite(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_sampletype(labs)
+    labs = _pro_creatine_kinase(labs)
     labs = _pro_bilirubin(labs)
     labs = _pro_protein(labs)
     labs = _pro_magnesium(labs)
