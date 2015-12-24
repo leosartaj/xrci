@@ -18,6 +18,9 @@ Cleaned
 * calcium
 * c02_content
 * globulin
+* sodium
+* protein_qualitative
+* specific_gravity
 * hemolysis_index, icteric_index, lipemia_index
 * glucose
 
@@ -25,6 +28,7 @@ Already clean
 =============
 * c-peptide
 * csf_protein
+* ph_urine
 
 Removed
 =======
