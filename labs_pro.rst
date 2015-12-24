@@ -38,6 +38,7 @@ Cleaned
 * hiv_ag/ab
 * hepatitis_b_sur_ab
 * hepatitis_b_core_antibody
+* abo_intep
 
 Already clean
 =============
@@ -60,3 +61,4 @@ Removed
 * amikacin_______$
 * hepatitis_b_sur_ag
 * hcv_antibody
+* abo

@@ -232,6 +232,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'amikacin_______$')]
     labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
     labs = labs[(labs.description != 'hcv_antibody')]
+    labs = labs[(labs.description != 'abo')] # similar to abo_intep
 
     return labs
 
@@ -400,6 +401,8 @@ def _pro_cat(labs):
     hiv_ab/ag correction
     hepatitis_b_sur_ab correction
     hepatitis_b_core_antibody correction
+
+    abo_intep correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -507,6 +510,12 @@ def _pro_cat(labs):
     labs.ix[((ha) & (labs.clientresult == "grayzone")), 'clientresult'] = np.nan
     labs.ix[((ha) & ((labs.clientresult == "non_reactive") | (labs.clientresult == "nonreactive"))), 'clientresult'] = 0
     labs.ix[((ha) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    abo = labs.description == 'abo_intep'
+    labs.ix[((abo) & (labs.clientresult == "o")), 'clientresult'] = 0
+    labs.ix[((abo) & (labs.clientresult == "a")), 'clientresult'] = 1
+    labs.ix[((abo) & (labs.clientresult == "b")), 'clientresult'] = 2
+    labs.ix[((abo) & (labs.clientresult == "ab")), 'clientresult'] = 3
 
     return labs
 
