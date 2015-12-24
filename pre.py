@@ -359,6 +359,8 @@ def _pro_clean_clientresults(labs):
     platelet_count
     normal range : 150 - 450
 
+    rbc
+    normal range : 4.2 - 5.4 million/ul 
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -383,12 +385,16 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'hgb', 'see_below')
     labs = bfill(labs, 'mpv', 'see_below')
     labs = bfill(labs, 'platelet_count', 'see_below')
+    labs = bfill(labs, 'rbc', 'see_below')
 
     lym = labs.description == 'lymphocytes'
-    labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
-    labs.ix[(lym) & (labs.clientresult == "0")] = np.nan
-    labs.ix[labs.clientresult == 'specimen_drawn_from_arterial_line.'] = np.nan
+    labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
+    labs.ix[(lym) & (labs.clientresult == "0"), 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'specimen_drawn_from_arterial_line.', 'clientresult'] = np.nan
 
+    rbc = labs.description == 'rbc'
+    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     ch = ['<', '>', '_', '=']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]

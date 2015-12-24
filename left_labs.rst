@@ -7,3 +7,4 @@ Not processed Labs
 * po2m (related to po2c)
 * mchc
 * ig_%(immunoglobulin)
+* rbc
