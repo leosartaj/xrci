@@ -25,6 +25,10 @@ Cleaned
 * po2c
 * samplesite (possibly irrelavant, only need sampletype)
 * glucose
+* urobilinogen
+* amorphous_urates
+* bacteria
+* epithelial_cells
 * sampletype (related to samplesite)
 * creatine kinase (multiple normal values)
 * total_bilirubin
@@ -44,3 +48,4 @@ Already clean
 Removed
 =======
 * influenza_type_b
+* differential_information

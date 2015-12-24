@@ -227,6 +227,7 @@ def _remove_desc(labs):
     """
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
+    labs = labs[(labs.description != 'differential_information')]
 
     return labs
 
@@ -335,6 +336,7 @@ def _pro_bun(labs):
 
     return labs
 
+
 def _pro_chloride(labs):
     """
     Chloride clientresult and unitofmeasure correction
@@ -345,6 +347,7 @@ def _pro_chloride(labs):
     labs.ix[((labs.description == 'chloride') & (labs.clientresult == '<15')), 'clientresult'] = 15
 
     return labs
+
 
 def _pro_creatinine(labs):
     """
@@ -462,6 +465,7 @@ def _pro_glo(labs):
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
     return labs
 
+
 def _pro_protein(labs):
     """
     Correct protein clientresult
@@ -470,6 +474,7 @@ def _pro_protein(labs):
     labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
 
     return labs
+
 
 def _pro_magnesium(labs):
     """
@@ -506,6 +511,7 @@ def _pro_pq(labs):
 
     return labs
 
+
 def _pro_phosph(labs):
     """
     Correct Phosphorus clientresult
@@ -527,6 +533,52 @@ def _pro_sg(labs):
     labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
     labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
     labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
+
+    return labs
+
+
+def _pro_ur(labs):
+    """
+    urobilinogen correction
+    range 0-8 mg/dl (units given are different but range appears same)
+    correct clientresults
+    """
+    labs.ix[(labs.description == 'urobilinogen') & (labs.clientresult == '>=8.0'), 'clientresult'] = 8.0
+    return labs
+
+
+def _pro_au_bac(labs):
+    """
+    amorphous_urates correction
+    crystals in urine, higher is not good
+
+    bacteria correction
+    epithelial_cells correction
+    """
+    au = labs.description == 'amorphous_urates'
+    labs.ix[(au) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(au) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(au) & (labs.clientresult == 'few'), 'clientresult'] = 2
+    labs.ix[(au) & (labs.clientresult == 'moderate'), 'clientresult'] = 3
+    labs.ix[(au) & (labs.clientresult == 'many'), 'clientresult'] = 4
+    labs.ix[(au) & (labs.clientresult == 'massive'), 'clientresult'] = 5
+
+    bac = labs.description == 'bacteria'
+    labs.ix[(bac) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(bac) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(bac) & (labs.clientresult == 'few'), 'clientresult'] = 2
+    labs.ix[(bac) & (labs.clientresult == 'moderate'), 'clientresult'] = 3
+    labs.ix[(bac) & (labs.clientresult == 'many'), 'clientresult'] = 4
+    labs.ix[(bac) & (labs.clientresult == 'massive'), 'clientresult'] = 5
+
+    ec = labs.description == 'epithelial_cells'
+    labs.ix[(ec) & (labs.clientresult == 'none_seen'), 'clientresult'] = 0
+    labs.ix[(ec) & (labs.clientresult == 'rare'), 'clientresult'] = 1
+    labs.ix[(ec) & (labs.clientresult == 'occasional'), 'clientresult'] = 2
+    labs.ix[(ec) & (labs.clientresult == 'few'), 'clientresult'] = 3
+    labs.ix[(ec) & (labs.clientresult == 'moderate'), 'clientresult'] = 4
+    labs.ix[(ec) & (labs.clientresult == 'many'), 'clientresult'] = 5
+    labs.ix[(ec) & (labs.clientresult == 'massive'), 'clientresult'] = 6
 
     return labs
 
@@ -582,56 +634,56 @@ def _pro_po2c(labs):
 
 
 def _pro_samplesite(labs):
-	"""
-	sample site labs
-	no unit of measure
-	replaced unknown and other clientresult values with NaN
-	mapped remaining values to integers
-	"""
-	samp = labs.description == 'samplesite'
-	labs.ix[samp & (labs.clientresult == 'unknown'), 'clientresult'] = np.nan
-	labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
-	labs.ix[samp & (labs.clientresult == 'r_radial'), 'clientresult'] = 0 
-	labs.ix[samp & (labs.clientresult == 'a-line'), 'clientresult'] = 1
-	labs.ix[samp & (labs.clientresult == 'l_radial'), 'clientresult'] = 2
-	labs.ix[samp & (labs.clientresult == 'r_brachial'), 'clientresult'] = 3
-	labs.ix[samp & (labs.clientresult == 'swan'), 'clientresult'] = 4
-	labs.ix[samp & (labs.clientresult == 'r_femoral'), 'clientresult'] = 5
-	labs.ix[samp & (labs.clientresult == 'ua-line'), 'clientresult'] = 6
-	labs.ix[samp & (labs.clientresult == 'cord'), 'clientresult'] = 7
-	labs.ix[samp & (labs.clientresult == 'l_brachial'), 'clientresult'] = 8
-	labs.ix[samp & (labs.clientresult == 'l_femoral'), 'clientresult'] = 9
+    """
+    sample site labs
+    no unit of measure
+    replaced unknown and other clientresult values with NaN
+    mapped remaining values to integers
+    """
+    samp = labs.description == 'samplesite'
+    labs.ix[samp & (labs.clientresult == 'unknown'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'r_radial'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'a-line'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'l_radial'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'r_brachial'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'swan'), 'clientresult'] = 4
+    labs.ix[samp & (labs.clientresult == 'r_femoral'), 'clientresult'] = 5
+    labs.ix[samp & (labs.clientresult == 'ua-line'), 'clientresult'] = 6
+    labs.ix[samp & (labs.clientresult == 'cord'), 'clientresult'] = 7
+    labs.ix[samp & (labs.clientresult == 'l_brachial'), 'clientresult'] = 8
+    labs.ix[samp & (labs.clientresult == 'l_femoral'), 'clientresult'] = 9
 
-	return labs
+    return labs
 
 
 def _pro_sampletype(labs):
-	"""
-	sample type labs
-	no unit of measure
-	replaced other clientresult values with NaN
-	mapped remaining values to integers
-	"""
-	samp = labs.description == 'sampletype'
-	labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
-	labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0 
-	labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
-	labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
-	labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
-	labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
+    """
+    sample type labs
+    no unit of measure
+    replaced other clientresult values with NaN
+    mapped remaining values to integers
+    """
+    samp = labs.description == 'sampletype'
+    labs.ix[samp & (labs.clientresult == 'other'), 'clientresult'] = np.nan
+    labs.ix[samp & (labs.clientresult == 'arterial'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'venous'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'mixed_venous'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'cord_ven'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'cord_art'), 'clientresult'] = 4
 
-	return labs
+    return labs
 
 
 def _pro_creatine_kinase(labs):
-	"""
-	Correct client result values
-	Changed all units to u/l
-	"""
-	labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
-	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
-	labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
-	return labs
+    """
+    Correct client result values
+    Changed all units to u/l
+    """
+    labs.ix[labs.description == 'creatine_kinase' , 'unitofmeasure'] = 'u/l'
+    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<10'), 'clientresult'] = 10
+    labs.ix[(labs.description == 'creatine_kinase') & (labs.clientresult == '<_7'), 'clientresult'] = 7
+    return labs
 
 
 def pro_labs(dire=PROPATH, save=PROPATH):
@@ -662,6 +714,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct po2c columns
     Mapped SampleSite values
     Correct glucose columns
+    Correct urobilinogen columns
+    Correct amorphous_urates, bacteria, epithelial_cells columns
     Mapped Sampletype values
     Correct creatine_kinase values
     Correct total_bilirubin columns
@@ -698,6 +752,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_po2c(labs)
     labs = _pro_samplesite(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_ur(labs)
+    labs = _pro_au_bac(labs)
     labs = _pro_sampletype(labs)
     labs = _pro_creatine_kinase(labs)
     labs = _pro_bilirubin(labs)
