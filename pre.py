@@ -506,6 +506,15 @@ def _pro_pq(labs):
 
     return labs
 
+def _pro_phosph(labs):
+    """
+    Correct Phosphorus clientresult
+    normal range : 2.4 - 4.1 mg/dL
+    """
+    labs.ix[((labs.description == 'inorganic_phosphorus') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
+
+    return labs
+
 
 def _pro_sg(labs):
     """
@@ -518,6 +527,16 @@ def _pro_sg(labs):
     labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
     labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
     labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
+
+    return labs
+
+
+def _pro_anc(labs):
+    """
+    Corrected Absolute_neutrophill_count_automated
+    normal range : 1.5 to 8.00
+    """
+    labs = labs[~((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))]
 
     return labs
 
@@ -580,6 +599,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct total_bilirubin columns
     Correct total_protein columns
     Correct magnesium columns
+    Correct inoragnic_phosphorus
+    Corrected ANC
     """
     labs = pro_labs_basic(dire, None)
 
@@ -610,6 +631,8 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_bilirubin(labs)
     labs = _pro_protein(labs)
     labs = _pro_magnesium(labs)
+    labs = _pro_phosph(labs)
+    labs = _pro_anc(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

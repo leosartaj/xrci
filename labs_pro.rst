@@ -26,12 +26,15 @@ Cleaned
 * total_bilirubin
 * total_protein
 * magnesium
+* inorganic_phosphorus
+* absolute_neutrophil_count_automated
 
 Already clean
 =============
 * c-peptide
 * csf_protein
 * ph_urine
+* c-reactive protein
 
 Removed
 =======
