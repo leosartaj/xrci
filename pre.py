@@ -393,6 +393,10 @@ def _pro_cat(labs):
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
 
     Removed see_below in troponin_i
+
+    Indexed anisocytosis values
+
+    Indexed microcytic values
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -489,6 +493,22 @@ def _pro_cat(labs):
 
     tri = labs.description == 'troponin_i'
     labs.ix[((tri) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
+
+    ani = labs.description == 'anisocytosis'
+    labs.ix[((ani) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
+    labs.ix[((ani) & (labs.clientresult == 'few')), 'clientresult'] = 1
+    labs.ix[((ani) & (labs.clientresult == 'slight')), 'clientresult'] = 1
+    labs.ix[((ani) & (labs.clientresult == 'slight-mod')), 'clientresult'] = 2
+    labs.ix[((ani) & (labs.clientresult == 'moderate')), 'clientresult'] = 2
+    labs.ix[((ani) & (labs.clientresult == 'marked')), 'clientresult'] = 3
+
+    mic = labs.description == 'microcytic'
+    labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
+    labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
+    labs.ix[((mic) & (labs.clientresult == 'slight')), 'clientresult'] = 1    
+    labs.ix[((mic) & (labs.clientresult == 'moderate')), 'clientresult'] = 2
+    labs.ix[((mic) & (labs.clientresult == 'marked')), 'clientresult'] = 3
+
 
     return labs
 

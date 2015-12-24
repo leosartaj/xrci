@@ -36,6 +36,8 @@ Cleaned
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
 * cleaned troponin_i
+* indexed anisocytosis
+* indexed microcytic
 
 Already clean
 =============
