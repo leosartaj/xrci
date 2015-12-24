@@ -37,6 +37,7 @@ Cleaned
 * absolute_neutrophil_count_automated
 * hiv_ag/ab
 * hepatitis_b_sur_ab
+* hepatitis_b_core_antibody
 
 Already clean
 =============
@@ -58,3 +59,4 @@ Removed
 * risk_of_prostate_cancer
 * amikacin_______$
 * hepatitis_b_sur_ag
+* hcv_antibody

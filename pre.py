@@ -231,6 +231,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'risk_of_prostate_cancer')]
     labs = labs[(labs.description != 'amikacin_______$')]
     labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
+    labs = labs[(labs.description != 'hcv_antibody')]
 
     return labs
 
@@ -398,6 +399,7 @@ def _pro_cat(labs):
 
     hiv_ab/ag correction
     hepatitis_b_sur_ab correction
+    hepatitis_b_core_antibody correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -500,6 +502,11 @@ def _pro_cat(labs):
     labs.ix[((hbab) & (labs.clientresult == "see_below")), 'clientresult'] = np.nan
     labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
     labs.ix[((hbab) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    ha = labs.description == 'hepatitis_b_core_antibody'
+    labs.ix[((ha) & (labs.clientresult == "grayzone")), 'clientresult'] = np.nan
+    labs.ix[((ha) & ((labs.clientresult == "non_reactive") | (labs.clientresult == "nonreactive"))), 'clientresult'] = 0
+    labs.ix[((ha) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
     return labs
 
