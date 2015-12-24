@@ -35,6 +35,11 @@ Cleaned
 * magnesium
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
+* eosinophils
+* hct
+* hgb
+* mch
+* mcv
 
 Already clean
 =============
@@ -44,6 +49,7 @@ Already clean
 * so2c
 * c-reactive protein
 * po2c
+* basophils
 
 Removed
 =======
