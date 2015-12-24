@@ -438,6 +438,17 @@ def _pro_glucose(labs):
     return labs
 
 
+def _pro_bilirubin(labs):
+    """
+    Corrected clientresult in bilirubin
+    Normal range : 0.3 to 1.9 mg/dL
+    """
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+    labs.ix[((labs.description == "total_bilirubin") & (labs.clientresult == "<_0.1")), 'clientresult'] = 0.10
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -449,6 +460,24 @@ def _pro_glo(labs):
     glo = labs.description == 'globulin'
     labs.ix[glo, 'unitofmeasure'] = 'g/dl'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
+    return labs
+
+def _pro_protein(labs):
+    """
+    Correct protein clientresult
+    normal range : 6.0 to 8.3 mg/dL
+    """
+    labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
+
+    return labs
+
+def _pro_magnesium(labs):
+    """
+    Correct magnesium clientresult
+    Normal range : 1.5 - 2.5
+    """
+    labs.ix[((labs.description == 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
+
     return labs
 
 
@@ -548,6 +577,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct specific_gravity columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
+    Correct total_bilirubin columns
+    Correct total_protein columns
+    Correct magnesium columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -575,6 +607,9 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_sg(labs)
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_bilirubin(labs)
+    labs = _pro_protein(labs)
+    labs = _pro_magnesium(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
