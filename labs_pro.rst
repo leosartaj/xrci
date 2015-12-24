@@ -47,6 +47,7 @@ Cleaned
 * aptt
 * inr
 * prothrombin_time
+* sedimentation_rate
 
 Already clean
 =============

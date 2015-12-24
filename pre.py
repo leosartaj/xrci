@@ -373,7 +373,9 @@ def _pro_clean_clientresults(labs):
 
     prothrombin_time
     normal range : 12-13 secs
-
+    
+    sedimentation_rate
+    normal range : 0 - 29 mm/hr
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -403,6 +405,7 @@ def _pro_clean_clientresults(labs):
     labs = bfill(labs, 'aptt', 'see_below')
     labs = bfill(labs, 'inr', 'see_below')
     labs = bfill(labs, 'prothrombin_time', 'see_below')
+    labs = bfill(labs, 'sedimentation_rate', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
