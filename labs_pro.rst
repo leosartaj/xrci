@@ -35,6 +35,7 @@ Cleaned
 * magnesium
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
+* cleaned troponin_i
 
 Already clean
 =============
@@ -44,8 +45,10 @@ Already clean
 * so2c
 * c-reactive protein
 * po2c
+* ck_mb (for myocardial infarction) (normal values , 7.7, 4.3)
 
 Removed
 =======
 * influenza_type_b
 * differential_information
+* notified

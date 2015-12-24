@@ -228,7 +228,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
-
+    labs = labs[(labs.description != 'notified')]
     return labs
 
 
@@ -391,6 +391,8 @@ def _pro_cat(labs):
 
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
+
+    Removed see_below in troponin_i
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -484,6 +486,9 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
+    tri = labs.description == 'troponin_i'
+    labs.ix[((tri) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
 
     return labs
 
