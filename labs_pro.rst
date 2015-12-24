@@ -35,6 +35,7 @@ Cleaned
 * magnesium
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
+* hiv_ag/ab
 
 Already clean
 =============
@@ -46,6 +47,8 @@ Already clean
 * po2c
 * psa,_free
 * psa,_total
+* glucose_poc_result
+* vancomycin_random
 
 Removed
 =======

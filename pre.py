@@ -392,6 +392,8 @@ def _pro_cat(labs):
 
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
+
+    hiv_ab/ag correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -485,6 +487,10 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
+    hiv = labs.description == 'hiv_ag/ab'
+    labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
+    labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
     return labs
 
