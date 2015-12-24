@@ -44,8 +44,11 @@ Already clean
 * so2c
 * c-reactive protein
 * po2c
+* psa,_free
+* psa,_total
 
 Removed
 =======
 * influenza_type_b
 * differential_information
+* risk_of_prostate_cancer

@@ -228,6 +228,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
+    labs = labs[(labs.description != 'risk_of_prostate_cancer')]
 
     return labs
 
