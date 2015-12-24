@@ -45,7 +45,7 @@ Cleaned
 * rbc
 * rdw
 * aptt
-
+* inr
 Already clean
 =============
 * c-peptide
