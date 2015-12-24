@@ -421,6 +421,23 @@ def _pro_co2(labs):
     return labs
 
 
+def _pro_glucose(labs):
+    """
+    Corrected glucose values
+    Range : 70 -100 mg/dL
+    """
+    glu = labs.description == 'glucose'
+    labs.ix[((glu) & (labs.clientresult == 'slight_hemolysis')), 'clientresult'] = np.nan
+    labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
+    labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
+    labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
+    labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
+    labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
+
+    return labs
+
+
 def _pro_glo(labs):
     """
     Globulin ratio -> globulin to albumin ratio (range 1:2, 1.7-2.2 also ok)
@@ -432,6 +449,47 @@ def _pro_glo(labs):
     glo = labs.description == 'globulin'
     labs.ix[glo, 'unitofmeasure'] = 'g/dl'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
+    return labs
+
+
+def _pro_unit(labs):
+    """
+    Make units same
+    Sodium meq/l
+    """
+    labs.ix[labs.description == 'sodium', 'unitofmeasure'] = 'meq/l'
+    return labs
+
+
+def _pro_pq(labs):
+    """
+    protein_qualitative correction
+    lower value is normal, higher is troublesome for the patient
+    correct clientresults
+    """
+    pq = labs.description == 'protein_qualitative'
+    labs.ix[(pq) & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[(pq) & (labs.clientresult == 'trace'), 'clientresult'] = 0.5
+    labs.ix[(pq) & (labs.clientresult == '1+'), 'clientresult'] = 1
+    labs.ix[(pq) & (labs.clientresult == '2+'), 'clientresult'] = 2
+    labs.ix[(pq) & (labs.clientresult == '3+'), 'clientresult'] = 3
+
+    return labs
+
+
+def _pro_sg(labs):
+    """
+    specific_gravity correction
+    density of urine to water
+    range 1.002-1.030 if kidneys normal
+    correct clientresults
+    """
+    sg = labs.description == 'specific_gravity'
+    labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
+    labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
+    labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
+
     return labs
 
 
@@ -506,6 +564,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Drop chstandard (62% null values)
     Drop clientresult canceled
     Remove descriptions
+    Correct units
     Correct gfr columns
     Correct albumin columns
     Correct Allen columns
@@ -520,9 +579,12 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct calcium columns
     Correct co2_content columns
     Correct globulin columns
+    Correct protein_qualitative columns
+    Correct specific_gravity columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct po2c columns
     Mapped SampleSite values
+    Correct glucose columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -531,6 +593,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
 
     labs = _remove_desc(labs)
 
+    labs = _pro_unit(labs)
     labs = _pro_gfr(labs)
     labs = _pro_albumin(labs)
     labs = _pro_allen(labs)
@@ -545,9 +608,12 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cal(labs)
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
+    labs = _pro_pq(labs)
+    labs = _pro_sg(labs)
     labs = _pro_index(labs)
     labs = _pro_po2c(labs)
     labs = _pro_samplesite(labs)
+    labs = _pro_glucose(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
