@@ -461,6 +461,21 @@ def _pro_pq(labs):
     return labs
 
 
+def _pro_sg(labs):
+    """
+    specific_gravity correction
+    density of urine to water
+    range 1.002-1.030 if kidneys normal
+    correct clientresults
+    """
+    sg = labs.description == 'specific_gravity'
+    labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
+    labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
+    labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
+
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -484,6 +499,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct co2_content columns
     Correct globulin columns
     Correct protein_qualitative columns
+    Correct specific_gravity columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -508,6 +524,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
     labs = _pro_pq(labs)
+    labs = _pro_sg(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

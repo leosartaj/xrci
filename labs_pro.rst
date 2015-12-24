@@ -20,6 +20,7 @@ Cleaned
 * globulin
 * sodium
 * protein_qualitative
+* specific_gravity
 
 Already clean
 =============
