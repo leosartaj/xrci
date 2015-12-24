@@ -9,3 +9,7 @@ Not processed Labs
 * ig_%(immunoglobulin)
 * rbc
 * wbc
+* appearance
+* blood
+* color
+

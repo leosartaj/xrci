@@ -455,6 +455,9 @@ def _pro_cat(labs):
 
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
+
+    Ketones urine
+    Results are negative(0), trace(1), 1+(2), 2+(3), 3+(4)
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -548,6 +551,14 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+    
+    ket = labs.description == 'ketones,_urine'
+    labs.ix[ket & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[ket & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[ket & (labs.clientresult == 'trace'), 'clientresult'] = 1
+    labs.ix[ket & (labs.clientresult == '1+'), 'clientresult'] = 2
+    labs.ix[ket & (labs.clientresult == '2+'), 'clientresult'] = 3
+    labs.ix[ket & (labs.clientresult == '3+'), 'clientresult'] = 4
 
     return labs
 

@@ -48,6 +48,7 @@ Cleaned
 * inr
 * prothrombin_time
 * sedimentation_rate
+* ketones,_urine
 
 Already clean
 =============
