@@ -235,6 +235,15 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'abo')] # similar to abo_intep
     labs = labs[(labs.description != 'rh_intep')]
     labs = labs[(labs.description != 'absc_intep')]
+    labs = labs[(labs.description != 'nil')]
+    labs = labs[(labs.description != 'culture_wound')]
+    labs = labs[(labs.description != 'gram_stain')]
+    labs = labs[(labs.description != 'adatetime')]
+    labs = labs[(labs.description != 'drawdate')]
+    labs = labs[(labs.description != 'drawopid')]
+    labs = labs[(labs.description != 'drawtime')]
+    labs = labs[(labs.description != 'opid')]
+    labs = labs[(labs.description != 'pattemp')]
 
     return labs
 
@@ -405,6 +414,7 @@ def _pro_cat(labs):
     hepatitis_b_core_antibody correction
 
     abo_intep correction
+    quantiferon_tb_gold correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -518,6 +528,11 @@ def _pro_cat(labs):
     labs.ix[((abo) & (labs.clientresult == "a")), 'clientresult'] = 1
     labs.ix[((abo) & (labs.clientresult == "b")), 'clientresult'] = 2
     labs.ix[((abo) & (labs.clientresult == "ab")), 'clientresult'] = 3
+
+    qtg = labs.description == 'quantiferon_tb_gold'
+    labs.ix[((qtg) & (labs.clientresult == "indeterminate")), 'clientresult'] = np.nan
+    labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
 
     return labs
 

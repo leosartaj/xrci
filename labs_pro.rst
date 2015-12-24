@@ -53,6 +53,20 @@ Already clean
 * glucose_poc_result
 * vancomycin_random
 * mitogen_nil
+* tb_ag_nil
+* bevt
+* cabg
+* hco3a
+* hctbg
+* kbg
+* lact
+* machrate
+* nabg
+* pco2c
+* pco2m
+* phc
+* phm
+* pip
 
 Removed
 =======
@@ -65,3 +79,12 @@ Removed
 * abo
 * rh_intep
 * absc_intep
+* nil
+* culture_wound
+* gram_stain
+* adatetime
+* drawdate
+* drawopid
+* drawtime
+* opid
+* pattemp
