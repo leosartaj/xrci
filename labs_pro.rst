@@ -35,6 +35,10 @@ Cleaned
 * magnesium
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
+* hiv_ag/ab
+* hepatitis_b_sur_ab
+* hepatitis_b_core_antibody
+* abo_intep
 * eosinophils
 * hct
 * hgb
@@ -49,9 +53,44 @@ Already clean
 * so2c
 * c-reactive protein
 * po2c
+* psa,_free
+* psa,_total
+* glucose_poc_result
+* vancomycin_random
+* mitogen_nil
+* tb_ag_nil
+* bevt
+* cabg
+* hco3a
+* hctbg
+* kbg
+* lact
+* machrate
+* nabg
+* pco2c
+* pco2m
+* phc
+* phm
+* pip
 * basophils
 
 Removed
 =======
 * influenza_type_b
 * differential_information
+* risk_of_prostate_cancer
+* amikacin_______$
+* hepatitis_b_sur_ag
+* hcv_antibody
+* abo
+* rh_intep
+* absc_intep
+* nil
+* culture_wound
+* gram_stain
+* adatetime
+* drawdate
+* drawopid
+* drawtime
+* opid
+* pattemp

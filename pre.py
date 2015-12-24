@@ -228,6 +228,22 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
+    labs = labs[(labs.description != 'risk_of_prostate_cancer')]
+    labs = labs[(labs.description != 'amikacin_______$')]
+    labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
+    labs = labs[(labs.description != 'hcv_antibody')]
+    labs = labs[(labs.description != 'abo')] # similar to abo_intep
+    labs = labs[(labs.description != 'rh_intep')]
+    labs = labs[(labs.description != 'absc_intep')]
+    labs = labs[(labs.description != 'nil')]
+    labs = labs[(labs.description != 'culture_wound')]
+    labs = labs[(labs.description != 'gram_stain')]
+    labs = labs[(labs.description != 'adatetime')]
+    labs = labs[(labs.description != 'drawdate')]
+    labs = labs[(labs.description != 'drawopid')]
+    labs = labs[(labs.description != 'drawtime')]
+    labs = labs[(labs.description != 'opid')]
+    labs = labs[(labs.description != 'pattemp')]
 
     return labs
 
@@ -352,6 +368,7 @@ def _pro_clean_clientresults(labs):
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == '&#x20;'), 'clientresult'] = np.nan
 
     glo = labs.description == 'globulin'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
@@ -411,6 +428,13 @@ def _pro_cat(labs):
 
     Allen's Test Correction
     Results are Pass(1), Fail(0) or Half Passed 0.5 (fail = 0,else =1)
+
+    hiv_ab/ag correction
+    hepatitis_b_sur_ab correction
+    hepatitis_b_core_antibody correction
+
+    abo_intep correction
+    quantiferon_tb_gold correction
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -504,6 +528,31 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+
+    hiv = labs.description == 'hiv_ag/ab'
+    labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
+    labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    hbab = (labs.description == 'hepatitis_b_sur_ab')
+    labs.ix[((hbab) & (labs.clientresult == "see_below")), 'clientresult'] = np.nan
+    labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
+    labs.ix[((hbab) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    ha = labs.description == 'hepatitis_b_core_antibody'
+    labs.ix[((ha) & (labs.clientresult == "grayzone")), 'clientresult'] = np.nan
+    labs.ix[((ha) & ((labs.clientresult == "non_reactive") | (labs.clientresult == "nonreactive"))), 'clientresult'] = 0
+    labs.ix[((ha) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    abo = labs.description == 'abo_intep'
+    labs.ix[((abo) & (labs.clientresult == "o")), 'clientresult'] = 0
+    labs.ix[((abo) & (labs.clientresult == "a")), 'clientresult'] = 1
+    labs.ix[((abo) & (labs.clientresult == "b")), 'clientresult'] = 2
+    labs.ix[((abo) & (labs.clientresult == "ab")), 'clientresult'] = 3
+
+    qtg = labs.description == 'quantiferon_tb_gold'
+    labs.ix[((qtg) & (labs.clientresult == "indeterminate")), 'clientresult'] = np.nan
+    labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
 
     return labs
 
