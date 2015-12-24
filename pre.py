@@ -531,6 +531,16 @@ def _pro_sg(labs):
     return labs
 
 
+def _pro_anc(labs):
+    """
+    Corrected Absolute_neutrophill_count_automated
+    normal range : 1.5 to 8.00
+    """
+    labs = labs[~((labs.description == "absolute_neutrophil_count_automated") & (labs.clientresult == "----"))]
+
+    return labs
+
+
 def _pro_index(labs):
     """
     hemolysis_index, icteric_index, lipemia_index correction
@@ -590,6 +600,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct total_protein columns
     Correct magnesium columns
     Correct inoragnic_phosphorus
+    Corrected ANC
     """
     labs = pro_labs_basic(dire, None)
 
@@ -621,6 +632,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_protein(labs)
     labs = _pro_magnesium(labs)
     labs = _pro_phosph(labs)
+    labs = _pro_anc(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
