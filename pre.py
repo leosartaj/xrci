@@ -241,6 +241,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'culture,_fungus_blood')]
     labs = labs[(labs.description != 'fungus_culture,_blood')]
     labs = labs[(labs.description != 'source,_fungus_cx_blood')]
+    labs = labs[(labs.description != 'respiratory_bacterial_culture')]
     return labs
 
 
@@ -417,6 +418,9 @@ def _pro_cat(labs):
     Indexed polychromasia values
 
     mapped c._difficile_dna_pcr values
+
+    corrected see_below in bnp
+
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -527,6 +531,9 @@ def _pro_cat(labs):
     pcr = labs.description == 'c._difficile_dna_pcr'
     labs.ix[((pcr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
     labs.ix[((pcr) & (labs.clientresult == 'positive')), 'clientresult'] = 1
+
+    bnp = labs.description == 'bnp'
+    labs.ix[((bnp) & (labs.clientresult == 'see_below')), 'clientresult'] = np.nan
     return labs
 
 

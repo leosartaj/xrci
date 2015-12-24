@@ -42,6 +42,7 @@ Cleaned
 * indexed poikilocytosis
 * indexed polychromasia
 * mapped c._difficile_dna_pcr
+* bnp corrected
 
 Already clean
 =============
@@ -58,6 +59,8 @@ Already clean
 * ps (normal values 2.5-3 ng/ml)
 * vancomycin_trough (10-20 ug/mL)
 * cortisol_am (5-26)
+* lflow
+* digoxin
 
 Removed
 =======
@@ -76,3 +79,4 @@ Removed
 * culture,_fungus_blood
 * fungus_culture,_blood
 * source,_fungus_cx_blood
+* respiratory_bacterial_culture
