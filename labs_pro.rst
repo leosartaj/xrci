@@ -22,6 +22,7 @@ Cleaned
 * glucose
 * total_bilirubin
 * total_protein
+* magnesium
 
 Already clean
 =============

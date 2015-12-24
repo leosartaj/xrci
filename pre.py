@@ -471,6 +471,15 @@ def _pro_protein(labs):
 
     return labs
 
+def _pro_magnesium(labs):
+    """
+    Correct magnesium clientresult
+    Normal range : 1.5 - 2.5
+    """
+    labs.ix[((labs.description = 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
+
+    return labs
+
 
 def _pro_index(labs):
     """
@@ -526,6 +535,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct glucose columns
     Correct total_bilirubin columns
     Correct total_protein columns
+    Correct magnesium columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -552,6 +562,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_glucose(labs)
     labs = _pro_bilirubin(labs)
     labs = _pro_protein(labs)
+    labs = _pro_magnesium(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
