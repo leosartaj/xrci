@@ -1,2 +1,4 @@
 datasets/
 *.pyc
+*.rst~
+*.py~

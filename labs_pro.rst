@@ -19,6 +19,7 @@ Cleaned
 * c02_content
 * globulin
 * hemolysis_index, icteric_index, lipemia_index
+* po2c
 
 Already clean
 =============

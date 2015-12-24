@@ -464,6 +464,17 @@ def _pro_index(labs):
     return labs
 
 
+def _pro_po2c(labs):
+    """
+    po2c correction
+    unitofmeasure mmhg
+    ranges > 80 mmhg
+    correct clientresults
+    """
+    labs.ix[labs.description == 'po2c' , 'unitofmeasure'] = 'mmhg'
+    return labs
+
+
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
     Process train_RawVitalData.csv
@@ -486,6 +497,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct co2_content columns
     Correct globulin columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
+    Correct po2c columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -509,6 +521,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_co2(labs)
     labs = _pro_glo(labs)
     labs = _pro_index(labs)
+    labs = _pro_po2c(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)
