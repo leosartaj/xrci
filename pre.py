@@ -427,12 +427,12 @@ def _pro_glucose(labs):
     Range : 70 -100 mg/dL
     """
     glu = labs.description == 'glucose'
+    labs.ix[((glu) & (labs.clientresult == 'slight_hemolysis')), 'clientresult'] = np.nan
     labs.ix[(glu) & (labs.clientresult == '2+'), 'clientresult'] = 200
     labs.ix[(glu) & (labs.clientresult == 'negative'), 'clientresult'] = 85
     labs.ix[(glu) & (labs.clientresult == '1+'), 'clientresult'] = 100
     labs.ix[(glu) & (labs.clientresult == '3+'), 'clientresult'] = 300
     labs.ix[(glu) & (labs.clientresult == 'trace'), 'clientresult'] = 100
-    labs = labs[~((glu) & (labs.clientresult == 'slight_hemolysis'))]
     labs.ix[(glu) & (labs.clientresult == 'neg'), 'clientresult'] = 85
 
     return labs
@@ -489,6 +489,8 @@ def _pro_sg(labs):
     labs.ix[(sg) & (labs.clientresult == '>1.033'), 'clientresult'] = 1.033
     labs.ix[(sg) & (labs.clientresult == '>1.035'), 'clientresult'] = 1.035
     labs.ix[(sg) & (labs.clientresult == '<1.005'), 'clientresult'] = 1.005
+
+    return labs
 
 
 def _pro_index(labs):
