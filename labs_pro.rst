@@ -26,6 +26,7 @@ Cleaned
 * total_bilirubin
 * total_protein
 * magnesium
+* inorganic_phosphorus
 
 Already clean
 =============
