@@ -229,6 +229,8 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
     labs = labs[(labs.description != 'notified')]
+    labs = labs[(labs.description != 'slide_review')]
+    labs = labs[(labs.description != 'urine_microscopic')]
     return labs
 
 
@@ -403,7 +405,7 @@ def _pro_cat(labs):
     Indexed poikilocytosis values
 
     Indexed polychromasia values
-    
+
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0

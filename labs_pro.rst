@@ -51,9 +51,15 @@ Already clean
 * c-reactive protein
 * po2c
 * ck_mb (for myocardial infarction) (normal values , 7.7, 4.3)
+* cortisol_unspecified_time
+* direct_bilirubin (0.0-0.3 normal values)
+* ldh (normal values 140-280)
+* ps (normal values 2.5-3 ng/ml)
 
 Removed
 =======
 * influenza_type_b
 * differential_information
 * notified
+* slide_review (all values see below)
+* urine_microscopic
