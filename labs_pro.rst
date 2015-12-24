@@ -41,6 +41,7 @@ Cleaned
 * indexed ovalocytes
 * indexed poikilocytosis
 * indexed polychromasia
+* mapped c._difficile_dna_pcr
 
 Already clean
 =============
@@ -56,6 +57,7 @@ Already clean
 * ldh (normal values 140-280)
 * ps (normal values 2.5-3 ng/ml)
 * vancomycin_trough (10-20 ug/mL)
+* cortisol_am (5-26)
 
 Removed
 =======

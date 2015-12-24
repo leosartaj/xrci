@@ -416,6 +416,7 @@ def _pro_cat(labs):
 
     Indexed polychromasia values
 
+    mapped c._difficile_dna_pcr values
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -523,6 +524,9 @@ def _pro_cat(labs):
     labs.ix[((mic) & (labs.clientresult == 'moderate')), 'clientresult'] = 2
     labs.ix[((mic) & (labs.clientresult == 'marked')), 'clientresult'] = 3
 
+    pcr = labs.description == 'c._difficile_dna_pcr'
+    labs.ix[((pcr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
+    labs.ix[((pcr) & (labs.clientresult == 'positive')), 'clientresult'] = 1
     return labs
 
 
