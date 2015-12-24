@@ -50,6 +50,7 @@ Cleaned
 * sedimentation_rate
 * ketones,_urine
 * leukocytes_esterase
+* nitrites
 
 Already clean
 =============

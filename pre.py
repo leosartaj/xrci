@@ -461,6 +461,9 @@ def _pro_cat(labs):
 
     leukocytes_esterase
     Results are negative(0), trace(1), 1+(2), 2+(3)
+
+    nitrites
+    Resuls are negative(0), positive(1)
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -569,6 +572,11 @@ def _pro_cat(labs):
     labs.ix[leu & (labs.clientresult == 'trace'), 'clientresult'] = 1
     labs.ix[leu & (labs.clientresult == '1+'), 'clientresult'] = 2
     labs.ix[leu & (labs.clientresult == '2+'), 'clientresult'] = 3
+
+    nit = labs.description == 'nitrites'
+    labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
 
     return labs
 
