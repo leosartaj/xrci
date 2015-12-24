@@ -38,6 +38,9 @@ Cleaned
 * cleaned troponin_i
 * indexed anisocytosis
 * indexed microcytic
+* indexed ovalocytes
+* indexed poikilocytosis
+* indexed polychromasia
 
 Already clean
 =============
