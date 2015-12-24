@@ -350,6 +350,21 @@ def _pro_clean_clientresults(labs):
 
     Creatinine clientresult corrected
     Normal values : 0.51 - 1.2
+    
+    Corrected mch
+    normal range : 27-36
+
+	Corrected Eosinophils
+    normal range : 0 to 6.0 %
+
+    Corrected mcv data
+    normal range : 77 - 95
+    
+    Corrected hematocrit
+    normal range : 38.8 - 50 %
+
+    Corrected hgb
+    normal range :  12.0 to 17.5
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -361,12 +376,17 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '4.0_g/dl'), 'clientresult'] = 4.0
     labs.ix[(labs.clientresult == '>_3.2_-_normal'), 'clientresult'] = 4.0
     labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
 
     labs = bfill(labs, 'co2_content', 'see_below')
     labs = bfill(labs, 'alt_(sgpt)', 'see_below')
     labs = bfill(labs, 'ast_(sgot)', 'see_below')
     labs = bfill(labs, 'anion_gap', 'see_below')
     labs = bfill(labs, 'creatinine_(enz)', 'see_below')
+    labs = bfill(labs, 'mch', 'see_below')
+    labs = bfill(labs, 'hct', 'see_below')
+    labs = bfill(labs, 'hgb', 'see_below')
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan

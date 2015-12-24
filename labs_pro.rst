@@ -39,6 +39,11 @@ Cleaned
 * hepatitis_b_sur_ab
 * hepatitis_b_core_antibody
 * abo_intep
+* eosinophils
+* hct
+* hgb
+* mch
+* mcv
 
 Already clean
 =============
@@ -67,6 +72,7 @@ Already clean
 * phc
 * phm
 * pip
+* basophils
 
 Removed
 =======
