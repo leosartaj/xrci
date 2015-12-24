@@ -493,6 +493,16 @@ def _pro_sg(labs):
     return labs
 
 
+def _pro_ur(labs):
+    """
+    urobilinogen correction
+    range 0-8 mg/dl (units given are different but range appears same)
+    correct clientresults
+    """
+    labs.ix[(labs.description == 'urobilinogen') & (labs.clientresult == '>=8.0'), 'clientresult'] = 8.0
+    return labs
+
+
 def _pro_index(labs):
     """
     hemolysis_index, icteric_index, lipemia_index correction
@@ -548,6 +558,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct specific_gravity columns
     Correct hemolysis_index, icteric_index, lipemia_index columns
     Correct glucose columns
+    Correct urobilinogen columns
     """
     labs = pro_labs_basic(dire, None)
 
@@ -575,6 +586,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_sg(labs)
     labs = _pro_index(labs)
     labs = _pro_glucose(labs)
+    labs = _pro_ur(labs)
 
     if save:
         labs.to_csv(_get_path(save, 'labs.csv'), index=False)

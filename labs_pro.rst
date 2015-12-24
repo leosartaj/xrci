@@ -23,6 +23,7 @@ Cleaned
 * specific_gravity
 * hemolysis_index, icteric_index, lipemia_index
 * glucose
+* urobilinogen
 
 Already clean
 =============
