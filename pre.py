@@ -458,6 +458,9 @@ def _pro_cat(labs):
 
     Ketones urine
     Results are negative(0), trace(1), 1+(2), 2+(3), 3+(4)
+
+    leukocytes_esterase
+    Results are negative(0), trace(1), 1+(2), 2+(3)
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -559,6 +562,13 @@ def _pro_cat(labs):
     labs.ix[ket & (labs.clientresult == '1+'), 'clientresult'] = 2
     labs.ix[ket & (labs.clientresult == '2+'), 'clientresult'] = 3
     labs.ix[ket & (labs.clientresult == '3+'), 'clientresult'] = 4
+
+    leu = labs.description == 'leukocytes_esterase'
+    labs.ix[leu & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[leu & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[leu & (labs.clientresult == 'trace'), 'clientresult'] = 1
+    labs.ix[leu & (labs.clientresult == '1+'), 'clientresult'] = 2
+    labs.ix[leu & (labs.clientresult == '2+'), 'clientresult'] = 3
 
     return labs
 

@@ -49,6 +49,7 @@ Cleaned
 * prothrombin_time
 * sedimentation_rate
 * ketones,_urine
+* leukocytes_esterase
 
 Already clean
 =============
