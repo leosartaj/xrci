@@ -467,7 +467,7 @@ def _pro_protein(labs):
     Correct protein clientresult
     normal range : 6.0 to 8.3 mg/dL
     """
-    pr.ix[pr.clientresult == '<3.0', 'clientresult'] = 3.0
+    labs.ix[((labs.description == 'total_protein') &(labs.clientresult == '<3.0')), 'clientresult'] = 3.0
 
     return labs
 
@@ -476,7 +476,7 @@ def _pro_magnesium(labs):
     Correct magnesium clientresult
     Normal range : 1.5 - 2.5
     """
-    labs.ix[((labs.description = 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
+    labs.ix[((labs.description == 'magnesium') & (labs.clientresult == '<_0.7')), 'clientresult'] = 0.7
 
     return labs
 
