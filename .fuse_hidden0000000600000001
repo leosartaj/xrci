@@ -27,11 +27,6 @@ Cleaned
 * glucose
 * sampletype (related to samplesite)
 * creatine kinase (multiple normal values)
-* total_bilirubin
-* total_protein
-* magnesium
-* inorganic_phosphorus
-* absolute_neutrophil_count_automated
 
 Already clean
 =============
@@ -39,7 +34,6 @@ Already clean
 * csf_protein
 * ph_urine
 * so2c
-* c-reactive protein
 
 Removed
 =======
