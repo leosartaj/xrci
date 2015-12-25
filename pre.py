@@ -225,6 +225,7 @@ def _remove_desc(labs):
     """
     Removes descriptions not required from labs
     """
+    labs = labs[(labs.description.str[-1] != '$')]
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
@@ -258,7 +259,6 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'drawtime')]
     labs = labs[(labs.description != 'opid')]
     labs = labs[(labs.description != 'pattemp')]
-    labs = labs[(labs.description.str[-1] != '$')]
 
     return labs
 
@@ -433,8 +433,7 @@ def _pro_clean_clientresults(labs):
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
 
-    pt = labs.description == 'prothrombin_time'
-    labs.ix[(pt) & (labs.clientresult == 'unpt'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
     ch = ['<', '>', '_', '=']
     for c in ch:
