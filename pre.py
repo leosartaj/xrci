@@ -258,6 +258,7 @@ def _remove_desc(labs):
     labs = labs[(labs.description != 'drawtime')]
     labs = labs[(labs.description != 'opid')]
     labs = labs[(labs.description != 'pattemp')]
+    labs = labs[(labs.description.str[-1] != '$')]
 
     return labs
 
