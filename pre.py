@@ -433,7 +433,7 @@ def _pro_clean_clientresults(labs):
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
 
     pt = labs.description == 'prothrombin_time'
-    labs.ix[(pt) & (labs.clientresult == 'unpt') 'clientresult'] = np.nan
+    labs.ix[(pt) & (labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
     ch = ['<', '>', '_', '=']
     for c in ch:
