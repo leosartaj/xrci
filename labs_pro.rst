@@ -54,7 +54,6 @@ Cleaned
 * mcv
 * mpv
 * platelet_count
-* rbc
 * rdw
 * aptt
 * inr
