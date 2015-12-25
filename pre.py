@@ -199,7 +199,31 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
                                           if not x is np.nan else x))
 
     if save:
-        labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+        labs.to_csv(_get_path(save, 'labs_basic.csv'), index=False)
+
+    return labs
+
+
+def remove_desc(dire=PROPATH, save=PROPATH):
+    labs = pd.read_csv(_get_path(dire, 'labs_basic.csv'))
+
+    desc = []
+    with open('remove_labs.txt') as f:
+        for line in f.readlines():
+
+            if not line.startswith('#') and line != '\n':
+                if line.endswith('\n'):
+                    line = line[:-1]
+                desc.append(line)
+
+    rem = labs.description == desc[0]
+    for d in desc[1:]:
+        rem = rem | (labs.description == d)
+
+    labs = labs[~rem]
+
+    if save:
+        labs.to_csv(_get_path(save, 'labs_remove.csv'), index=False)
 
     return labs
 
@@ -217,48 +241,6 @@ def bfill(labs, desc, key):
     for i in ids:
         labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
         labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
-
-    return labs
-
-
-def _remove_desc(labs):
-    """
-    Removes descriptions not required from labs
-    """
-    labs = labs[(labs.description.str[-1] != '$')]
-    labs = labs[(labs.description != 'called_to')]
-    labs = labs[(labs.description != 'influenza_type_b')]
-    labs = labs[(labs.description != 'differential_information')]
-    labs = labs[(labs.description != 'notified')]
-    labs = labs[(labs.description != 'slide_review')]
-    labs = labs[(labs.description != 'urine_microscopic')]
-    labs = labs[(labs.description != 'date_of_collection')]
-    labs = labs[(labs.description != 'reason_for_cancellation')]
-    labs = labs[(labs.description != 'specimen_type')]
-    labs = labs[(labs.description != 'tests_cancelled')]
-    labs = labs[(labs.description != 'time_of_collection')]
-    labs = labs[(labs.description != 'cortisol_pm')]
-    labs = labs[(labs.description != 'serum_cryptococcal_antigen,_screen')]
-    labs = labs[(labs.description != 'culture,_fungus_blood')]
-    labs = labs[(labs.description != 'fungus_culture,_blood')]
-    labs = labs[(labs.description != 'source,_fungus_cx_blood')]
-    labs = labs[(labs.description != 'respiratory_bacterial_culture')]
-    labs = labs[(labs.description != 'risk_of_prostate_cancer')]
-    labs = labs[(labs.description != 'amikacin_______$')]
-    labs = labs[(labs.description != 'hepatitis_b_sur_ag')]
-    labs = labs[(labs.description != 'hcv_antibody')]
-    labs = labs[(labs.description != 'abo')] # similar to abo_intep
-    labs = labs[(labs.description != 'rh_intep')]
-    labs = labs[(labs.description != 'absc_intep')]
-    labs = labs[(labs.description != 'nil')]
-    labs = labs[(labs.description != 'culture_wound')]
-    labs = labs[(labs.description != 'gram_stain')]
-    labs = labs[(labs.description != 'adatetime')]
-    labs = labs[(labs.description != 'drawdate')]
-    labs = labs[(labs.description != 'drawopid')]
-    labs = labs[(labs.description != 'drawtime')]
-    labs = labs[(labs.description != 'opid')]
-    labs = labs[(labs.description != 'pattemp')]
 
     return labs
 
@@ -391,8 +373,8 @@ def _pro_clean_clientresults(labs):
     normal range : 150 - 450
 
     rbc
-    normal range : 4.2 - 5.4 million/ul 
-    
+    normal range : 4.2 - 5.4 million/ul
+
     rdw
     normal range : 11.5 - 14.5 %
 
@@ -404,7 +386,7 @@ def _pro_clean_clientresults(labs):
 
     prothrombin_time
     normal range : 12-13 secs
-    
+
     sedimentation_rate
     normal range : 0 - 29 mm/hr
     """
@@ -592,7 +574,7 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
-    
+
     ket = labs.description == 'ketones,_urine'
     labs.ix[ket & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[ket & (labs.clientresult == 'neg'), 'clientresult'] = 0
@@ -656,22 +638,19 @@ def _pro_cat(labs):
 
 def pro_labs(dire=PROPATH, save=PROPATH):
     """
-    Process train_RawVitalData.csv
-    Basic processing
+    Process labs_remove.csv
     Drop chstandard (62% null values)
     Drop clientresult canceled
-    Remove descriptions
     Correct gfr columns
     Correct pot columns
     Correct categorical columns
     Correct clientresults
     """
-    labs = pro_labs_basic(dire, None)
+    labs = pd.read_csv(_get_path(dire, 'labs_remove.csv'))
 
     del labs['chstandard']
     labs = labs[(labs.clientresult != 'canceled')]
-
-    labs = _remove_desc(labs)
+    labs = labs[(labs.description.str[-1] != '$')]
 
     labs = _pro_gfr(labs)
     labs = _pro_pot(labs)
@@ -696,6 +675,8 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_vitals(dire, save)
     remove_rows(dire, save)
     correct_lab_data(save)
+    pro_labs_basic(save, save)
+    remove_desc(save, save)
     pro_labs(save, save)
 
 

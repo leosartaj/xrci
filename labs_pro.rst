@@ -102,38 +102,3 @@ Already clean
 * basophils
 * monocytes
 * neutrophils
-
-Removed
-=======
-* influenza_type_b
-* differential_information
-* notified
-* slide_review (all values see below)
-* urine_microscopic
-* date_of_collection
-* reason_for_cancellation
-* specimen_type
-* tests_cancelled
-* time_of_collection
-* cortisol_pm(only 1 row)
-* serum_cryptococcal_antigen,_screen (all values see_below)
-* culture,_fungus_blood
-* fungus_culture,_blood
-* source,_fungus_cx_blood
-* respiratory_bacterial_culture
-* risk_of_prostate_cancer
-* amikacin_______$
-* hepatitis_b_sur_ag
-* hcv_antibody
-* abo
-* rh_intep
-* absc_intep
-* nil
-* culture_wound
-* gram_stain
-* adatetime
-* drawdate
-* drawopid
-* drawtime
-* opid
-* pattemp
