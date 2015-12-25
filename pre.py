@@ -663,6 +663,17 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     return labs
 
 
+def assign_labs(start, gap, dire=PROPATH):
+    labs = pd.read_csv(_get_path(dire, 'labs.csv'))
+
+    desc = labs.description.unique()
+
+    desc[:start].tofile('remaining.txt', sep='\n')
+    desc[start:start + gap].tofile('dushyant.txt', sep='\n')
+    desc[start + gap:start + 2*gap].tofile('sartaj.txt', sep='\n')
+    desc[start + 2*gap:].tofile('avinash.txt', sep='\n')
+
+
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data

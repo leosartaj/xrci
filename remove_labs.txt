@@ -21,7 +21,7 @@ risk_of_prostate_cancer
 amikacin_______$
 hepatitis_b_sur_ag
 hcv_antibody
-abo')] # similar to abo_in
+abo
 rh_intep
 absc_intep
 nil
