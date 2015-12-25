@@ -35,6 +35,18 @@ Cleaned
 * magnesium
 * inorganic_phosphorus
 * absolute_neutrophil_count_automated
+* cleaned troponin_i
+* indexed anisocytosis
+* indexed microcytic
+* indexed ovalocytes
+* indexed poikilocytosis
+* indexed polychromasia
+* mapped c._difficile_dna_pcr
+* bnp corrected
+* hiv_ag/ab
+* hepatitis_b_sur_ab
+* hepatitis_b_core_antibody
+* abo_intep
 * eosinophils
 * hct
 * hgb
@@ -60,6 +72,34 @@ Already clean
 * so2c
 * c-reactive protein
 * po2c
+* ck_mb (for myocardial infarction) (normal values , 7.7, 4.3)
+* cortisol_unspecified_time
+* direct_bilirubin (0.0-0.3 normal values)
+* ldh (normal values 140-280)
+* ps (normal values 2.5-3 ng/ml)
+* vancomycin_trough (10-20 ug/mL)
+* cortisol_am (5-26)
+* lflow
+* digoxin
+* psa,_free
+* psa,_total
+* glucose_poc_result
+* vancomycin_random
+* mitogen_nil
+* tb_ag_nil
+* bevt
+* cabg
+* hco3a
+* hctbg
+* kbg
+* lact
+* machrate
+* nabg
+* pco2c
+* pco2m
+* phc
+* phm
+* pip
 * basophils
 * monocytes
 * neutrophils
@@ -68,3 +108,33 @@ Removed
 =======
 * influenza_type_b
 * differential_information
+* notified
+* slide_review (all values see below)
+* urine_microscopic
+* date_of_collection
+* reason_for_cancellation
+* specimen_type
+* tests_cancelled
+* time_of_collection
+* cortisol_pm(only 1 row)
+* serum_cryptococcal_antigen,_screen (all values see_below)
+* culture,_fungus_blood
+* fungus_culture,_blood
+* source,_fungus_cx_blood
+* respiratory_bacterial_culture
+* risk_of_prostate_cancer
+* amikacin_______$
+* hepatitis_b_sur_ag
+* hcv_antibody
+* abo
+* rh_intep
+* absc_intep
+* nil
+* culture_wound
+* gram_stain
+* adatetime
+* drawdate
+* drawopid
+* drawtime
+* opid
+* pattemp
