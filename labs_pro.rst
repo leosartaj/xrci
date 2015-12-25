@@ -52,6 +52,16 @@ Cleaned
 * hgb
 * mch
 * mcv
+* mpv
+* platelet_count
+* rdw
+* aptt
+* inr
+* prothrombin_time
+* sedimentation_rate
+* ketones,_urine
+* leukocytes_esterase
+* nitrites
 
 Already clean
 =============
@@ -90,6 +100,8 @@ Already clean
 * phm
 * pip
 * basophils
+* monocytes
+* neutrophils
 
 Removed
 =======

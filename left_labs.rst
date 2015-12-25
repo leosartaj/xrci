@@ -9,3 +9,8 @@ Not processed Labs
 * culture_blood
 * mchc
 * ig_%(immunoglobulin)
+* rbc
+* wbc
+* appearance
+* blood
+* color

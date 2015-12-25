@@ -225,6 +225,7 @@ def _remove_desc(labs):
     """
     Removes descriptions not required from labs
     """
+    labs = labs[(labs.description.str[-1] != '$')]
     labs = labs[(labs.description != 'called_to')]
     labs = labs[(labs.description != 'influenza_type_b')]
     labs = labs[(labs.description != 'differential_information')]
@@ -379,6 +380,33 @@ def _pro_clean_clientresults(labs):
 
     Corrected hgb
     normal range :  12.0 to 17.5
+
+    Monocytes
+    normal range : 0.0 - 13.0
+
+    mpv
+    normal range : 7.5 - 11.5
+
+    platelet_count
+    normal range : 150 - 450
+
+    rbc
+    normal range : 4.2 - 5.4 million/ul 
+    
+    rdw
+    normal range : 11.5 - 14.5 %
+
+    aptt
+    normal range : 70 - 120 secs (liver diseases)
+
+    inr
+    normal range : 0.8 -2.0 (heart related ) those who have mechanical heart can have 2-3
+
+    prothrombin_time
+    normal range : 12-13 secs
+    
+    sedimentation_rate
+    normal range : 0 - 29 mm/hr
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
@@ -393,10 +421,19 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '<1.5'), 'clientresult'] = 1.5
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mch_previously_reported_as:___21.1__l_pg'), 'clientresult'] = 21.1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mpv_previously_reported_as:___10.4_fm'), 'clientresult'] = 10.4
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_rdw_previously_reported_as:___17.6__h_%'), 'clientresult'] = 17.6
 
     lym = labs.description == 'lymphocytes'
-    labs.ix[(lym) & (labs.clientresult == "0.0")] = np.nan
-    labs.ix[(lym) & (labs.clientresult == "0")] = np.nan
+    labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
+    labs.ix[(lym) & (labs.clientresult == "0"), 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'specimen_drawn_from_arterial_line.', 'clientresult'] = np.nan
+
+    rbc = labs.description == 'rbc'
+    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+
+    labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
     ch = ['<', '>', '_', '=']
     for c in ch:
@@ -453,6 +490,15 @@ def _pro_cat(labs):
 
     abo_intep correction
     quantiferon_tb_gold correction
+
+    Ketones urine
+    Results are negative(0), trace(1), 1+(2), 2+(3), 3+(4)
+
+    leukocytes_esterase
+    Results are negative(0), trace(1), 1+(2), 2+(3)
+
+    nitrites
+    Resuls are negative(0), positive(1)
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -546,6 +592,26 @@ def _pro_cat(labs):
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "passed_left_radial")), 'clientresult'] = 0.5
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "pass")), 'clientresult'] = 1
     labs.ix[((labs.description == "allen's_test") & (labs.clientresult == "fail")), 'clientresult'] = 0
+    
+    ket = labs.description == 'ketones,_urine'
+    labs.ix[ket & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[ket & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[ket & (labs.clientresult == 'trace'), 'clientresult'] = 1
+    labs.ix[ket & (labs.clientresult == '1+'), 'clientresult'] = 2
+    labs.ix[ket & (labs.clientresult == '2+'), 'clientresult'] = 3
+    labs.ix[ket & (labs.clientresult == '3+'), 'clientresult'] = 4
+
+    leu = labs.description == 'leukocytes_esterase'
+    labs.ix[leu & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[leu & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[leu & (labs.clientresult == 'trace'), 'clientresult'] = 1
+    labs.ix[leu & (labs.clientresult == '1+'), 'clientresult'] = 2
+    labs.ix[leu & (labs.clientresult == '2+'), 'clientresult'] = 3
+
+    nit = labs.description == 'nitrites'
+    labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia'))
