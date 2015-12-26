@@ -14,3 +14,4 @@ Not processed Labs
 * appearance
 * blood
 * color
+* transitional_epi_cells

@@ -414,10 +414,10 @@ def _pro_clean_clientresults(labs):
     rbc = labs.description == 'rbc'
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
-
+ 
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
-    ch = ['<', '>', '_', '=']
+    ch = ['<', '>', '_', '=','_']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
@@ -481,6 +481,47 @@ def _pro_cat(labs):
 
     nitrites
     Resuls are negative(0), positive(1)
+
+    bacteria,_auto
+    mapped none 0, innumerable 10
+
+    casts,_manual
+    mapped strings
+
+    mapped strings
+    positive_screen 1
+    negative_screen 0
+
+    hyaline_casts,_manual
+    mapped innumerable 200
+
+    occult_blood,_fecal_#1
+    cleaned
+
+    c.difficile_toxin
+    cleaned
+
+    hbsag_screen
+    cleaned
+
+    hcv_ab
+    cleaned
+
+    hep_b_core_ab,_igm
+    cleaned
+
+    poc_urine_pregnancy_result
+    cleaned
+
+    hepatitis_a_ab,_total
+    cleaned
+
+    dropped cannot_perform_cell_count_due_to_degeneration_of_cells."", 
+            unable_to_determine_differential_due_to_distortion_of_white_blood_cells
+            unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.
+            uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.
+            date_/_time_next_dose_:_unknown
+
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -596,7 +637,9 @@ def _pro_cat(labs):
     labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
-            (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia'))
+            (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
+            | (labs.description == 'toxic_vacuolation') | | (labs.description == 'burr_cells'))
+
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
     labs.ix[((mic) & (labs.clientresult == 'slight')), 'clientresult'] = 1
@@ -633,6 +676,68 @@ def _pro_cat(labs):
     labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
 
+    bct = labs.description == 'bacteria,_auto'
+    labs.ix[((bct) & (labs.clientresult == "none")), 'clientresult'] = 0
+    labs.ix[((bct) & (labs.clientresult == "innumerable")), 'clientresult'] = 1
+
+    cm = labs.description == 'casts,_manual'
+    labs.ix[((cm) & (labs.clientresult == "hyaline_casts")), 'clientresult'] = 0
+    labs.ix[((cm) & (labs.clientresult == "coarsely_gran._cast")), 'clientresult'] = 1
+    labs.ix[((cm) & (labs.clientresult == "finely_granular_cast")), 'clientresult'] = 2
+    labs.ix[((cm) & (labs.clientresult == "white_cell_casts")), 'clientresult'] = 3
+    labs.ix[((cm) & (labs.clientresult == "waxy_casts")), 'clientresult'] = 4
+
+    labs.ix[labs.clientresult == "positive_screen", 'clientresult'] = 1
+    labs.ix[labs.clientresult == "negative_screen", 'clientresult'] = 0
+
+    hcm = labs.description == 'hyaline_casts,_manual'
+    labs.ix[((hcm) & (labs.clientresult == "innumerable")), 'clientresult'] = 200
+
+    obf = labs.description == 'occult_blood,_fecal_#1'
+    labs.ix[((obf) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((obf) & (labs.clientresult == "negative")), 'clientresult'] = 0
+
+    cdt = labs.description == 'c.difficile_toxin'
+    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((cdt) & (labs.clientresult == "tnp")), 'clientresult'] = nan
+
+    fsw = labs.description == 'fecal_smear_for_wbc'
+    labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_no_white_blood_cells")), 'clientresult'] = 0
+    labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_rare_white_blood_cells")), 'clientresult'] = 1
+    labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_few_white_blood_cells")), 'clientresult'] = 2
+    labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_many_white_blood_cells")), 'clientresult'] = 3
+
+    hs = labs.description == hbsag_screen
+    labs.ix[((hs) & (labs.clientresult == "confirm._indicated"))] = np.nan
+
+    hab = labs.description == hcv_ab
+    labs.ix[((hab) & (labs.clientresult == "see_scanned_report_in_emr"))] = np.nan
+
+    cdt = labs.description == 'hep_b_core_ab,_igm'
+    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+
+    cdt = labs.description == 'poc_urine_pregnancy_result'
+    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+
+    cdt = labs.description == 'hepatitis_a_ab,_total'
+    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+
+    cdt = labs.description == 'antinuclear_antibodies'
+    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+
+    cdt = labs.description == 'm-spike,%'
+    labs.ix[((cdt) & (labs.clientresult == "not_observed")), 'clientresult'] = np.nan
+
+    labs.ix[labs.clientresult == 'cannot_perform_cell_count_due_to_degeneration_of_cells.""', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_determine_differential_due_to_distortion_of_white_blood_cells', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
     return labs
 
 
