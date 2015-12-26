@@ -596,7 +596,7 @@ def _pro_cat(labs):
     labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
-            (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia'))
+            (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'schistocytes') | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling'))
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
     labs.ix[((mic) & (labs.clientresult == 'slight')), 'clientresult'] = 1
@@ -632,6 +632,38 @@ def _pro_cat(labs):
     labs.ix[((qtg) & (labs.clientresult == "indeterminate")), 'clientresult'] = np.nan
     labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    
+    sta = labs.description == 'stool_appearance'
+    labs.ix[((sta) & (labs.clientresult == "liquid")), 'clientresult'] = 0
+    labs.ix[((sta) & (labs.clientresult == "loose")), 'clientresult'] = 0.5
+    labs.ix[((sta) & (labs.clientresult == "greasy")), 'clientresult'] = 1
+    labs.ix[((sta) & (labs.clientresult == "semi-liquid")), 'clientresult'] = 1.5
+    labs.ix[((sta) & (labs.clientresult == "soft")), 'clientresult'] = 2
+    labs.ix[((sta) & (labs.clientresult == "formed_stool")), 'clientresult'] = 2.5
+    labs.ix[((sta) & (labs.clientresult == "solid")), 'clientresult'] = 3
+    labs.ix[((sta) & (labs.clientresult == "firm")), 'clientresult'] = 3.5
+    labs.ix[((sta) & (labs.clientresult == "rcvd_on_card")), 'clientresult'] = 4
+    
+    stc = labs.description == 'stool_color'
+    labs.ix[((stc) & (labs.clientresult == "greenish_brown")), 'clientresult'] = 0
+    labs.ix[((stc) & (labs.clientresult == "dark_brown")), 'clientresult'] = 1
+    labs.ix[((stc) & (labs.clientresult == "light_brown")), 'clientresult'] = 2
+    labs.ix[((stc) & (labs.clientresult == "brown")), 'clientresult'] = 3
+    labs.ix[((stc) & (labs.clientresult == "scant_sample")), 'clientresult'] = 4
+    labs.ix[((stc) & (labs.clientresult == "green")), 'clientresult'] = 5
+
+    stb = labs.description == 'stool_occult_blood_1'
+    labs.ix[((stb) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((stb) & (labs.clientresult == "positive")), 'clientresult'] = 1
+
+    stb = labs.description == 'stool_occult_blood_1'
+    labs.ix[((stb) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((stb) & (labs.clientresult == "positive")), 'clientresult'] = 1
+
+
+
+
+
 
     return labs
 
