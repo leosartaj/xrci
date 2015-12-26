@@ -256,7 +256,7 @@ def _pro_gfr(labs):
     rename the other two as gfr
     clean up values in clientresult
     """
-    gfr = labs[labs.clientresult == '>60'].description.unique()[:-1]
+    gfr = labs[labs.clientresult == '>60'].description.unique()
 
     labs = labs[labs.description != gfr[1]]
 
@@ -417,7 +417,7 @@ def _pro_clean_clientresults(labs):
     rbc = labs.description == 'rbc'
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
- 
+
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
     ch = ['<', '>', '_', '=','_']
@@ -524,7 +524,7 @@ def _pro_cat(labs):
     hepatitis_a_ab,_total
     cleaned
 
-    dropped cannot_perform_cell_count_due_to_degeneration_of_cells."", 
+    dropped cannot_perform_cell_count_due_to_degeneration_of_cells."",
             unable_to_determine_differential_due_to_distortion_of_white_blood_cells
             unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.
             uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.
@@ -646,7 +646,7 @@ def _pro_cat(labs):
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
-            | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes') 
+            | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes')
             | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling'))
 
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
@@ -774,7 +774,7 @@ def _pro_cat(labs):
     labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
-    
+
     return labs
 
 
