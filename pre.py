@@ -420,12 +420,11 @@ def _pro_clean_clientresults(labs):
 
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
-    ch = ['<', '>', '_', '=','_']
     ms = labs.description == 'm-spike'
     labs.ix[((ms) & (labs.clientresult == "comment:")), 'clientresult'] = np.nan
     labs.ix[((ms) & (labs.clientresult == "not_observed")), 'clientresult'] = 0
 
-    ch = ['<', '>', '_', '=']
+    ch = ['<', '>', '_', '=', '_']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
@@ -812,6 +811,29 @@ def assign_labs(start, gap, dire=PROPATH):
     desc[start:start + gap].tofile('dushyant.txt', sep='\n')
     desc[start + gap:start + 2*gap].tofile('sartaj.txt', sep='\n')
     desc[start + 2*gap:].tofile('avinash.txt', sep='\n')
+
+
+def check_desc(fname, start=None, to=None, dire=PROPATH):
+    """
+    returns checked, not cleaned arrays
+    """
+    not_cleaned, checked = [], []
+    labs = pd.read_csv(_get_path(dire, 'labs.csv'))
+
+    with open(fname) as f:
+        for i, line in enumerate(f.readlines()):
+            num = i + 1
+            if to and num > to:
+                break
+            if start == None or num >= start:
+                d = line.split()[0]
+                checked.append(d)
+                try:
+                    labs[labs.description == d].clientresult.unique().astype(np.float64)
+                except ValueError:
+                    not_cleaned.append(d)
+
+    return checked, not_cleaned
 
 
 def regen_labs_data(dire=PROPATH):

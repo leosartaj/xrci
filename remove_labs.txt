@@ -138,6 +138,9 @@ vdrl,_csf
 hsv-1_dna
 leukemia/lymphomia_flow_result
 us_lab_specimen_type
+orgcomm9
+india_ink
+fungal_culture,_csf
 
 # Less than 5 entries
 
