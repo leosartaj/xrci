@@ -222,6 +222,30 @@ biopsy_culture
 hcv_comment
 throat_culture,_strep_only
 culture_for_actinomyces
+urine_cannabinoids
+urine_cocaine_metabolite
+urine_opiates
+urine_phencyclidine
+mycobacterium_bld_cx
+tacrolimus
+rbc_product_type
+results:
+fluid_reference_range
+fluid_tube
+fluid_type
+cmv_cx_source
+herpes_cx_source
+culture_virus
+viral_cx_source
+scan
+reference
+performing_laboratory
+status
+specimen_source
+test_requested
+final_result
+culture_stool
+ova_and_parasites_screen
 
 # Less than 5 entries
 

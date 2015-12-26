@@ -272,18 +272,6 @@ def _pro_gfr(labs):
     return labs
 
 
-def _pro_pot(labs):
-    """
-    potassium correction
-    All units are in meq/l
-    Normal range between 3.5-5.0 meq/l
-    correct clientresults
-    """
-    pot = labs.description == 'potassium'
-    labs.ix[(pot) & (labs.clientresult == 'to_follow'), 'clientresult'] = np.nan
-    return labs
-
-
 def _pro_clean_clientresults(labs):
     """
     creatine_kinase
@@ -392,11 +380,18 @@ def _pro_clean_clientresults(labs):
 
     sedimentation_rate
     normal range : 0 - 29 mm/hr
+
+    potassium correction
+    All units are in meq/l
+    Normal range between 3.5-5.0 meq/l
+    correct clientresults
     """
 
     labs.ix[labs.clientresult == "----", 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == '&#x20;'), 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == 'see_below'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == 'to_follow'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == '*'), 'clientresult'] = np.nan
 
     glo = labs.description == 'globulin'
     labs.ix[(glo) & (labs.clientresult == '-2.2'), 'clientresult'] = 2.2
@@ -408,6 +403,10 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mpv_previously_reported_as:___10.4_fm'), 'clientresult'] = 10.4
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_rdw_previously_reported_as:___17.6__h_%'), 'clientresult'] = 17.6
+    labs.ix[labs.clientresult == 'cannot_perform_cell_count_due_to_degeneration_of_cells.""', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_determine_differential_due_to_distortion_of_white_blood_cells', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'cannot_perform_cell_count_due_to_degeneration_of_cells.""', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'unable_to_determine_differential_due_to_distortion_of_white_blood_cells', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
@@ -426,6 +425,8 @@ def _pro_clean_clientresults(labs):
     labs.ix[labs.clientresult == "---__12/22/11_0657_---_eos#m_previously_reported_as:___0.1_mm3", 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "---__12/22/11_0656_---_eos%m_previously_reported_as:___1_#_%", 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == "see_scanned_report_in_emr"), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == '2-5'), 'clientresult'] = 3.5
+    labs.ix[(labs.clientresult == '1_/hpf'), 'clientresult'] = 1
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -665,22 +666,32 @@ def _pro_cat(labs):
     nit = ((labs.description == 'nitrites') | (labs.description == "urn/csf_streptococcal_antigen") | (labs.description == 'c._difficile_dna_pcr')
             | (labs.description == 'hiv_ag/ab') | (labs.description == 'stool_occult_blood_1') | (labs.description == 'occult_blood,_fecal_#1')
             | (labs.description == 'hep_b_core_ab,_igm') | (labs.description == 'poc_urine_pregnancy_result')
-            | (labs.description == 'hepatitis_a_ab,_total') | (labs.description == 'antinuclear_antibodies') | (labs.description == 'c.difficile_toxin')
-            | (labs.description == 'blastomyces_dermat._cf') | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
-            | (labs.description == 'poc_occult_blood_result') | (labs.description == 'occult_blood,_gastric') | (labs.description == 'poc_strep,_quick_result')
+            | (labs.description == 'hepatitis_a_ab,_total') | (labs.description == 'antinuclear_antibodies') 
+            | (labs.description == 'c.difficile_toxin' )| (labs.description == 'blastomyces_dermat._cf') 
+            | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
+            | (labs.description == 'poc_occult_blood_result') | (labs.description == 'occult_blood,_gastric') 
+            | (labs.description == 'poc_strep,_quick_result')| (labs.description == 'rotavirus,_stool') 
+            | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
+            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg') 
+            | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
+            | (labs.description == 'poc_strep,_quick_result')
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
-            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg'))
+            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
+            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab'))
+
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
     labs.ix[nit & (labs.clientresult == 'neg'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'equivocal'), 'clientresult'] = 0.5
     labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
+    labs.ix[nit & (labs.clientresult == 'pos'), 'clientresult'] = 1
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
             | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes')
             | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling')
-            | (labs.description == 'microcytosis') | (labs.description == 'legionella_pneu_urinary_ag') | (labs.description == 'urine_sperm'))
+            | (labs.description == 'microcytosis') | (labs.description == 'legionella_pneu_urinary_ag') | (labs.description == 'urine_sperm') 
+            | (labs.description == 'yeast') | (labs.description == 'dohle_bodies'))
 
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
@@ -797,6 +808,55 @@ def _pro_cat(labs):
     labs.ix[((rr) & (labs.clientresult == "art_ref_range")), 'clientresult'] = 1
     labs.ix[((rr) & (labs.clientresult == "ven_ref_range")), 'clientresult'] = 2
 
+    labs.ix[labs.clientresult == 'massive', 'clientresult'] = 5
+    labs.ix[labs.clientresult == 'many', 'clientresult'] = 4
+
+    sta = labs.description == 'fluid_appearance'
+    labs.ix[((sta) & (labs.clientresult == "clear")), 'clientresult'] = 0
+    labs.ix[((sta) & (labs.clientresult == "opaque")), 'clientresult'] = 0.5
+    labs.ix[((sta) & (labs.clientresult == "milky")), 'clientresult'] = 1
+    labs.ix[((sta) & (labs.clientresult == "hazy")), 'clientresult'] = 1.5
+    labs.ix[((sta) & (labs.clientresult == "grossly_bloody")), 'clientresult'] = 2
+    labs.ix[((sta) & (labs.clientresult == "cloudy")), 'clientresult'] = 2.5
+    labs.ix[((sta) & (labs.clientresult == "bloody")), 'clientresult'] = 3
+    labs.ix[((sta) & (labs.clientresult == "turbid")), 'clientresult'] = 3.5
+    labs.ix[((sta) & (labs.clientresult == "slightly_cloudy")), 'clientresult'] = 4
+    labs.ix[((sta) & (labs.clientresult == "blood_tinged")), 'clientresult'] = 4.5
+
+    col = labs.description == 'fluid_color'
+    labs.ix[((col) & (labs.clientresult == "colorless")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "red")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "xanthochromic")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "light_pink")), 'clientresult'] = 1.5
+    labs.ix[((col) & (labs.clientresult == "orange")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "brown")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "amber")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "yellow")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "light_yellow")), 'clientresult'] = 4
+    labs.ix[((col) & (labs.clientresult == "pale_red")), 'clientresult'] = 4.5
+    labs.ix[((col) & (labs.clientresult == "white")), 'clientresult'] = 4.5
+
+    schi = labs.description == 'schistocytes'
+    labs.ix[((schi) & (labs.clientresult == "several")), 'clientresult'] = 4
+    
+    intu = labs.description == 'intubated?_y/n'
+    labs.ix[((intu) & (labs.clientresult == "yes")), 'clientresult'] = 1
+    labs.ix[((intu) & (labs.clientresult == "no")), 'clientresult'] = 0
+
+    wbcc = labs.description == 'urine_wbc_clumps'
+    labs.ix[((wbcc) & (labs.clientresult == "occ")), 'clientresult'] = 0
+    labs.ix[((wbcc) & (labs.clientresult == "few")), 'clientresult'] = 1
+    labs.ix[((wbcc) & (labs.clientresult == "occasional")), 'clientresult'] = 2
+    
+    hept = labs.description == 'hepatitis_b_surface_antibody'
+    labs.ix[((hept) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
+    labs.ix[((hept) & (labs.clientresult == "reactive")), 'clientresult'] = 1
+
+    ty = labs.description == 'rheumatoid_factor'
+    labs.ix[((ty) & (labs.clientresult == "negative")), 'clientresult'] = 50
+    labs.ix[((ty) & (labs.clientresult == "positive")), 'clientresult'] = 70
+
+
     return labs
 
 
@@ -817,7 +877,6 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = labs[(labs.description.str[-1] != '$')]
 
     labs = _pro_gfr(labs)
-    labs = _pro_pot(labs)
     labs = _pro_cat(labs)
     labs = _pro_clean_clientresults(labs)
 
