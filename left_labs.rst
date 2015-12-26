@@ -18,3 +18,5 @@ Not processed Labs
 * coarsely_granular_casts
 * finely_granular_casts
 * urine_crystals
+* rmsf,igg,eia
+* q_fever_phase_ii
