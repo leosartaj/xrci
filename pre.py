@@ -808,7 +808,6 @@ def _pro_cat(labs):
     labs.ix[((rr) & (labs.clientresult == "art_ref_range")), 'clientresult'] = 1
     labs.ix[((rr) & (labs.clientresult == "ven_ref_range")), 'clientresult'] = 2
 
-    yeast = labs.description == 'yeast'
     labs.ix[labs.clientresult == 'massive', 'clientresult'] = 5
     labs.ix[labs.clientresult == 'many', 'clientresult'] = 4
 
