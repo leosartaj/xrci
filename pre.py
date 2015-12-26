@@ -660,11 +660,6 @@ def _pro_cat(labs):
     labs.ix[((stb) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((stb) & (labs.clientresult == "positive")), 'clientresult'] = 1
 
-
-
-
-
-
     return labs
 
 
