@@ -15,3 +15,5 @@ Not processed Labs
 * blood
 * color
 * transitional_epi_cells
+* coarsely_granular_casts
+* finely_granular_casts
