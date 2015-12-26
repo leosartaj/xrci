@@ -141,6 +141,29 @@ us_lab_specimen_type
 orgcomm9
 india_ink
 fungal_culture,_csf
+hbsag_screen
+wbc_morphology_comment
+labcorp_misc_test_name
+misc_test_results
+heparin_induced_plt_aby_result
+pathology_interpretation
+bronchial_brush_culture
+culture_for_nocardia
+placenta_culture
+std_source
+poc_comment_3
+allen_test_performed_by
+renal_epithelial_cells
+urinalysis_comments
+aspergillus_flavus
+immunofixation
+catheter_tip_culture
+nose_(nares)_culture
+culture_for_vre_only
+biopsy_culture
+hcv_comment
+throat_culture,_strep_only
+culture_for_actinomyces
 
 # Less than 5 entries
 
