@@ -2,18 +2,11 @@
 Preprocessing of data
 """
 
-import os, sys
-
+import sys
 import numpy as np
 import pandas as pd
 
-
-TRAINPATH = 'datasets/train'
-PROPATH = 'datasets/pro'
-
-
-def _get_path(dire, fName):
-    return os.path.join(os.path.expanduser(dire), fName)
+from util import get_path, TRAINPATH, PROPATH
 
 
 def icd_9_codes(dire=TRAINPATH, save=PROPATH):
@@ -23,7 +16,7 @@ def icd_9_codes(dire=TRAINPATH, save=PROPATH):
 
     returns: pd.DataFrame
     """
-    labels = pd.read_csv(_get_path(dire, 'train_label.csv'))
+    labels = pd.read_csv(get_path(dire, 'train_label.csv'))
     icd_9 = labels.columns[1:].astype(np.float64)
     names = np.array(['pne', 'cao', 'seps', 'chf', 'hfu', 'ami', 'pulm_ei',
                       'cshf', 'sseps', 'sepshock', 'cdhf', 'intes_infec',
@@ -47,7 +40,7 @@ def icd_9_codes(dire=TRAINPATH, save=PROPATH):
 
     data = pd.DataFrame({'icd_9': icd_9, 'names': names, 'description': desc})
     if save:
-        data.to_csv(_get_path(save, 'icd_9.csv'), index=False)
+        data.to_csv(get_path(save, 'icd_9.csv'), index=False)
 
     return data
 
@@ -59,20 +52,20 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     Replace icd_9 codes with the appropriate names
     Replace NaN instances with -1.
     """
-    labels = pd.read_csv(_get_path(dire, 'train_label.csv'))
+    labels = pd.read_csv(get_path(dire, 'train_label.csv'))
 
     lsort = labels.sort_values('id_', ascending=True)
     lsort = lsort.reset_index()
     del lsort['index']
 
-    icd_9 = pd.read_csv(_get_path(save, 'icd_9.csv'))
+    icd_9 = pd.read_csv(get_path(save, 'icd_9.csv'))
     assert all(lsort.columns[1:]) == all(icd_9.icd_9)
     lsort.columns = np.concatenate([['id'], icd_9.names])
     assert len(lsort.columns) == 20
 
     lsort = lsort.fillna(-1)
     if save:
-        lsort.to_csv(_get_path(save, 'label.csv'), index=False)
+        lsort.to_csv(get_path(save, 'label.csv'), index=False)
 
     return lsort
 
@@ -85,7 +78,7 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     lower all the column values of gender, maritalstatus, ethnicgroup,
     admitspeciality
     """
-    static = pd.read_csv(_get_path(dire, 'train_Static_data.csv'))
+    static = pd.read_csv(get_path(dire, 'train_Static_data.csv'))
 
     static = static.sort_values('id', ascending=True)
     static = static.reset_index()
@@ -96,7 +89,7 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
                              replace('-', '_') if isinstance(x, str) else x)
 
     if save:
-        static.to_csv(_get_path(save, 'static.csv'), index=False)
+        static.to_csv(get_path(save, 'static.csv'), index=False)
 
     return static
 
@@ -110,7 +103,7 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
     lower all the column names
     lower values in measure column, replace ' ' by '_'
     """
-    vitals = pd.read_csv(_get_path(dire, 'train_RawVitalData.csv'))
+    vitals = pd.read_csv(get_path(dire, 'train_RawVitalData.csv'))
 
     vitals = vitals.sort_values(['Episode', 'ObservationDate'], ascending=True)
     vitals = vitals.reset_index()
@@ -125,7 +118,7 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
                                              replace(' ', '_'))
 
     if save:
-        vitals.to_csv(_get_path(save, 'vitals.csv'), index=False)
+        vitals.to_csv(get_path(save, 'vitals.csv'), index=False)
 
     return vitals
 
@@ -136,7 +129,7 @@ def remove_rows(dire=TRAINPATH, save=PROPATH):
     Computes pd.DataFrame again and again until error free.
     Very poor efficiency. Avoid it's usage.
     """
-    fpath = _get_path(dire, 'train_RawLabData.csv')
+    fpath = get_path(dire, 'train_RawLabData.csv')
     rows = []
     while True:
         try:
@@ -147,7 +140,7 @@ def remove_rows(dire=TRAINPATH, save=PROPATH):
             row = line[line.index('line') + 5:line.index(',')]
             rows.append(int(row) - 1)
     if save:
-        labs.to_csv(_get_path(save, 'labs_cut.csv'), index=False)
+        labs.to_csv(get_path(save, 'labs_cut.csv'), index=False)
 
     return labs, rows
 
@@ -157,8 +150,8 @@ def correct_lab_data(dire=PROPATH):
     Removes Irregularities in CSV train_RawLabData.csv
     call remove_rows first
     """
-    files = [_get_path(dire,'labs_cut.csv'),'correctedLabData.csv']
-    with open(_get_path(dire,'labs_correct.csv'),'w') as newFile:
+    files = [get_path(dire,'labs_cut.csv'), 'corrected_lab_data.csv']
+    with open(get_path(dire,'labs_correct.csv'),'w') as newFile:
         for fOld in files:
             with open(fOld) as Old:
                 for lines in Old.readlines():
@@ -174,7 +167,7 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     lower values in columns, replace ' ' by '_'
     Drop duplicates
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
+    labs = pd.read_csv(get_path(dire, 'labs_correct.csv'))
 
     labs = labs.sort_values(['Episode', 'ObservationDate'], ascending=True)
     labs = labs.reset_index()
@@ -202,13 +195,13 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     labs = labs.drop_duplicates()
 
     if save:
-        labs.to_csv(_get_path(save, 'labs_basic.csv'), index=False)
+        labs.to_csv(get_path(save, 'labs_basic.csv'), index=False)
 
     return labs
 
 
 def remove_desc(dire=PROPATH, save=PROPATH):
-    labs = pd.read_csv(_get_path(dire, 'labs_basic.csv'))
+    labs = pd.read_csv(get_path(dire, 'labs_basic.csv'))
 
     desc = []
     with open('remove_labs.txt') as f:
@@ -226,24 +219,7 @@ def remove_desc(dire=PROPATH, save=PROPATH):
     labs = labs[~rem]
 
     if save:
-        labs.to_csv(_get_path(save, 'labs_remove.csv'), index=False)
-
-    return labs
-
-
-def bfill(labs, desc, key):
-    """
-    fills the 'key' clientresults
-    uses bfill method
-    bfill's only for same descriptions
-    """
-    see = labs.clientresult == key
-    if type(desc) == str:
-        desc = labs.description == desc
-    ids = labs[(desc) & (see)].id.unique()
-    for i in ids:
-        labs.ix[(desc) & (labs.id == i) & (see), 'clientresult'] = np.nan
-        labs.ix[(desc) & (labs.id == i), 'clientresult'] = labs.ix[(desc) & (labs.id == i), 'clientresult'].fillna(method='bfill')
+        labs.to_csv(get_path(save, 'labs_remove.csv'), index=False)
 
     return labs
 
@@ -666,13 +642,13 @@ def _pro_cat(labs):
     nit = ((labs.description == 'nitrites') | (labs.description == "urn/csf_streptococcal_antigen") | (labs.description == 'c._difficile_dna_pcr')
             | (labs.description == 'hiv_ag/ab') | (labs.description == 'stool_occult_blood_1') | (labs.description == 'occult_blood,_fecal_#1')
             | (labs.description == 'hep_b_core_ab,_igm') | (labs.description == 'poc_urine_pregnancy_result')
-            | (labs.description == 'hepatitis_a_ab,_total') | (labs.description == 'antinuclear_antibodies') 
-            | (labs.description == 'c.difficile_toxin' )| (labs.description == 'blastomyces_dermat._cf') 
+            | (labs.description == 'hepatitis_a_ab,_total') | (labs.description == 'antinuclear_antibodies')
+            | (labs.description == 'c.difficile_toxin' )| (labs.description == 'blastomyces_dermat._cf')
             | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
-            | (labs.description == 'poc_occult_blood_result') | (labs.description == 'occult_blood,_gastric') 
-            | (labs.description == 'poc_strep,_quick_result')| (labs.description == 'rotavirus,_stool') 
+            | (labs.description == 'poc_occult_blood_result') | (labs.description == 'occult_blood,_gastric')
+            | (labs.description == 'poc_strep,_quick_result')| (labs.description == 'rotavirus,_stool')
             | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
-            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg') 
+            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
             | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
             | (labs.description == 'poc_strep,_quick_result')
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
@@ -690,7 +666,7 @@ def _pro_cat(labs):
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
             | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes')
             | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling')
-            | (labs.description == 'microcytosis') | (labs.description == 'legionella_pneu_urinary_ag') | (labs.description == 'urine_sperm') 
+            | (labs.description == 'microcytosis') | (labs.description == 'legionella_pneu_urinary_ag') | (labs.description == 'urine_sperm')
             | (labs.description == 'yeast') | (labs.description == 'dohle_bodies'))
 
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
@@ -838,7 +814,7 @@ def _pro_cat(labs):
 
     schi = labs.description == 'schistocytes'
     labs.ix[((schi) & (labs.clientresult == "several")), 'clientresult'] = 4
-    
+
     intu = labs.description == 'intubated?_y/n'
     labs.ix[((intu) & (labs.clientresult == "yes")), 'clientresult'] = 1
     labs.ix[((intu) & (labs.clientresult == "no")), 'clientresult'] = 0
@@ -847,7 +823,7 @@ def _pro_cat(labs):
     labs.ix[((wbcc) & (labs.clientresult == "occ")), 'clientresult'] = 0
     labs.ix[((wbcc) & (labs.clientresult == "few")), 'clientresult'] = 1
     labs.ix[((wbcc) & (labs.clientresult == "occasional")), 'clientresult'] = 2
-    
+
     hept = labs.description == 'hepatitis_b_surface_antibody'
     labs.ix[((hept) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
     labs.ix[((hept) & (labs.clientresult == "reactive")), 'clientresult'] = 1
@@ -870,7 +846,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     Correct categorical columns
     Correct clientresults
     """
-    labs = pd.read_csv(_get_path(dire, 'labs_remove.csv'))
+    labs = pd.read_csv(get_path(dire, 'labs_remove.csv'))
 
     del labs['chstandard']
     labs = labs[(labs.clientresult != 'canceled')]
@@ -881,28 +857,25 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_clean_clientresults(labs)
 
     if save:
-        labs.to_csv(_get_path(save, 'labs.csv'), index=False)
+        labs.to_csv(get_path(save, 'labs.csv'), index=False)
 
     return labs
 
 
-def assign_labs(start, gap, dire=PROPATH):
-    labs = pd.read_csv(_get_path(dire, 'labs.csv'))
+def regen_labs_data(dire=PROPATH):
+    pro_labs_basic(dire, dire)
+    remove_desc(dire, dire)
+    labs = pro_labs(dire, dire)
 
-    desc = labs.description.unique()
-
-    desc[:start].tofile('remaining.txt', sep='\n')
-    desc[start:start + gap].tofile('dushyant.txt', sep='\n')
-    desc[start + gap:start + 2*gap].tofile('sartaj.txt', sep='\n')
-    desc[start + 2*gap:].tofile('avinash.txt', sep='\n')
+    return labs
 
 
 def check_desc(fname, start=None, to=None, dire=PROPATH):
     """
-    returns checked, not cleaned arrays
+    checks labs.csv for uncleaned descriptions
     """
     not_cleaned, checked = [], []
-    labs = pd.read_csv(_get_path(dire, 'labs.csv'))
+    labs = pd.read_csv(get_path(dire, 'labs.csv'))
 
     with open(fname) as f:
         for i, line in enumerate(f.readlines()):
@@ -918,14 +891,6 @@ def check_desc(fname, start=None, to=None, dire=PROPATH):
                     not_cleaned.append(d)
 
     return checked, not_cleaned
-
-
-def regen_labs_data(dire=PROPATH):
-    pro_labs_basic(dire, dire)
-    remove_desc(dire, dire)
-    labs = pro_labs(dire, dire)
-
-    return labs
 
 
 def process(dire=TRAINPATH, save=PROPATH):
