@@ -60,18 +60,18 @@ source=                     (removed)
 band_neutrophil             0-5 normal range blood related
 metamyelocytes              0-2 %
 urine_benzodiazepine        can cause cardiac arrest ..heart related
-urine_cannabinoids
-urine_cocaine_metabolite
-urine_opiates
-urine_phencyclidine
-inr_poc_result
-yeast
-mycobacterium_bld_cx
-tacrolimus
-fld__polynucleated_cell
-fluid_appearance
-fluid_color
-fluid_lymphocytes
+urine_cannabinoids          (removed)
+urine_cocaine_metabolite    (removed)
+urine_opiates               (removed)
+urine_phencyclidine         (removed)
+inr_poc_result              (removed) ratio of pt at normal and test
+yeast                       categorical yeast presence
+mycobacterium_bld_cx        (removed) culture to recover from TB
+tacrolimus                  (removed) drug
+fld__polynucleated_cell     related to cardiovascular diseases
+fluid_appearance            related to above
+fluid_color                 related to above
+fluid_lymphocytes           
 fluid_macrophage
 fluid_mesothelial_cells
 fluid_monocytes

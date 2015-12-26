@@ -116,6 +116,12 @@ delivery_system
 liters_per_min
 site
 source=
+urine_cannabinoids
+urine_cocaine_metabolite
+urine_opiates
+urine_phencyclidine
+mycobacterium_bld_cx
+tacrolimus
 
 # Less than 5 entries
 

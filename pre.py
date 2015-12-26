@@ -647,7 +647,8 @@ def _pro_cat(labs):
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
             | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes') 
-            | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling'))
+            | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling')
+            | (labs.description == 'yeast'))
 
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
@@ -775,6 +776,35 @@ def _pro_cat(labs):
     labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
     
+    yeast = labs.description == 'yeast'
+    labs.ix[labs.clientresult == 'massive', 'clientresult'] = 5
+    labs.ix[labs.clientresult == 'many', 'clientresult'] = 4
+
+    sta = labs.description == 'fluid_appearance'
+    labs.ix[((sta) & (labs.clientresult == "clear")), 'clientresult'] = 0
+    labs.ix[((sta) & (labs.clientresult == "opaque")), 'clientresult'] = 0.5
+    labs.ix[((sta) & (labs.clientresult == "milky")), 'clientresult'] = 1
+    labs.ix[((sta) & (labs.clientresult == "hazy")), 'clientresult'] = 1.5
+    labs.ix[((sta) & (labs.clientresult == "grossly_bloody")), 'clientresult'] = 2
+    labs.ix[((sta) & (labs.clientresult == "cloudy")), 'clientresult'] = 2.5
+    labs.ix[((sta) & (labs.clientresult == "bloody")), 'clientresult'] = 3
+    labs.ix[((sta) & (labs.clientresult == "turbid")), 'clientresult'] = 3.5
+    labs.ix[((sta) & (labs.clientresult == "slightly_cloudy")), 'clientresult'] = 4
+    labs.ix[((sta) & (labs.clientresult == "blood_tinged")), 'clientresult'] = 4.5
+
+    col = labs.description == 'fluid_color'
+    labs.ix[((sta) & (labs.clientresult == "colorless")), 'clientresult'] = 0
+    labs.ix[((sta) & (labs.clientresult == "red")), 'clientresult'] = 0.5
+    labs.ix[((sta) & (labs.clientresult == "xanthochromic")), 'clientresult'] = 1
+    labs.ix[((sta) & (labs.clientresult == "light_pink")), 'clientresult'] = 1.5
+    labs.ix[((sta) & (labs.clientresult == "orange")), 'clientresult'] = 2
+    labs.ix[((sta) & (labs.clientresult == "brown")), 'clientresult'] = 2.5
+    labs.ix[((sta) & (labs.clientresult == "amber")), 'clientresult'] = 3
+    labs.ix[((sta) & (labs.clientresult == "yellow")), 'clientresult'] = 3.5
+    labs.ix[((sta) & (labs.clientresult == "light_yellow")), 'clientresult'] = 4
+    labs.ix[((sta) & (labs.clientresult == "pale_red")), 'clientresult'] = 4.5
+    labs.ix[((sta) & (labs.clientresult == "white")), 'clientresult'] = 4.5
+
     return labs
 
 
