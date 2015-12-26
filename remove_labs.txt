@@ -36,6 +36,34 @@ pattemp
 chromogranin_a
 5-hydroxyindoleacetate,ur_mg/24hrs
 adenosine_deaminase,_pleural
+sample_type
+comment
+fungal_culture,_other
+afb_culture
+percent_saturation
+uibc
+number_of_cells_counted
+rbc_priority
+rbc_quantity
+01_-___blood_type
+01_-___product_code
+01_-___status_info
+01_-___unit_number
+01_-_product_id
+02_-___blood_type
+02_-___product_code
+02_-___status_info
+02_-___unit_number
+02_-_product_id
+03_-___blood_type
+03_-___product_code
+03_-___status_info
+03_-___unit_number
+03_-_product_id
+delivery_system
+liters_per_min
+site
+source=
 
 # Less than 5 entries
 

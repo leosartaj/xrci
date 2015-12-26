@@ -1,72 +1,65 @@
-o2_saturation,_calculated
-pco2
-ph,_blood_gas
-po2
-sample_type
-total_co2
-comment
-fungal_culture,_other
-afb_culture
-d-dimer_automated
-schistocytes
-iron
-percent_saturation
-total_iron_binding_capacity
-uibc
-hypochromia
-ferritin
-pth_intact
-vitamin_d_(25_hydroxy)
-target_cells
-c-peptide
-stool_appearance
-stool_color
-stool_occult_blood_1
-coarsely_granular_casts
-actl_poc_result
-basophilic_stippling
-finely_granular_cast
-atypical_lymphs
-number_of_cells_counted
-haptoglobin
-nucleated_rbc
-creatine_kinase_mb_isoenzyme
-troponin_ultra
-high_density_lipoprotein
-low_density_lipoprotein
-very_low_density_lipid
-rbc_priority
-rbc_product_type
-rbc_quantity
-01_-___blood_type
-01_-___product_code
-01_-___status_info
-01_-___unit_number
-01_-_product_id
-02_-___blood_type
-02_-___product_code
-02_-___status_info
-02_-___unit_number
-02_-_product_id
-03_-___blood_type
-03_-___product_code
-03_-___status_info
-03_-___unit_number
-03_-_product_id
-allen's_test
-delivery_system
-intubated?_y/n
-liters_per_min
-site
-results:
-lactic_acid
-phosphorous
-indirect_bilirubin
-thyroid_stimulating_hormone
-source=
-band_neutrophil
-metamyelocytes
-urine_benzodiazepine
+o2_saturation,_calculated   95-100 O2 saturation in blood
+pco2                        35-45 mmHg blood gas CO2 
+ph,_blood_gas               7.38-7.42 
+po2                         80-100 mmHg blood gas O2
+total_co2                   23-29 mEq/L
+d-dimer_automated           0.5 mcg/ml related to clot and patient health
+schistocytes                fragmented part of rbc to check healthiness
+iron                        50 -170 ug/dl
+total_iron_binding_capacity 50-177  
+hypochromia                 related to blood 
+ferritin                    11-336 liver diseases
+pth_intact                  10 - 55 pg/mL phosphate and vitamin D related
+vitamin_d_(25_hydroxy)      20-50 ng/mL control calcium and phosphorus in blood
+target_cells                related to blood cells
+c-peptide                   0.51-2.72 ng/mL related to diabetes
+stool_appearance            related to intestine or tatti
+stool_color                 related to intestinal infection or tatti
+stool_occult_blood_1        related to instesinal infection or tatti
+coarsely_granular_casts     kidney related diseases
+actl_poc_result             300 normal range clotting time of blood
+basophilic_stippling        related to blood 
+finely_granular_cast        related to kidney
+atypical_lymphs             2-10 viral if it is greater
+number_of_cells_counted     (removed)
+haptoglobin                 40 - 165 liver diseases and bile related
+nucleated_rbc               17 %
+creatine_kinase_mb_isoenzyme related to heart attack
+troponin_ultra              0.062 related to heart attack
+high_density_lipoprotein    40-60 mg/dL Good Cholestrol,lower artery disease risks
+low_density_lipoprotein     70 -189 mg/dL Bad cholestrol , related to stroke or heart disease
+very_low_density_lipid      2 - 30 mg/dL Very bad cholestrol
+rbc_priority                (removed)
+rbc_product_type            red blood cells description
+01_-___blood_type           (removed)
+01_-___product_code         (removed)
+01_-___status_info          (removed)
+01_-___unit_number          (removed)
+01_-_product_id             (removed)
+02_-___blood_type           (removed)
+02_-___product_code         (removed)
+02_-___status_info          (removed)
+02_-___unit_number          (removed)
+02_-_product_id             (removed)
+03_-___blood_type           (removed)
+03_-___product_code         (removed)
+03_-___status_info          (removed)
+03_-___unit_number          (removed)
+03_-_product_id             (removed)
+allen's_test                already done
+delivery_system             (removed)
+intubated?_y/n              0 or 1 related to intestine
+liters_per_min              (removed)  
+site                        (removed)
+results:                    (removed) methicillin ...causes infections
+lactic_acid                 normal value 0.5 - 1.0
+phosphorous                 normal value range 2.5 - 4.5 mg/dL
+indirect_bilirubin          0.4 mg/dL
+thyroid_stimulating_hormone 0.4 - 4.2
+source=                     (removed)
+band_neutrophil             0-5 normal range blood related
+metamyelocytes              0-2 %
+urine_benzodiazepine        can cause cardiac arrest ..heart related
 urine_cannabinoids
 urine_cocaine_metabolite
 urine_opiates

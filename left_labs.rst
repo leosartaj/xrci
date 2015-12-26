@@ -14,3 +14,5 @@ Not processed Labs
 * appearance
 * blood
 * color
+* coarsely_granular_casts
+* finely_granular_casts
