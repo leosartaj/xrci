@@ -425,6 +425,7 @@ def _pro_clean_clientresults(labs):
     labs.ix[labs.clientresult == "---__12/22/11_0656_---_ne%m_previously_reported_as:___79_#_h_%", 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "---__12/22/11_0657_---_eos#m_previously_reported_as:___0.1_mm3", 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "---__12/22/11_0656_---_eos%m_previously_reported_as:___1_#_%", 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == "see_scanned_report_in_emr"), 'clientresult'] = np.nan
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -550,12 +551,8 @@ def _pro_cat(labs):
     hepatitis_a_ab,_total
     cleaned
 
-    dropped cannot_perform_cell_count_due_to_degeneration_of_cells."",
-            unable_to_determine_differential_due_to_distortion_of_white_blood_cells
-            unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.
-            uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.
-            date_/_time_next_dose_:_unknown
-
+    acetones_/_ketones
+    cleaned
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -665,15 +662,25 @@ def _pro_cat(labs):
     labs.ix[leu & (labs.clientresult == '1+'), 'clientresult'] = 2
     labs.ix[leu & (labs.clientresult == '2+'), 'clientresult'] = 3
 
-    nit = labs.description == 'nitrites'
+    nit = ((labs.description == 'nitrites') | (labs.description == "urn/csf_streptococcal_antigen") | (labs.description == 'c._difficile_dna_pcr')
+            | (labs.description == 'hiv_ag/ab') | (labs.description == 'stool_occult_blood_1') | (labs.description == 'occult_blood,_fecal_#1')
+            | (labs.description == 'hep_b_core_ab,_igm') | (labs.description == 'poc_urine_pregnancy_result')
+            | (labs.description == 'hepatitis_a_ab,_total') | (labs.description == 'antinuclear_antibodies') | (labs.description == 'c.difficile_toxin')
+            | (labs.description == 'blastomyces_dermat._cf') | (labs.description == 'poc_nitrazine') | (labs.description == 'e.chaffeensis_igm_titer')
+            | (labs.description == 'poc_occult_blood_result') | (labs.description == 'occult_blood,_gastric') | (labs.description == 'poc_strep,_quick_result')
+            | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
+            | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg'))
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
     labs.ix[nit & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[nit & (labs.clientresult == 'equivocal'), 'clientresult'] = 0.5
     labs.ix[nit & (labs.clientresult == 'positive'), 'clientresult'] = 1
 
     mic = ((labs.description == 'anisocytosis') | (labs.description == 'microcytic') | (labs.description == 'ovalocytes') |
             (labs.description == 'poikilocytosis') | (labs.description == 'polychromasia') | (labs.description == 'macrocytosis')
             | (labs.description == 'toxic_vacuolation') | (labs.description == 'burr_cells') | (labs.description == 'schistocytes')
-            | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling'))
+            | (labs.description == 'hypochromia') | (labs.description == 'target_cells') | (labs.description == 'basophilic_stippling')
+            | (labs.description == 'microcytosis') | (labs.description == 'legionella_pneu_urinary_ag') | (labs.description == 'urine_sperm'))
 
     labs.ix[((mic) & (labs.clientresult == 'rare')), 'clientresult'] = 0.5
     labs.ix[((mic) & (labs.clientresult == 'few')), 'clientresult'] = 1
@@ -681,15 +688,8 @@ def _pro_cat(labs):
     labs.ix[((mic) & (labs.clientresult == 'slight-mod')), 'clientresult'] = 1.5
     labs.ix[((mic) & (labs.clientresult == 'mild')), 'clientresult'] = 1.5
     labs.ix[((mic) & (labs.clientresult == 'moderate')), 'clientresult'] = 2
+    labs.ix[((mic) & (labs.clientresult == 'many')), 'clientresult'] = 2.5
     labs.ix[((mic) & (labs.clientresult == 'marked')), 'clientresult'] = 3
-
-    pcr = labs.description == 'c._difficile_dna_pcr'
-    labs.ix[((pcr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
-    labs.ix[((pcr) & (labs.clientresult == 'positive')), 'clientresult'] = 1
-
-    hiv = labs.description == 'hiv_ag/ab'
-    labs.ix[((hiv) & (labs.clientresult == "non_reactive")), 'clientresult'] = 0
-    labs.ix[((hiv) & (labs.clientresult == "reactive")), 'clientresult'] = 1
 
     hbab = (labs.description == 'hepatitis_b_sur_ab')
     labs.ix[((hbab) & (labs.clientresult == "non-reactive")), 'clientresult'] = 0
@@ -734,10 +734,6 @@ def _pro_cat(labs):
     labs.ix[((stb) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((stb) & (labs.clientresult == "positive")), 'clientresult'] = 1
 
-    stb = labs.description == 'stool_occult_blood_1'
-    labs.ix[((stb) & (labs.clientresult == "negative")), 'clientresult'] = 0
-    labs.ix[((stb) & (labs.clientresult == "positive")), 'clientresult'] = 1
-
     bct = labs.description == 'bacteria,_auto'
     labs.ix[((bct) & (labs.clientresult == "none")), 'clientresult'] = 0
     labs.ix[((bct) & (labs.clientresult == "innumerable")), 'clientresult'] = 1
@@ -755,46 +751,51 @@ def _pro_cat(labs):
     hcm = labs.description == 'hyaline_casts,_manual'
     labs.ix[((hcm) & (labs.clientresult == "innumerable")), 'clientresult'] = 200
 
-    obf = labs.description == 'occult_blood,_fecal_#1'
-    labs.ix[((obf) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((obf) & (labs.clientresult == "negative")), 'clientresult'] = 0
-
-    cdt = labs.description == 'c.difficile_toxin'
-    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
-    labs.ix[((cdt) & (labs.clientresult == "tnp")), 'clientresult'] = np.nan
-
     fsw = labs.description == 'fecal_smear_for_wbc'
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_no_white_blood_cells")), 'clientresult'] = 0
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_rare_white_blood_cells")), 'clientresult'] = 1
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_few_white_blood_cells")), 'clientresult'] = 2
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_many_white_blood_cells")), 'clientresult'] = 3
 
-    hs = labs.description == 'hbsag_screen'
-    labs.ix[((hs) & (labs.clientresult == "confirm._indicated"))] = np.nan
-
     hab = labs.description == 'hcv_ab'
     labs.ix[((hab) & (labs.clientresult == "see_scanned_report_in_emr"))] = np.nan
 
-    cdt = labs.description == 'hep_b_core_ab,_igm'
-    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    cdt = labs.description == 'm-spike,%'
+    labs.ix[((cdt) & (labs.clientresult == "not_observed")), 'clientresult'] = np.nan
 
-    cdt = labs.description == 'poc_urine_pregnancy_result'
-    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    ak = labs.description == "acetones_/_ketones"
+    labs.ix[((ak) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((ak) & (labs.clientresult == "pos_1:8_small")), 'clientresult'] = 1
+    labs.ix[((ak) & (labs.clientresult == "pos_1:16_moderate")), 'clientresult'] = 2
+    labs.ix[((ak) & (labs.clientresult == "pos_1:16_large")), 'clientresult'] = 3
 
-    cdt = labs.description == 'hepatitis_a_ab,_total'
-    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    csa = labs.description == "csf_appearance"
+    labs.ix[((csa) & (labs.clientresult == "clear")), 'clientresult'] = 0
+    labs.ix[((csa) & (labs.clientresult == "hazy")), 'clientresult'] = 1
 
-    cdt = labs.description == 'antinuclear_antibodies'
-    labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    csc = labs.description == "csf_color"
+    labs.ix[((csc) & (labs.clientresult == "colorless")), 'clientresult'] = 0
+    labs.ix[((csc) & (labs.clientresult == "yellow")), 'clientresult'] = 1
+    labs.ix[((csc) & (labs.clientresult == "pink")), 'clientresult'] = 2
 
     cdt = labs.description == 'heparinized_sample'
     labs.ix[((cdt) & (labs.clientresult == "yes")), 'clientresult'] = 1
     labs.ix[((cdt) & (labs.clientresult == "no")), 'clientresult'] = 0
+
+    ctn = labs.description == "csf_tube_number"
+    labs.ix[((ctn) & (labs.clientresult == "tube_#1")), 'clientresult'] = 1
+    labs.ix[((ctn) & (labs.clientresult == "tube_#2")), 'clientresult'] = 2
+    labs.ix[((ctn) & (labs.clientresult == "tube_#3")), 'clientresult'] = 3
+    labs.ix[((ctn) & (labs.clientresult == "tube_#4")), 'clientresult'] = 4
+
+    rii = labs.description == 'rmsf,igg,ifa'
+    labs.ix[((rii) & (labs.clientresult == "1:64")), 'clientresult'] = 1
+    labs.ix[((rii) & (labs.clientresult == "1:128")), 'clientresult'] = 2
+    labs.ix[((rii) & (labs.clientresult == "1:256")), 'clientresult'] = 3
+
+    rr = labs.description == 'reference_ranges'
+    labs.ix[((rr) & (labs.clientresult == "art_ref_range")), 'clientresult'] = 1
+    labs.ix[((rr) & (labs.clientresult == "ven_ref_range")), 'clientresult'] = 2
 
     return labs
 
