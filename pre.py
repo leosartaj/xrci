@@ -408,6 +408,24 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mcv_previously_reported_as:___70.0__l_fl'), 'clientresult'] = 70.0
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_mpv_previously_reported_as:___10.4_fm'), 'clientresult'] = 10.4
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_rdw_previously_reported_as:___17.6__h_%'), 'clientresult'] = 17.6
+    labs.ix[labs.clientresult == 'cannot_perform_cell_count_due_to_degeneration_of_cells.""', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_determine_differential_due_to_distortion_of_white_blood_cells', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "lc_results_scanned_in", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__11/25/11_0858_---_plat_previously_reported_as:___116__l_mm3", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/18/11_0745_---_semi-quant_gluc_previously_reported_as:___51__l", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "trough_vanc_date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_ly#m_previously_reported_as:___1.2_mm3", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_ly%m_previously_reported_as:___10_#_l_%", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0657_---_mo#m_previously_reported_as:___1.2__h_mm3", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_mo%m_previously_reported_as:___10_#_%", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_ne#m_previously_reported_as:___9.4__h_mm3", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_ne%m_previously_reported_as:___79_#_h_%", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0657_---_eos#m_previously_reported_as:___0.1_mm3", 'clientresult'] = np.nan
+    labs.ix[labs.clientresult == "---__12/22/11_0656_---_eos%m_previously_reported_as:___1_#_%", 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == "see_scanned_report_in_emr"), 'clientresult'] = np.nan
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -424,9 +442,19 @@ def _pro_clean_clientresults(labs):
     labs.ix[((ms) & (labs.clientresult == "comment:")), 'clientresult'] = np.nan
     labs.ix[((ms) & (labs.clientresult == "not_observed")), 'clientresult'] = 0
 
+    cdt = labs.description == 'm-spike,%'
+    labs.ix[((cdt) & (labs.clientresult == "not_observed")), 'clientresult'] = np.nan
+
+    ri = labs.description == 'rifampin'
+    labs.ix[((ri) & (labs.clientresult == "1_<=1")), 'clientresult'] = np.nan
+
     ch = ['<', '>', '_', '=', '_']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
+
+    ch = ['g/dl', '_', '_m', '+']
+    for c in ch:
+        labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'] = labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'].str[:-len(c)]
 
     return labs
 
@@ -525,14 +553,6 @@ def _pro_cat(labs):
 
     acetones_/_ketones
     cleaned
-
-    dropped cannot_perform_cell_count_due_to_degeneration_of_cells."",
-            unable_to_determine_differential_due_to_distortion_of_white_blood_cells
-            unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.
-            uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.
-            date_/_time_next_dose_:_unknown
-            unable_to_perform_due_to_sample_viscosity.
-
     """
     hemo = labs.description == 'hemolysis_index'
     labs.ix[(hemo) & (labs.clientresult == 'no_hemolysis'), 'clientresult'] = 0
@@ -758,14 +778,15 @@ def _pro_cat(labs):
     labs.ix[((csc) & (labs.clientresult == "yellow")), 'clientresult'] = 1
     labs.ix[((csc) & (labs.clientresult == "pink")), 'clientresult'] = 2
 
+    cdt = labs.description == 'heparinized_sample'
+    labs.ix[((cdt) & (labs.clientresult == "yes")), 'clientresult'] = 1
+    labs.ix[((cdt) & (labs.clientresult == "no")), 'clientresult'] = 0
+
     ctn = labs.description == "csf_tube_number"
     labs.ix[((ctn) & (labs.clientresult == "tube_#1")), 'clientresult'] = 1
     labs.ix[((ctn) & (labs.clientresult == "tube_#2")), 'clientresult'] = 2
     labs.ix[((ctn) & (labs.clientresult == "tube_#3")), 'clientresult'] = 3
     labs.ix[((ctn) & (labs.clientresult == "tube_#4")), 'clientresult'] = 4
-
-    rig = labs.description == "rmsf,igm"
-    labs.ix[((rig) & (labs.clientresult == "see_scanned_report_in_emr")), 'clientresult'] = np.nan
 
     rii = labs.description == 'rmsf,igg,ifa'
     labs.ix[((rii) & (labs.clientresult == "1:64")), 'clientresult'] = 1
@@ -775,13 +796,6 @@ def _pro_cat(labs):
     rr = labs.description == 'reference_ranges'
     labs.ix[((rr) & (labs.clientresult == "art_ref_range")), 'clientresult'] = 1
     labs.ix[((rr) & (labs.clientresult == "ven_ref_range")), 'clientresult'] = 2
-
-    labs.ix[labs.clientresult == 'cannot_perform_cell_count_due_to_degeneration_of_cells.""', 'clientresult'] = np.nan
-    labs.ix[labs.clientresult == 'unable_to_determine_differential_due_to_distortion_of_white_blood_cells', 'clientresult'] = np.nan
-    labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
-    labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
-    labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
-    labs.ix[labs.clientresult == "unable_to_perform_due_to_sample_viscosity.", 'clientresult'] = np.nan
 
     return labs
 
