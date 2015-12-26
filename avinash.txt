@@ -1,169 +1,168 @@
-bacteria,_auto
-epithelial_cell,_auto
-hyaline_casts,_auto
-red_blood_cell,_auto
-white_blood_cell,_auto
-basophils_#_(auto)
-basophils_%_(auto)
-eosinophils_#_(auto)
-eosinophils_%_(auto)
-immature_granulocyte
-immature_granulocyte_#
-lymphocytes_#_(auto)
-lymphocytes_%_(auto)
-monocytes_#_(auto)
-monocytes_%_(auto)
-neutrophils_#_(auto)
-neutrophils_%_(auto)
-casts,_manual
-urine_culture
-amoxicillin/clavulanate
-cefotaxime
-ceftazidime
-cefuroxime
-gentamycin
-levofloxacin
-nitrofurantoin
-piperacillin
-piperacillin/tazobactam
-sulfamethoxizole/trimethoprim
-tetracycline
-trimethoprim
-poc_sample_type
-poc_troponin_i_result
-b-peptide
-sputum_culture
-poc_comment_2
-c_reactive_protein_inflamation
-surgical_culture
-anaerobic_culture
-chloramphenicol
-poc_bun
-poc_chloride
-poc_glucose
-poc_hematocrit
-poc_hemoglobin
-poc_potassium
-poc_sodium
-poc_base_excess
-poc_comment
-poc_critical_comment
-poc_hco3
-poc_ionized_calcium
-poc_patient_temperature
-poc_pco2
-poc_pco2(pt_temp)
-poc_ph
-poc_ph(pt_temp)
-poc_po2
-poc_po2_(pt_temp)
-poc_so2
-poc_tco2
-h._pylori_stool_ag,_eia
-myelocyte_%
-chemistry_call
-u_methlenedioxymethamphetamine
-urine_amphetamines
-urine_benzodiazepines
-urine_methadone
-poc_act_kaolin_result
-poc_fio2
-macrocytosis
-hyaline_casts,_manual
-oxacillin
-free_t4
-ictotest,_urine
-drvvt_mix
-russell's_viper_venom
-body_fluid_source
-body_fluid_amylase_result
-body_fluid_ldh_result
-body_fluid_t_protein_result
-body_fluid_appearance
-body_fluid_color
-body_fluid_lymphocytes
-body_fluid_monocytes
-body_fluid_neutrophils
-body_fluid_other_cells
-body_fluid_rbc
-body_fluid_wbc
-body_fluid_culture
-body_fluid_path_comment
-afp,serum,tumor_marker
-hiv_screen
-trough_gentamicin_level
-digoxin_level
-corrected_retic
-raw_reticulocyte
-saturated_transferrin
-globulin,total
-protein,total,serum
-collect_date_1
-occult_blood,_fecal_#1
-c.difficile_toxin
-fecal_smear_for_wbc
-hbsag_screen
-hcv_ab
-hep_b_core_ab,_igm
-hcv_log10
-hep_c_quant
-poc_urine_pregnancy_result
-gamma_gt
-alpha-1-antitrypsin,serum
-synercid
-hep_b_surface_antigen
-hepatitis_a_ab,_total
-hepatitis_b_surface_ab
-antinuclear_antibodies
-blood_culture,_solitary
-wound_culture
-random_vancomycin_level
-d-dimer
-poc_lactic_acid
-peak_gentamicin_level
-ckmb
-cortisol_stimulation
-random_gentamicin_level
-poc_creatinine_result
-stool_culture
-result
-afb_smear
-nucleated_red_blood_cells
-carcinoembryonic_anitgen
-carbohydrate_ag_19-9
-hematology_comment
-poc_comment_4
-urine_creatinine_random
-urine_protein_random
-urine_sodium_random
-throat_culture
-platelet_aby_indirect_results
-platelet_assoc_aby_direct_res
-valproic_acid_level
-corrected_white_blood_count
-toxic_vacuolation
-bronchial_wash_culture
-fungal_culture,(except_blood)
-anti_centromere_b
-anti-dna_(ds)
-antichromatin_antibodies
-rnp_ab
-sjogren's_ss-a_ab
-sjogren's_ss-b_ab
-transitional_epi_cells
-mitochondrial_(m2)_antibody
-platelet_morphology_comments
-burr_cells
-albumin,u
-alpha-1-globulin,u
-alpha-2-globulin,u
-m-spike,%
-osmolality_urine
-urine_chloride_random
-urine_potassium_random
-bronchial_lavage_culture
-parathyroid_hormone
-azithromycin
+bacteria,_auto (mapped, remaining 1+,2+,4+ types)
+epithelial_cell,_auto (already clean)
+hyaline_casts,_auto (already clean)
+red_blood_cell,_auto (already clean)
+white_blood_cell,_auto (already clean)
+basophils_#_(auto) (removed)
+basophils_%_(auto) (already clean)
+eosinophils_#_(auto) (removed)
+eosinophils_%_(auto) (already clean)
+immature_granulocyte (already clean)
+immature_granulocyte_# (removed)
+lymphocytes_#_(auto) (removed)
+lymphocytes_%_(auto) (already clean)
+monocytes_#_(auto) (removed)
+monocytes_%_(auto) (already clean)
+neutrophils_#_(auto) (removed)
+neutrophils_%_(auto) (already clean)
+casts,_manual (cleaned categorical)
+urine_culture (removed)
+amoxicillin/clavulanate (removed)
+cefotaxime (removed)
+ceftazidime (removed)
+cefuroxime (removed)
+gentamycin (removed)
+levofloxacin (removed)
+nitrofurantoin (removed)
+piperacillin (removed)
+piperacillin/tazobactam (removed)
+sulfamethoxizole/trimethoprim (removed)
+tetracycline (removed)
+trimethoprim (removed)
+poc_sample_type (removed)
+poc_troponin_i_result (already clean)
+b-peptide (already clean)
+sputum_culture (removed)
+poc_comment_2 (removed)
+c_reactive_protein_inflamation (already clean)
+surgical_culture (removed)
+anaerobic_culture (removed)
+chloramphenicol (removed)
+poc_bun (already clean)
+poc_chloride (already clean)
+poc_glucose (already clean)
+poc_hematocrit (already clean)
+poc_hemoglobin (already clean)
+poc_potassium (already clean)
+poc_sodium (already clean)
+poc_base_excess (already clean)
+poc_comment (removed)
+poc_critical_comment (removed)
+poc_hco3 (already clean)
+poc_ionized_calcium (already clean)
+poc_patient_temperature (already clean)
+poc_pco2 (already clean)
+poc_pco2(pt_temp) (already clean)
+poc_ph (already clean)
+poc_ph(pt_temp) (already clean)
+poc_po2 (already clean)
+poc_po2_(pt_temp) (already clean)
+poc_so2 (already clean)
+poc_tco2 (already clean)
+h._pylori_stool_ag,_eia (removed)
+myelocyte_% (already clean)
+chemistry_call (removed)
+u_methlenedioxymethamphetamine (cleaned mapped)
+urine_amphetamines (cleaned mapped)
+urine_benzodiazepines (cleaned mapped)
+urine_methadone (cleaned mapped)
+poc_act_kaolin_result (already clean)
+poc_fio2 (already clean)
+macrocytosis (cleaned mapped)
+hyaline_casts,_manual (mapped string)
+oxacillin (removed)
+free_t4 (already clean)
+ictotest,_urine (removed)
+drvvt_mix (already clean)
+russell's_viper_venom (already clean)
+body_fluid_source (removed)
+body_fluid_amylase_result (already clean)
+body_fluid_ldh_result (already clean)
+body_fluid_t_protein_result (already clean)
+body_fluid_appearance (removed)
+body_fluid_color (removed)
+body_fluid_lymphocytes (cleaned)
+body_fluid_monocytes (cleaned)
+body_fluid_neutrophils (cleaned)
+body_fluid_other_cells (already clean)
+body_fluid_rbc (cleaned)
+body_fluid_wbc (cleaned)
+body_fluid_culture (removed)
+body_fluid_path_comment (removed)
+afp,serum,tumor_marker (already clean)
+hiv_screen (already clean)
+trough_gentamicin_level (cleaned)
+digoxin_level (already clean)
+corrected_retic (already clean)
+raw_reticulocyte (already clean)
+saturated_transferrin (already clean)
+globulin,total (already clean)
+protein,total,serum (already clean)
+collect_date_1 (removed)
+occult_blood,_fecal_#1 (cleaned)
+c.difficile_toxin (cleaned)
+fecal_smear_for_wbc (cleaned)
+hbsag_screen (cleaned)
+hcv_ab (cleaned)
+hep_b_core_ab,_igm (cleaned)
+hcv_log10 (already cleaned)
+hep_c_quant (already cleaned)
+poc_urine_pregnancy_result (cleaned)
+gamma_gt (AC)
+alpha-1-antitrypsin,serum (AC)
+synercid (AC)
+hep_b_surface_antigen (AC)
+hepatitis_a_ab,_total (C)
+hepatitis_b_surface_ab (AC)
+antinuclear_antibodies (C)
+blood_culture,_solitary (R)
+wound_culture (R)
+random_vancomycin_level (C)
+d-dimer (C)
+poc_lactic_acid (AC)
+peak_gentamicin_level (AC)
+ckmb (AC)
+cortisol_stimulation (R)
+random_gentamicin_level (AC)
+poc_creatinine_result (AC)
+stool_culture (R)
+result (R)
+afb_smear (R)
+nucleated_red_blood_cells (AC)
+carcinoembryonic_anitgen (AC)
+carbohydrate_ag_19-9 (AC)
+hematology_comment (R)
+poc_comment_4 (R)
+urine_creatinine_random (AC)
+urine_protein_random (AC)
+urine_sodium_random (AC)
+throat_culture (R)
+platelet_aby_indirect_results (R)
+platelet_assoc_aby_direct_res (R)
+valproic_acid_level (AC)
+corrected_white_blood_count (AC)
+toxic_vacuolation (C)
+bronchial_wash_culture (R)
+fungal_culture,(except_blood) (R)
+anti_centromere_b (AC)
+anti-dna_(ds) (AC)
+antichromatin_antibodies (AC)
+rnp_ab (AC)
+sjogren's_ss-a_ab (AC)
+sjogren's_ss-b_ab (AC)
+mitochondrial_(m2)_antibody (AC)
+platelet_morphology_comments (R)
+burr_cells (C)
+albumin,u (AC)
+alpha-1-globulin,u (AC)
+alpha-2-globulin,u (AC)
+m-spike,% (C)
+osmolality_urine  (AC)
+urine_chloride_random (AC)
+urine_potassium_random (AC)
+bronchial_lavage_culture (R)
+parathyroid_hormone (AC)
+azithromycin (AC)
 acetones_/_ketones
 urine_urea_nitrogen_random
 salicylate_level
@@ -199,7 +198,7 @@ csf_neutrophils
 urn/csf_streptococcal_antigen
 leukemia/lymphomia_flow_result
 us_lab_specimen_type
-wbc_morphology_comment
+wbc_morphology_comment (R)
 t3,_free
 legionella_pneu_urinary_ag
 histoplasma_ag,_urine
@@ -228,7 +227,7 @@ culture_for_nocardia
 placenta_culture
 eosinophil_count,_urine_result
 std_source
-poc_comment_3
+poc_comment_3 (R)
 angiotension_conv._enz
 body_fluid_triglyceride_result
 e.chaffeensis_igm_titer
@@ -237,7 +236,7 @@ allen_test_performed_by
 arterial_ph
 o2_saturation
 renal_epithelial_cells
-urinalysis_comments
+urinalysis_comments (R)
 gastrin_serum
 aspergillus_flavus
 iga,qn,serum
@@ -281,18 +280,18 @@ bhcg_urine_specific_gravity
 urn/csf_strep_pneumo_antigen
 benzodiazepines
 heparin_anti-xa
-hcv_comment
+hcv_comment (R)
 reference_ranges
 plasma_acth1
 csf_other_cells
-csf_path_comment
+csf_path_comment (R)
 myoglobin_urine_random
 ch50_total_complement
 genital_culture
 vitamin_d,25_hydroxy
 hsv_i/ii,igm
 c.difficile_toxins_a_b,_eia
-rbc_morphology_comment
+rbc_morphology_comment (R)
 body_fluid_lipase_results
 direct_strep_a,_culture_if_neg
 throat_culture,_strep_only
