@@ -64,17 +64,17 @@ t3,free
 index_value_(aspergillus_ag)
 %_viability_immune_cell_function
 immune_cell_function
-anaplasma(hge,ehrlichia)smear
+anaplasma(hge,ehrlichia)smear r
 hepatitis_ev_ab_(igg)
-culture_cath_tip_(vascular)
-m_pneumoniae_ab_igm
+culture_cath_tip_(vascular) r
+m_pneumoniae_ab_igm left
 m_pneumoniae_ab_igg
 pth_related_protein
 usp_grav_confirm_by_ts_meter
 d_dimer
-notified_date/time
-read_back/verified_who
-sample_source
+notified_date/time r
+read_back/verified_who r
+sample_source r
 c_reactive_protein
 hemoglobin_a2
 hemoglobin_f
@@ -112,18 +112,18 @@ platelet_function_base
 platelet_function_p2y12
 alpha_angle
 expected_percent_lysis
-heparinized_sample
+heparinized_sample c
 kinetics
 maximum_amplitude
 percent_lysis_at_30_minutes
 rate
-sampling_time
+sampling_time r
 fio2
 positive_end-expiratory_pressure
 pressure_support_ventilation
 respiratory_rate
 tidal_volume
-ventilator_mode
+ventilator_mode r
 hemoglobin,_blood_gas
 o2hb,_measured_o2_sat
 heparin_induced_platelet_ab
@@ -133,7 +133,7 @@ segmented_neutrophils
 total_cell_count
 white_cell_count
 lactate_dehydrogenase
-gram_stain_with_culture
+gram_stain_with_culture r
 micro_total_protein
 protein/creatinine_ratio
 amikacin_random
@@ -149,119 +149,119 @@ factor_viii_inhibitor
 insulin
 vw_ristocetin_co_factor
 von_willebrand_factor_ag
-rapid_plasma_reagin
+rapid_plasma_reagin r
 epap
 ipap
 banded_neutrophils
-ampicillin
-erythromycin
-isolate
-penicillin
-vancomycin
-acid_fast_smear_with_culture
-culture_miscellaneous
-platelet_quantity
+ampicillin left
+erythromycin left
+isolate r
+penicillin left
+vancomycin left
+acid_fast_smear_with_culture r
+culture_miscellaneous r
+platelet_quantity r
 serum_k+
-culture_genital
-amikacin
-cefepime
-ciprofloxacin
-gentamicin
-imipenem
-tobramycin
-culture_medical_device
+culture_genital r
+amikacin left
+cefepime left
+ciprofloxacin left
+gentamicin left
+imipenem left
+tobramycin left
+culture_medical_device r
 lithium
 hu_ab,_ifa
 intact_parathyroid_hormone
-fungal_smear_with_culture
+fungal_smear_with_culture r
 complement_4
 complement_3
 anti-dna_(ds)_ab_qn
 rnp_antibodies
 smith_antibodies
 anti-myeloperoxidase_(mpo)_abs
-cytoplasmic_(c-anca)
-perinuclear_(p-anca)
+cytoplasmic_(c-anca) left
+perinuclear_(p-anca) left
 immunoglobulin_g
 ptt-la
 methemoglobin
-giant_platelets
+giant_platelets r
 osmolality
 procalcitonin
-urine_yeast
+urine_yeast left
 absolute_granulocyte_count
-platelet_estimate
-pathologist_review
-hypochromasia
-ertapenem
-nitrofurantion
-trimethoprim/sulfa
-microcytes
+platelet_estimate left
+pathologist_review r
+hypochromasia left
+ertapenem r
+nitrofurantion r
+trimethoprim/sulfa left
+microcytes r
 koh_prep-_not_skin,hair,nail
-blood_cell_morphology
+blood_cell_morphology r
 manual_platelet_scan
-anaerobic_isolate
-clindamycin
-inducible_clindamycin_resistance
-linezolid
+anaerobic_isolate r
+clindamycin r
+inducible_clindamycin_resistance left
+linezolid left
 oxacillin/naficillin
-rifampin
+rifampin left
 tetracyclin
-hla-a
-hla-b
-hla-cw
-hla-dqb1
-hla-drb1
-hla-drb_3,4,5_dna_typing
+hla-a r
+hla-b r
+hla-cw r
+hla-dqb1 r
+hla-drb1 r
+hla-drb_3,4,5_dna_typing r
 anti-nuclear_ab_eia_scrn
-ffp_quantity
-ampicillin/sulbactam
-aztreonam
-cefazolin
-ceftriaxone
-urine_transitional_epithelial_cells
+ffp_quantity r
+ampicillin/sulbactam left
+aztreonam left
+cefazolin left
+ceftriaxone left
+urine_transitional_epithelial_cells r
 antithrombin_activity
 ptt-la_mix
-04_-___blood_type
-04_-___product_code
-04_-___status_info
-04_-___unit_number
-04_-_product_id
+04_-___blood_type r
+04_-___product_code r
+04_-___status_info r
+04_-___unit_number r
+04_-_product_id r
 alpha-1-globulin
 alpha-2-globulin
 globulin,_total
-please_note:
-protein,_total,_serum
-antinuclear_antibodies,_ifa
+please_note: r
+protein,_total,_serum c
+antinuclear_antibodies,_ifa r
 note:
 total_volume
 immunoglobulin_m
 immunoglobulin_a
-name_of_test_ordered
-sputum_screen_results
+name_of_test_ordered r
+sputum_screen_results r
 vanillylmandelic_acid
-pip/tazobactam
+pip/tazobactam left
 mean_corpuscular_hemoglobin_concentration
-c_diff_amplification
+c_diff_amplification left
 levetiracetam
-legionella_species_culture
+legionella_species_culture r
 hctd
-panel_galileo
+panel_galileo r
 protein,_total,_urine
-meropenem
+meropenem r
 non-hdl_cholesterol
-05_-___blood_type
-05_-___product_code
-05_-___unit_number
-05_-_product_id
+05_-___blood_type r
+05_-___product_code r
+05_-___unit_number r
+05_-_product_id r
 modified_cockcroft-gault_crcl
 zinc,_plasma
 vitamin_c,_serum
-xme_status
-verify_3
-culture_respiratory_results:
-stomatocytes
-platelets
+xme_status r
+verify_3 r
+culture_respiratory_results: r
+stomatocytes left
+platelets c
 alt/sgpt
 ast/sgot
 blood_urea_nitrogen
@@ -269,32 +269,32 @@ glomerular_filtration_rate_cal
 lactic_dehydrogenase
 phosphorus
 poc_semi-quant_glucose_result
-trough_vancomycin_level
-chemistry
+trough_vancomycin_level c
+chemistry r
 bands_neutrophils_%
-lymphocytes_#_(manual)
-lymphocytes_%_(manual)
+lymphocytes_#_(manual) c
+lymphocytes_%_(manual) c
 metamyelocyte_%
-monocytes_#_(manual)
-monocytes_%_(manual)
-neutrophils_#_(manual)
-neutrophils_%_(manual)
+monocytes_#_(manual) c
+monocytes_%_(manual) c
+neutrophils_#_(manual) c
+neutrophils_%_(manual) c
 atypical_lymphocytes
 blast_cell_%
 reactive_lymphocytes
-blood_culture
-urine_source
-urine_albumin
-urine_leukocytes
-bacteria,_manual
-epithelial_cells,_manual
-red_blood_cells,_manual
-white_blood_cells,manual
+blood_culture r
+urine_source r
+urine_albumin r
+urine_leukocytes r
+bacteria,_manual left
+epithelial_cells,_manual left
+red_blood_cells,_manual left
+white_blood_cells,manual left
 basophils_#_(manual)
 basophils_%_(manual)
-eosinophils_#_(manual)
-eosinophils_%_(manual)
+eosinophils_#_(manual) c
+eosinophils_%_(manual) c
 promyelocyte_%
 tegretol_level_(carbamazepine)
-poc_comment_1
-mrsa_screen
+poc_comment_1 r
+mrsa_screen left
