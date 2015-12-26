@@ -771,6 +771,7 @@ def _pro_cat(labs):
     labs.ix[labs.clientresult == 'unable_to_preform_axccurate_test_because_of_mucoid_specimen._few_rbc_observed_on_wet_prep.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'uanable_to_count_because_of_mucoid_consistency.__wet_prep_show_massive_clumps_of_wbc,_few_rbc_observed.__many_bacteria_see.', 'clientresult'] = np.nan
     labs.ix[labs.clientresult == "date_/_time_next_dose_:_unknown", 'clientresult'] = np.nan
+    
     return labs
 
 
