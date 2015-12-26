@@ -12,45 +12,45 @@ m-spike c
 psa ac
 varicella__igg_eia ac
 toxoplasma_igg_ab ac
-adenovirus
-coronavirus_oc43
-influenza_a
-influenza_a/h3
-influenza_b
-mycoplasma_pneumoniae
-resp_syncytial_virus_(rsv)
-influenza_b_antigen
-histoplasma_ag
-source_(parvovirus_b19__dna,_pcr)
-dat_c3
-dat_igg
-elu
-i-time
-urine_crystals
-methotrexate
-thyroglobulin
-complement,total_(ch50)
-valproic_acid
-influenza_ab,type_a
-influenza_ab,type_b
-rbc_folate
-orgcomm9
-24_hr_ur_creat_cl__wt
-24_hr_ur_creat_cl_bsa
-24_hr_ur_creat_cl_ht
-urine_creat_concentration
-24_hr_ur_creatinine_clearance
-serum_creatinine
-india_ink
-fungal_culture,_csf
-protein,_total,_csf
-igg_serum
-albumin_csf
-igg_csf
-igg_index,_csf
-synthesis_rate_(igg)_csf
-albumin,_csf
-alpha_1_globulin,_csf
+adenovirus r
+coronavirus_oc43 r
+influenza_a r
+influenza_a/h3 r
+influenza_b r
+mycoplasma_pneumoniae r
+resp_syncytial_virus_(rsv) r
+influenza_b_antigen r
+histoplasma_ag r
+source_(parvovirus_b19__dna,_pcr) r
+dat_c3 r
+dat_igg r
+elu r
+i-time r
+urine_crystals left
+methotrexate ac
+thyroglobulin r
+complement,total_(ch50) r
+valproic_acid ac
+influenza_ab,type_a r
+influenza_ab,type_b r
+rbc_folate ac
+orgcomm9 r
+24_hr_ur_creat_cl__wt ac
+24_hr_ur_creat_cl_bsa ac
+24_hr_ur_creat_cl_ht ac
+urine_creat_concentration ac
+24_hr_ur_creatinine_clearance ac
+serum_creatinine ac
+india_ink r
+fungal_culture,_csf r
+protein,_total,_csf r
+igg_serum r
+albumin_csf r
+igg_csf r
+igg_index,_csf r
+synthesis_rate_(igg)_csf r
+albumin,_csf r
+alpha_1_globulin,_csf r
 alpha_2_globulin,_csf
 beta_globulin,_csf
 gamma_globulin,_csf
