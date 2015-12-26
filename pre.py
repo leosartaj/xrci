@@ -733,7 +733,7 @@ def _pro_cat(labs):
     cdt = labs.description == 'c.difficile_toxin'
     labs.ix[((cdt) & (labs.clientresult == "positive")), 'clientresult'] = 1
     labs.ix[((cdt) & (labs.clientresult == "negative")), 'clientresult'] = 0
-    labs.ix[((cdt) & (labs.clientresult == "tnp")), 'clientresult'] = nan
+    labs.ix[((cdt) & (labs.clientresult == "tnp")), 'clientresult'] = np.nan
 
     fsw = labs.description == 'fecal_smear_for_wbc'
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_no_white_blood_cells")), 'clientresult'] = 0
@@ -741,10 +741,10 @@ def _pro_cat(labs):
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_few_white_blood_cells")), 'clientresult'] = 2
     labs.ix[((fsw) & (labs.clientresult == "fecal_wbc:_many_white_blood_cells")), 'clientresult'] = 3
 
-    hs = labs.description == hbsag_screen
+    hs = labs.description == 'hbsag_screen'
     labs.ix[((hs) & (labs.clientresult == "confirm._indicated"))] = np.nan
 
-    hab = labs.description == hcv_ab
+    hab = labs.description == 'hcv_ab'
     labs.ix[((hab) & (labs.clientresult == "see_scanned_report_in_emr"))] = np.nan
 
     cdt = labs.description == 'hep_b_core_ab,_igm'
