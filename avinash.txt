@@ -163,35 +163,35 @@ urine_potassium_random (AC)
 bronchial_lavage_culture (R)
 parathyroid_hormone (AC)
 azithromycin (AC)
-acetones_/_ketones
-urine_urea_nitrogen_random
-salicylate_level
-alcohol
-tylenol_level
-venous_ph
-vent
-venous_hco3
-venous_o2_saturation
-venous_pco2
-venous_po2
-venous_total_co2
-bleeding_time
-body_fluid_glucose_result
-levetiracetam_(keppra)
-gabapentin
-achr_blocking_abs,_serum
-t4
-viral_cult_src
-csf_total_protein
-csf_appearance
-csf_color
-csf_rbc_count
-csf_tube_number
-csf_wbc_count
-csf_culture
-vdrl,_csf
-hsv-1_dna
-microcytosis
+acetones_/_ketones C
+urine_urea_nitrogen_random AC
+salicylate_level AC
+alcohol AC
+tylenol_level AC
+venous_ph AC
+vent R
+venous_hco3 AC
+venous_o2_saturation AC
+venous_pco2 AC
+venous_po2 AC
+venous_total_co2 AC
+bleeding_time AC
+body_fluid_glucose_result C
+levetiracetam_(keppra) AC
+gabapentin R
+achr_blocking_abs,_serum AC
+t4 AC
+viral_cult_src R
+csf_total_protein AC
+csf_appearance C
+csf_color C
+csf_rbc_count AC
+csf_tube_number C
+csf_wbc_count rem
+csf_culture R
+vdrl,_csf R
+hsv-1_dna R
+microcytosis C
 csf_lymphocytes
 csf_monocytes
 csf_neutrophils
