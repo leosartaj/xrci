@@ -33,6 +33,9 @@ drawopid
 drawtime
 opid
 pattemp
+chromogranin_a
+5-hydroxyindoleacetate,ur_mg/24hrs
+adenosine_deaminase,_pleural
 sample_type
 comment
 fungal_culture,_other

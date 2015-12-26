@@ -417,6 +417,10 @@ def _pro_clean_clientresults(labs):
 
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
+    ms = labs.description == 'm-spike'
+    labs.ix[((ms) & (labs.clientresult == "comment:")), 'clientresult'] = np.nan
+    labs.ix[((ms) & (labs.clientresult == "not_observed")), 'clientresult'] = 0
+
     ch = ['<', '>', '_', '=']
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
