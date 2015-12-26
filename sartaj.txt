@@ -12,23 +12,23 @@ m-spike c
 psa ac
 varicella__igg_eia ac
 toxoplasma_igg_ab ac
-adenovirus
-coronavirus_oc43
-influenza_a
-influenza_a/h3
-influenza_b
-mycoplasma_pneumoniae
-resp_syncytial_virus_(rsv)
-influenza_b_antigen
-histoplasma_ag
-source_(parvovirus_b19__dna,_pcr)
-dat_c3
-dat_igg
-elu
-i-time
-urine_crystals
-methotrexate
-thyroglobulin
+adenovirus r
+coronavirus_oc43 r
+influenza_a r
+influenza_a/h3 r
+influenza_b r
+mycoplasma_pneumoniae r
+resp_syncytial_virus_(rsv) r
+influenza_b_antigen r
+histoplasma_ag r
+source_(parvovirus_b19__dna,_pcr) r
+dat_c3 r
+dat_igg r
+elu r
+i-time r
+urine_crystals left
+methotrexate ac
+thyroglobulin r
 complement,total_(ch50)
 valproic_acid
 influenza_ab,type_a

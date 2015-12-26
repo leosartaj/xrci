@@ -17,3 +17,4 @@ Not processed Labs
 * transitional_epi_cells
 * coarsely_granular_casts
 * finely_granular_casts
+* urine_crystals
