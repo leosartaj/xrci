@@ -816,6 +816,29 @@ def assign_labs(start, gap, dire=PROPATH):
     desc[start + 2*gap:].tofile('avinash.txt', sep='\n')
 
 
+def check_desc(fname, start=None, to=None, dire=PROPATH):
+    """
+    returns checked, not cleaned arrays
+    """
+    not_cleaned, checked = [], []
+    labs = pd.read_csv(_get_path(dire, 'labs.csv'))
+
+    with open(fname) as f:
+        for i, line in enumerate(f.readlines()):
+            num = i + 1
+            if to and num > to:
+                break
+            if start == None or num >= start:
+                d = line.split()[0]
+                checked.append(d)
+                try:
+                    labs[labs.description == d].clientresult.unique().astype(np.float64)
+                except ValueError:
+                    not_cleaned.append(d)
+
+    return checked, not_cleaned
+
+
 def regen_labs_data(dire=PROPATH):
     pro_labs_basic(dire, dire)
     remove_desc(dire, dire)
