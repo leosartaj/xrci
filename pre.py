@@ -857,6 +857,20 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_clean_clientresults(labs)
 
     if save:
+        labs.to_csv(get_path(save, 'labs_almost.csv'), index=False)
+
+    return labs
+
+
+def final_labs(dire=PROPATH, save=PROPATH):
+    labs = pd.read_csv(get_path(dire, 'labs_almost.csv'))
+
+    del labs['observationdescription']
+    del labs['unitofmeasure']
+
+    labs = labs.dropna()
+
+    if save:
         labs.to_csv(get_path(save, 'labs.csv'), index=False)
 
     return labs
@@ -866,6 +880,9 @@ def regen_labs_data(dire=PROPATH):
     pro_labs_basic(dire, dire)
     remove_desc(dire, dire)
     labs = pro_labs(dire, dire)
+    # should be uncommented when done
+    # or better to merge final_labs with pro_labs
+    #final_labs(dire, dire)
 
     return labs
 
