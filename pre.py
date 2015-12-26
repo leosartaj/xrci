@@ -452,7 +452,7 @@ def _pro_clean_clientresults(labs):
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
-    ch = ['g/dl', '_', '_m', '_']
+    ch = ['g/dl', '_', '_m', '+']
     for c in ch:
         labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'] = labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'].str[:-len(c)]
 
