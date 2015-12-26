@@ -172,6 +172,7 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     Drop SequenceNum (not needed)
     lower all the column names
     lower values in columns, replace ' ' by '_'
+    Drop duplicates
     """
     labs = pd.read_csv(_get_path(dire, 'labs_correct.csv'))
 
@@ -197,6 +198,8 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     labs['clientresult'] = (labs['clientresult'].
                                       map(lambda x: x.lower().replace(' ', '_')
                                           if not x is np.nan else x))
+
+    labs = labs.drop_duplicates()
 
     if save:
         labs.to_csv(_get_path(save, 'labs_basic.csv'), index=False)
@@ -681,7 +684,7 @@ def _pro_cat(labs):
     labs.ix[((qtg) & (labs.clientresult == "indeterminate")), 'clientresult'] = np.nan
     labs.ix[((qtg) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((qtg) & (labs.clientresult == "positive")), 'clientresult'] = 1
-    
+
     sta = labs.description == 'stool_appearance'
     labs.ix[((sta) & (labs.clientresult == "liquid")), 'clientresult'] = 0
     labs.ix[((sta) & (labs.clientresult == "loose")), 'clientresult'] = 0.5
@@ -692,7 +695,7 @@ def _pro_cat(labs):
     labs.ix[((sta) & (labs.clientresult == "solid")), 'clientresult'] = 3
     labs.ix[((sta) & (labs.clientresult == "firm")), 'clientresult'] = 3.5
     labs.ix[((sta) & (labs.clientresult == "rcvd_on_card")), 'clientresult'] = 4
-    
+
     stc = labs.description == 'stool_color'
     labs.ix[((stc) & (labs.clientresult == "greenish_brown")), 'clientresult'] = 0
     labs.ix[((stc) & (labs.clientresult == "dark_brown")), 'clientresult'] = 1
@@ -813,6 +816,14 @@ def assign_labs(start, gap, dire=PROPATH):
     desc[start + 2*gap:].tofile('avinash.txt', sep='\n')
 
 
+def regen_labs_data(dire=PROPATH):
+    pro_labs_basic(dire, dire)
+    remove_desc(dire, dire)
+    labs = pro_labs(dire, dire)
+
+    return labs
+
+
 def process(dire=TRAINPATH, save=PROPATH):
     """
     Preprocesses all of the data
@@ -825,9 +836,7 @@ def process(dire=TRAINPATH, save=PROPATH):
     pro_vitals(dire, save)
     remove_rows(dire, save)
     correct_lab_data(save)
-    pro_labs_basic(save, save)
-    remove_desc(save, save)
-    pro_labs(save, save)
+    regen_labs_data(save)
 
 
 if __name__ == '__main__':
