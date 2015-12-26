@@ -1,17 +1,17 @@
-phenobarbital
-phenytoin
-total_protein,_24_hr_urine_w/o_creatinine
-carbamazepine
-hsv_1_igg_herpeselect_ab
-hsv_2_igg_herpeselect_ab
-chromogranin_a
-5-hydroxyindoleacetate,ur_mg/24hrs
-5-hydroxyindoleacetate,ur_mg/l
-adenosine_deaminase,_pleural
-m-spike
-psa
-varicella__igg_eia
-toxoplasma_igg_ab
+phenobarbital ac
+phenytoin ac
+total_protein,_24_hr_urine_w/o_creatinine ac
+carbamazepine ac
+hsv_1_igg_herpeselect_ab ac
+hsv_2_igg_herpeselect_ab ac
+chromogranin_a r
+5-hydroxyindoleacetate,ur_mg/24hrs r
+5-hydroxyindoleacetate,ur_mg/l ac
+adenosine_deaminase,_pleural r
+m-spike c
+psa ac
+varicella__igg_eia ac
+toxoplasma_igg_ab ac
 adenovirus
 coronavirus_oc43
 influenza_a
