@@ -10,6 +10,18 @@ import pandas as pd
 from util import PROPATH, FEAPATH, get_path, mkdir
 
 
+def fea_vitals(dire=PROPATH, save=FEAPATH):
+    vitals = pd.read_csv(get_path(dire, 'vitals.csv'))
+    vp = vitals.pivot(columns='measure', values='result')
+    vp['id'] = vitals.id
+    vp['icu'] = vitals.icu
+    vp['timestamp'] = vitals.timestamp
+    vp.columns = np.array(vp.columns)
+    vpg = vp.groupby(['id', 'timestamp'], as_index=False).mean()
+
+    return vpg
+
+
 def labs_features(fname, dire=PROPATH):
     labs = pd.read_csv(get_path(dire, 'labs.csv'))
 
@@ -25,18 +37,6 @@ def labs_features(fname, dire=PROPATH):
         query = query | (labs.description == f)
 
     return labs[query]
-
-
-def fea_vitals(dire=PROPATH, save=FEAPATH):
-    vitals = pd.read_csv(get_path(dire, 'vitals.csv'))
-    vp = vitals.pivot(columns='measure', values='result')
-    vp['id'] = vitals.id
-    vp['icu'] = vitals.icu
-    vp['timestamp'] = vitals.timestamp
-    vp.columns = np.array(vp.columns)
-    vpg = vp.groupby(['id', 'timestamp'], as_index=False).mean()
-
-    return vpg
 
 
 def fea_labs(labs):
