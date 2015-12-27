@@ -65,7 +65,7 @@ def fea_labs(labs):
 
 
 def pne(dire=PROPATH, save=FEAPATH):
-    features, ranges = get_features_ranges('pne_feature')
+    features, ranges = get_features_ranges('pne_feature.txt')
     labs = labs_features(features, dire)
     labs = fea_labs(labs)
 
