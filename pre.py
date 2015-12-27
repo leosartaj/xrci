@@ -429,7 +429,7 @@ def _pro_clean_clientresults(labs):
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
-    ch = ['g/dl', '_', '_m', '+']
+    ch = ['g/dl', 'eu/dl', '_', '_m', '+']
     for c in ch:
         labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'] = labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'].str[:-len(c)]
 
@@ -901,8 +901,6 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
     labs.ix[((col) & (labs.clientresult == "normal")), 'clientresult'] = 1
-    labs.ix[((col) & (labs.clientresult == "0.2_eu/d")), 'clientresult'] = 2
-    labs.ix[((col) & (labs.clientresult == "1.0_eu/d")), 'clientresult'] = 2.5
     labs.ix[((col) & (labs.clientresult == "0.2")), 'clientresult'] = 2
     labs.ix[((col) & (labs.clientresult == "1.0")), 'clientresult'] = 2.5
     labs.ix[((col) & (labs.clientresult == "2.0")), 'clientresult'] = 3
