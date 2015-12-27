@@ -10,6 +10,23 @@ import pandas as pd
 from util import PROPATH, FEAPATH, get_path, mkdir
 
 
+def get_features_ranges(fname):
+    features, ranges = [], {}
+    with open(fname) as f:
+        for line in f.readlines():
+            if not line.startswith('#') and line != '\n':
+                ls = line.split()
+                features.append(ls[0])
+                ranges[ls[0]] = float(ls[1])
+
+    return features, ranges
+
+
+def fill_normal_values(df, ranges):
+    df = df.groupby('id', as_index=False).fillna(method='pad')
+    return df.fillna(ranges)
+
+
 def fea_vitals(dire=PROPATH, save=FEAPATH):
     vitals = pd.read_csv(get_path(dire, 'vitals.csv'))
     vp = vitals.pivot(columns='measure', values='result')
@@ -22,25 +39,22 @@ def fea_vitals(dire=PROPATH, save=FEAPATH):
     return vpg
 
 
-def labs_features(fname, dire=PROPATH):
+def labs_features(features, dire=PROPATH):
     labs = pd.read_csv(get_path(dire, 'labs.csv'))
-
-    features = []
-    with open(fname) as f:
-        for line in f.readlines():
-            if not line.startswith('#') and line != '\n':
-                features.append(line.split()[0])
 
     query = labs.description == features[0]
 
     for f in features[1:]:
         query = query | (labs.description == f)
 
-    return labs[query]
+    labs = labs[query]
+
+    labs.clientresult = labs.clientresult.astype(np.float64)
+
+    return labs
 
 
 def fea_labs(labs):
-    labs.clientresult = labs.clientresult.astype(np.float64)
     lp = labs.pivot(columns='description', values='clientresult')
     lp['id'] = labs.id
     lp['timestamp'] = labs.timestamp
@@ -51,7 +65,8 @@ def fea_labs(labs):
 
 
 def pne(dire=PROPATH, save=FEAPATH):
-    labs = labs_features('pne_feature.txt', dire)
+    features, ranges = get_features_ranges('pne_feature')
+    labs = labs_features(features, dire)
     labs = fea_labs(labs)
 
     return labs
