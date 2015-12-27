@@ -856,6 +856,82 @@ def _pro_cat(labs):
     labs.ix[((ty) & (labs.clientresult == "negative")), 'clientresult'] = 50
     labs.ix[((ty) & (labs.clientresult == "positive")), 'clientresult'] = 70
 
+    col = labs.description == 'urine_bilirubin'
+    labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "small")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "small_(1+)")), 'clientresult'] = 1.5
+    labs.ix[((col) & (labs.clientresult == "moderate")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "moderate_(2+)")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "large")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "large_(3+)")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "color_interference")), 'clientresult'] = np.nan
+    labs.ix[((col) & (labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
+    
+    col = labs.description == 'urine_blood'
+    labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "small")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "small_(1+)")), 'clientresult'] = 1.5
+    labs.ix[((col) & (labs.clientresult == "moderate")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "moderate_(2+)")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "large")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "large_(3+)")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "color_interference")), 'clientresult'] = np.nan
+    labs.ix[((col) & (labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
+    labs.ix[((col) & (labs.clientresult == "3+_(large)")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "2+_(moderate)")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "1+_(small)")), 'clientresult'] = 1.5
+    
+    col = labs.description == 'urine_color'
+    labs.ix[((col) & (labs.clientresult == "colorless")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "light-yellow")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "yellow")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "amber")), 'clientresult'] = 1.5
+    labs.ix[((col) & (labs.clientresult == "orange")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "dark-brown")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "dark-yellow")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "light-red")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "red")), 'clientresult'] = 5
+    labs.ix[((col) & (labs.clientresult == "green")), 'clientresult'] = 4
+    labs.ix[((col) & (labs.clientresult == "brown")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "dark_yellow")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "pink")), 'clientresult'] = 1.5
+
+    col = labs.description == 'urine_ketones'
+    labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "small_(1+)")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "moderate_(2+)")), 'clientresult'] = 1.5
+    labs.ix[((col) & (labs.clientresult == "large_(3+)")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "40")), 'clientresult'] = 6
+    labs.ix[((col) & (labs.clientresult == "10")), 'clientresult'] = 4
+    labs.ix[((col) & (labs.clientresult == "20")), 'clientresult'] = 5
+    labs.ix[((col) & (labs.clientresult == "color_interference")), 'clientresult'] = np.nan
+    labs.ix[((col) & (labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
+    labs.ix[((col) & (labs.clientresult == "1+_(small)")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "2+_(moderate)")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "3+_(large)")), 'clientresult'] = 3.5
+    labs.ix[((col) & (labs.clientresult == "80")), 'clientresult'] = 7
+    labs.ix[((col) & (labs.clientresult == "150")), 'clientresult'] = 8
+    
+    col = labs.description == 'urine_nitrite'
+    labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "positive")), 'clientresult'] = 1
+    labs.ix[((labs.clientresult == "color_interference")), 'clientresult'] = np.nan
+    labs.ix[((labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
+    
+    col = labs.description == 'urine_urobilinogen'
+    labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
+    labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
+    labs.ix[((col) & (labs.clientresult == "normal")), 'clientresult'] = 1
+    labs.ix[((col) & (labs.clientresult == "0.2_eu/d")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "1.0_eu/d")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "0.2")), 'clientresult'] = 2
+    labs.ix[((col) & (labs.clientresult == "1.0")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "2.0")), 'clientresult'] = 3
+    labs.ix[((col) & (labs.clientresult == "4.0")), 'clientresult'] = 4
+    labs.ix[((col) & (labs.clientresult == "8.0")), 'clientresult'] = 5
 
     return labs
 
