@@ -916,6 +916,9 @@ def _pro_cat(labs):
     labs.ix[(labs.clientresult == "drawn_below_iv_mrh's_established_therapeutic_range_for_heparin_therapy_(prophylaxis___treatment_of_dvt/pe)_is_75_-_116_seconds."), 'clientresult'] = 75
     labs.ix[(labs.clientresult == "hdl_<10,_unable_to_calculate"), 'clientresult'] = np.nan
 
+    rbcv = labs.description == 'rbc'
+    labs.ix[((rbcv) & (labs.clientresult == 'rare')), 'clientresult'] = np.nan
+
     return labs
 
 
