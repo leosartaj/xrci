@@ -89,6 +89,11 @@ def set_y(df, dis):
     return df
 
 
+def normalize(df):
+    df.iloc[:, 2:-1] = df.iloc[:, 2:-1].apply(lambda x: (x - x.mean()) / x.std())
+    return df
+
+
 def labs_features(features, dire=PROPATH):
     labs = pd.read_csv(get_path(dire, 'labs.csv'))
 
@@ -139,9 +144,7 @@ def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
     vl = pd.merge(vl, static, on='id')
 
     vl = set_y(vl, dis)
-
-    del vl['id']
-    del vl['timestamp']
+    vl = normalize(vl)
 
     if save:
         vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
