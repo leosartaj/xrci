@@ -246,6 +246,12 @@ test_requested
 final_result
 culture_stool
 ova_and_parasites_screen
+estimated_gfr
+poc_patient_temperature 
+poc_pco2(pt_temp)
+poc_ph(pt_temp)
+poc_po2_(pt_temp)
+reference_ranges
 
 # Less than 5 entries
 
