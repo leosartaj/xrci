@@ -10,7 +10,7 @@ import pandas as pd
 from util import PROPATH, FEAPATH, get_path, mkdir
 
 
-def fea_vitals(dire=PROPATH, save=FEAPATH):
+def gen_vitals(dire=PROPATH, save=FEAPATH):
     vitals = pd.read_csv(get_path(dire, 'vitals.csv'))
     vp = vitals.pivot(columns='measure', values='result')
     vp['id'] = vitals.id
@@ -20,7 +20,7 @@ def fea_vitals(dire=PROPATH, save=FEAPATH):
     vpg = vp.groupby(['id', 'timestamp'], as_index=False).mean()
 
     if save:
-        vpg.to_csv(get_path(save, 'vitals_fea.csv'), index=False)
+        vpg.to_csv(get_path(save, 'vitals.csv'), index=False)
 
     return vpg
 
@@ -53,12 +53,12 @@ def merge_df(vitals, r_vitals, labs, r_labs):
     return vl
 
 
-def cummean(df):
+def cummean(df, cols):
     dfg = df.groupby('id', as_index=False)
     cc = dfg.cumcount() + 1
     cs = dfg.cumsum()
 
-    for c in df.columns[2:]:
+    for c in cols:
         df[c] = cs[c].div(cc, axis='index')
 
     return df
@@ -79,7 +79,6 @@ def cut_rows(df, labels):
 
 
 def set_y(df, dis):
-
     length =  df.groupby('id').apply(lambda x: x.shape[0])
 
     l = []
@@ -115,28 +114,45 @@ def fea_labs(labs):
     return lpg
 
 
-def get_featureset(dis, dire=PROPATH, save=FEAPATH):
+def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
     features, r_labs = get_features_ranges(dis + '_feature.txt')
     labs = labs_features(features, dire)
     labs = fea_labs(labs)
 
-    vitals = pd.read_csv(get_path(save, 'vitals_fea.csv'))
-    _, r_vitals = get_features_ranges('vitals.txt')
+    vitals = pd.read_csv(get_path(save, 'vitals.csv'))
+    del vitals['icu']
+    features_v, r_vitals = get_features_ranges('vitals.txt')
 
     labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
 
     vl = merge_df(vitals, r_vitals, labs, r_labs)
     vl = cut_rows(vl, labels)
-    vl = cummean(vl) # can be changed
+
+    cols = list(features)
+    cols.extend(features_v)
+    vl = cummean(vl, cols) # can be changed
+
     vl = vl.reset_index()
     del vl['index']
-    vl = set_y(vl, dis) # can be changed
+
+    static = pd.read_csv(get_path(dire, 'static.csv'))[['id', 'age', 'gender']]
+    vl = pd.merge(vl, static, on='id')
+
+    vl = set_y(vl, dis)
+
+    del vl['id']
+    del vl['timestamp']
+
+    if save:
+        vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
 
     return vl
 
 
 def process(dire=PROPATH, save=FEAPATH):
     mkdir(save)
+    gen_vitals(dire, save)
+    get_feature_set('pne', dire, save)
 
 
 if __name__ == '__main__':

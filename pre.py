@@ -88,6 +88,9 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     static = static.applymap(lambda x: x.lower().replace(' ', '_').
                              replace('-', '_') if isinstance(x, str) else x)
 
+    static.ix[(static.gender == 'm'), 'gender'] = 0
+    static.ix[(static.gender == 'f'), 'gender'] = 1
+
     if save:
         static.to_csv(get_path(save, 'static.csv'), index=False)
 
