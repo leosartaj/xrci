@@ -403,6 +403,8 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == "see_scanned_report_in_emr"), 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == '2-5'), 'clientresult'] = 3.5
     labs.ix[(labs.clientresult == '1_/hpf'), 'clientresult'] = 1
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hct_previously_reported_as:___28.2__l_%'), 'clientresult'] = 28.2
+    labs.ix[(labs.clientresult == '--__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -872,6 +874,7 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "green")), 'clientresult'] = 4
     labs.ix[((col) & (labs.clientresult == "brown")), 'clientresult'] = 3
     labs.ix[((col) & (labs.clientresult == "dark_yellow")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "straw")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "pink")), 'clientresult'] = 1.5
 
     col = labs.description == 'urine_ketones'
@@ -906,6 +909,8 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "2.0")), 'clientresult'] = 3
     labs.ix[((col) & (labs.clientresult == "4.0")), 'clientresult'] = 4
     labs.ix[((col) & (labs.clientresult == "8.0")), 'clientresult'] = 5
+
+    labs.ix[(labs.clientresult == "hdl_<10,_unable_to_calculate"), 'clientresult'] = np.nan
 
     return labs
 
