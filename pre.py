@@ -63,7 +63,7 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     lsort.columns = np.concatenate([['id'], icd_9.names])
     assert len(lsort.columns) == 20
 
-    lsort = lsort.fillna(-1)
+    lsort = lsort.fillna(0)
     if save:
         lsort.to_csv(get_path(save, 'label.csv'), index=False)
 
