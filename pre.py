@@ -404,7 +404,8 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '2-5'), 'clientresult'] = 3.5
     labs.ix[(labs.clientresult == '1_/hpf'), 'clientresult'] = 1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hct_previously_reported_as:___28.2__l_%'), 'clientresult'] = 28.2
-    labs.ix[(labs.clientresult == '--__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
+    labs.ix[(labs.clientreult == "---__11/25/11_0858_---_rbc_previously_reported_as:___4.03__l_mm3"), 'clientreult'] =4.03
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
