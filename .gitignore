@@ -3,3 +3,4 @@ datasets/
 *.rst~
 *.py~
 .fuse_hidden*
+*.swp
