@@ -1,3 +1,4 @@
+#icu 0
 bp_diastolic 80
 bp_systolic 120
 heart_rate 83

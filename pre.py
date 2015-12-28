@@ -63,7 +63,7 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     lsort.columns = np.concatenate([['id'], icd_9.names])
     assert len(lsort.columns) == 20
 
-    lsort = lsort.fillna(-1)
+    lsort = lsort.fillna(0)
     if save:
         lsort.to_csv(get_path(save, 'label.csv'), index=False)
 
@@ -87,6 +87,9 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     static.columns = [col.lower() for col in static.columns]
     static = static.applymap(lambda x: x.lower().replace(' ', '_').
                              replace('-', '_') if isinstance(x, str) else x)
+
+    static.ix[(static.gender == 'm'), 'gender'] = 0
+    static.ix[(static.gender == 'f'), 'gender'] = 1
 
     if save:
         static.to_csv(get_path(save, 'static.csv'), index=False)
