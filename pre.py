@@ -655,7 +655,8 @@ def _pro_cat(labs):
             | (labs.description == 'poc_strep,_quick_result')
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
             | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
-            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab'))
+            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab')
+            | (labs.description == 'chol/hdl_ratio'))
 
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
@@ -910,6 +911,8 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "4.0")), 'clientresult'] = 4
     labs.ix[((col) & (labs.clientresult == "8.0")), 'clientresult'] = 5
 
+    labs.ix[(labs.clientresult == "unable_to_perform_due_to_urine_color_interference_on_dipstick."), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == "drawn_below_iv_mrh's_established_therapeutic_range_for_heparin_therapy_(prophylaxis___treatment_of_dvt/pe)_is_75_-_116_seconds."), 'clientresult'] = 75
     labs.ix[(labs.clientresult == "hdl_<10,_unable_to_calculate"), 'clientresult'] = np.nan
 
     return labs
