@@ -64,28 +64,25 @@ def cummean(df, cols):
     return df
 
 
-def cut_rows(df, labels):
+def set_y(df, labels):
     dis = labels.columns[-1]
 
-    ids = labels[labels[dis] != 0].id.unique()
-    ts = labels[labels[dis] != 0][dis]
+    ids = df.id.unique()
+    length = df.groupby('id').apply(lambda x: x.shape[0])
 
-    df = df[df.id.isin(ids)]
+    y = []
+    for i, l in enumerate(length):
+        dia = labels[labels.id == ids[i]][dis].iloc[0]
+        if dia:
+            s = (df[df.id == ids[i]].timestamp < dia).sum()
+            if s == l:
+                s = s - 1
+        else:
+            s = l
+        y.append(np.concatenate([np.zeros(s), np.zeros(l - s) + 1]))
 
-    for i, idx in enumerate(ids):
-        df = df[~((df.id == idx) & (df.timestamp > ts.iloc[i]))]
+    df[dis] = np.concatenate(y)
 
-    return df
-
-
-def set_y(df, dis):
-    length =  df.groupby('id').apply(lambda x: x.shape[0])
-
-    l = []
-    for i in length:
-        l.append(np.concatenate([np.zeros(i - 1), [1]]))
-
-    df[dis] = np.concatenate(l)
     return df
 
 
@@ -114,7 +111,7 @@ def fea_labs(labs):
     return lpg
 
 
-def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
+def _get_feature(dis, dire=PROPATH, save=FEAPATH):
     features, r_labs = get_features_ranges(dis + '_feature.txt')
     labs = labs_features(features, dire)
     labs = fea_labs(labs)
@@ -123,22 +120,48 @@ def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
     del vitals['icu']
     features_v, r_vitals = get_features_ranges('vitals.txt')
 
-    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
-
     vl = merge_df(vitals, r_vitals, labs, r_labs)
-    vl = cut_rows(vl, labels)
 
     cols = list(features)
     cols.extend(features_v)
     vl = cummean(vl, cols) # can be changed
 
-    vl = vl.reset_index()
-    del vl['index']
-
     static = pd.read_csv(get_path(dire, 'static.csv'))[['id', 'age', 'gender']]
     vl = pd.merge(vl, static, on='id')
 
-    vl = set_y(vl, dis)
+    return vl
+
+
+def cut_rows_time_cut(df, labels):
+    dis = labels.columns[-1]
+
+    ids = labels[labels[dis] != 0].id.unique()
+    ts = labels[labels[dis] != 0][dis]
+
+    df = df[df.id.isin(ids)]
+
+    for i, idx in enumerate(ids):
+        df = df[~((df.id == idx) & (df.timestamp > ts.iloc[i]))]
+
+    return df
+
+
+def cut_rows_disease_cut(df, labels):
+    dis = labels.columns[-1]
+    ids = labels[labels[dis] != 0].id.unique()
+    df = df[df.id.isin(ids)]
+    return df
+
+
+def get_feature_set_time_cut(dis, dire=PROPATH, save=FEAPATH):
+    vl = _get_feature(dis, dire, save)
+
+    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
+    vl = cut_rows_time_cut(vl, labels)
+    vl = vl.reset_index()
+    del vl['index']
+
+    vl = set_y(vl, labels)
 
     if save:
         vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
@@ -146,12 +169,40 @@ def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
     return vl
 
 
+def get_feature_set_disease_cut(dis, dire=PROPATH, save=FEAPATH):
+    vl = _get_feature(dis, dire, save)
+
+    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
+    vl = cut_rows_disease_cut(vl, labels)
+    vl = vl.reset_index()
+    del vl['index']
+
+    vl = set_y(vl, labels)
+
+    if save:
+        vl.to_csv(get_path(save, dis + '_feature_disease.csv'), index=False)
+
+    return vl
+
+
+def get_feature_set_complete(dis, dire=PROPATH, save=FEAPATH):
+    vl = _get_feature(dis, dire, save)
+
+    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
+    vl = set_y(vl, labels)
+
+    if save:
+        vl.to_csv(get_path(save, dis + '_feature_complete.csv'), index=False)
+
+    return vl
+
+
 def process(dire=PROPATH, save=FEAPATH):
     mkdir(save)
     gen_vitals(dire, save)
-    get_feature_set('pne', dire, save)
-    get_feature_set('cao', dire, save)
-    get_feature_set('ami', dire, save)
+    get_feature_set_time_cut('pne', dire, save)
+    get_feature_set_time_cut('cao', dire, save)
+    get_feature_set_time_cut('ami', dire, save)
 
 
 if __name__ == '__main__':

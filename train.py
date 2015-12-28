@@ -17,33 +17,35 @@ def oversample(df, factor=10):
 
 
 def normalize(df):
-    df.iloc[:, 2:-1] = df.iloc[:, 2:-1].apply(lambda x: (x - x.mean()) / x.std())
+    n = {}
+
+    for i, c in enumerate(df.columns[2:-1]):
+        d = df[c]
+        n[c] = (d.mean(), d.std())
+        df.iloc[:, i] = df.iloc[:, i].apply(lambda x: (x - n[c][0]) / n[c][1])
+
+    return df, n
+
+
+def apply_normalize(df, n):
+    for i, c in enumerate(df.columns[2:-1]):
+        df.iloc[:, i] = df.iloc[:, i].apply(lambda x: (x - n[c][0]) / n[c][1])
     return df
 
 
 def get_xy(df, normal=True, factor=1):
-    df = oversample(df, factor)
+    if factor > 1:
+        df = oversample(df, factor)
     if normal:
-        df = normalize(df)
+        df, n = normalize(df)
+    x = np.array(df.iloc[:, 2:-1])
+    y = np.array(df.iloc[:, -1])
+    return x, y, n
+
+
+def pred_xy(df, n=None, normal=True):
+    if normal:
+        df = apply_normalize(df, n)
     x = np.array(df.iloc[:, 2:-1])
     y = np.array(df.iloc[:, -1])
     return x, y
-
-
-def stats(y, pred):
-    tp = 0.0
-    tn = 0.0
-    fp = 0.0
-    fn = 0.0
-    for idx, i in enumerate(y):
-        if i == 0 and pred[idx] == 0:
-            tn = tn + 1.0
-        elif i == 0 and pred[idx] == 1:
-            tp = tp + 1.0
-        elif i == 1 and pred[idx] == 1:
-            tp = tp + 1.0
-        elif i == 1 and pred[idx] == 0:
-            fn = fn + 1.0
-
-    print 'Specificity -> %f' %(tn / (tn + fp))
-    print 'Sensitivity -> %f' %(tp / (tp + fn))
