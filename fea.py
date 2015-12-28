@@ -153,6 +153,8 @@ def process(dire=PROPATH, save=FEAPATH):
     mkdir(save)
     gen_vitals(dire, save)
     get_feature_set('pne', dire, save)
+    get_feature_set('cao', dire, save)
+    get_feature_set('ami', dire, save)
 
 
 if __name__ == '__main__':
