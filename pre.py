@@ -403,6 +403,8 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == "see_scanned_report_in_emr"), 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == '2-5'), 'clientresult'] = 3.5
     labs.ix[(labs.clientresult == '1_/hpf'), 'clientresult'] = 1
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hct_previously_reported_as:___28.2__l_%'), 'clientresult'] = 28.2
+    labs.ix[(labs.clientresult == '--__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
@@ -429,7 +431,7 @@ def _pro_clean_clientresults(labs):
     for c in ch:
         labs.ix[labs.clientresult.str[0] == c, 'clientresult'] = labs.ix[labs.clientresult.str[0] == c, 'clientresult'].str[1:]
 
-    ch = ['g/dl', '_', '_m', '+']
+    ch = ['g/dl', 'eu/dl', '_', '_m', '+']
     for c in ch:
         labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'] = labs.ix[labs.clientresult.str[-len(c):] == c, 'clientresult'].str[:-len(c)]
 
@@ -653,7 +655,8 @@ def _pro_cat(labs):
             | (labs.description == 'poc_strep,_quick_result')
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
             | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
-            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab'))
+            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab')
+            | (labs.description == 'chol/hdl_ratio'))
 
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
@@ -872,6 +875,7 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "green")), 'clientresult'] = 4
     labs.ix[((col) & (labs.clientresult == "brown")), 'clientresult'] = 3
     labs.ix[((col) & (labs.clientresult == "dark_yellow")), 'clientresult'] = 2.5
+    labs.ix[((col) & (labs.clientresult == "straw")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "pink")), 'clientresult'] = 1.5
 
     col = labs.description == 'urine_ketones'
@@ -901,13 +905,15 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
     labs.ix[((col) & (labs.clientresult == "normal")), 'clientresult'] = 1
-    labs.ix[((col) & (labs.clientresult == "0.2_eu/d")), 'clientresult'] = 2
-    labs.ix[((col) & (labs.clientresult == "1.0_eu/d")), 'clientresult'] = 2.5
     labs.ix[((col) & (labs.clientresult == "0.2")), 'clientresult'] = 2
     labs.ix[((col) & (labs.clientresult == "1.0")), 'clientresult'] = 2.5
     labs.ix[((col) & (labs.clientresult == "2.0")), 'clientresult'] = 3
     labs.ix[((col) & (labs.clientresult == "4.0")), 'clientresult'] = 4
     labs.ix[((col) & (labs.clientresult == "8.0")), 'clientresult'] = 5
+
+    labs.ix[(labs.clientresult == "unable_to_perform_due_to_urine_color_interference_on_dipstick."), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == "drawn_below_iv_mrh's_established_therapeutic_range_for_heparin_therapy_(prophylaxis___treatment_of_dvt/pe)_is_75_-_116_seconds."), 'clientresult'] = 75
+    labs.ix[(labs.clientresult == "hdl_<10,_unable_to_calculate"), 'clientresult'] = np.nan
 
     return labs
 
