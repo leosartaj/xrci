@@ -1,124 +1,89 @@
-albumin
-alkaline_phosphatase
-alt_(sgpt)
-anion_gap
-ast_(sgot)
-bun
-calcium
-chloride
-co2_content
-globulin
-glucose
-hemolysis_index
-icteric_index
-lipemia_index
-potassium
-sodium
-total_bilirubin
-total_protein
-magnesium
-inorganic_phosphorus
-estimated_gfr
-absolute_neutrophil_count_automated
-basophils
-eosinophils
-hct
-hgb
-ig_%
-lymphocytes
-mch
-mchc
-mcv
-monocytes
-mpv
-neutrophils
-platelet_count
-rbc
-rdw
-wbc
-aptt
-inr
-prothrombin_time
-abo_intep
-creatine_kinase
-ck_mb
-troponin_i
-anisocytosis
-direct_bilirubin
-lipase
-chol/hdl_ratio
-cholesterol
-hdl_cholesterol
-ldl_cholesterol
-triglycerides
-hemoglobin_a1c
-vitamin_b12
-creatinine
-poc_semi-quant_glucose_result
-mrsa_screen
-basophils_%_(auto)
-eosinophils_%_(auto)
-hematocrit
-hemoglobin
-immature_granulocyte
-lymphocytes_%_(auto)
-monocytes_%_(auto)
-neutrophils_%_(auto)
-platelets
-blood_urea_nitrogen
-carbon_dioxide
-glomerular_filtration_rate_cal
-phosphorus
-lymphocytes_#_(manual)
-lymphocytes_%_(manual)
-monocytes_#_(manual)
-monocytes_%_(manual)
-neutrophils_#_(manual)
-neutrophils_%_(manual)
-bacteria,_manual
-epithelial_cells,_manual
-red_blood_cells,_manual
-urine_appearance
-urine_bilirubin
-urine_blood
-urine_color
+albumin 4.5
+alkaline_phosphatase 95.5
+anion_gap 12
+bun 13.5
+calcium 9.75
+chloride 101
+co2_content 26
+globulin 2.75
+glucose 85
+hemolysis_index 0.05
+icteric_index 0.08
+lipemia_index 0.01
+potassium 4.25
+sodium 140
+total_bilirubin 1.1
+total_protein 7.1
+magnesium 2.0
+inorganic_phosphorus 3.25
+absolute_neutrophil_count_automated 5.0
+ig_% 11
+mchc 34.5
+mcv 86
+mpv 9.5
+platelet_count 280
+rbc 5.1
+rdw 13
+wbc 7.25
+aptt 95
+inr 1.0
+prothrombin_time 12.5
+abo_intep 0.67
+creatine_kinase 400
+ck_mb 1.9
+troponin_i 0.01
+anisocytosis 0.5
+lipase 160
+chol/hdl_ratio 3.521
+cholesterol 200
+hdl_cholesterol 60
+ldl_cholesterol 100
+triglycerides 175
+hemoglobin_a1c 6.05
+vitamin_b12 350
+creatinine 1.0
+poc_semi-quant_glucose_result 270
+mrsa_screen 0
+basophils_%_(auto) 0.6
+eosinophils_%_(auto) 0.8
+hematocrit 42.5 
+hemoglobin 14.75
+immature_granulocyte 0.35
+lymphocytes_%_(auto) 31
+monocytes_%_(auto) 8.5
+neutrophils_%_(auto) 57
+platelets 300
+blood_urea_nitrogen 13
+carbon_dioxide 26
+glomerular_filtration_rate_cal 90
+phosphorus 3.5
+lymphocytes_%_(manual) 31
+monocytes_%_(manual) 8.5
+neutrophils_%_(manual) 57
+urine_bilirubin 0
+urine_blood 0
+urine_color 0
 urine_glucose
-urine_ketones
-urine_nitrite
-urine_ph
-urine_specific_gravity
-urine_urobilinogen
-white_blood_cells,manual
-amikacin
-ampicillin
-ampicillin/sulbactam
-aztreonam
-cefazolin
-cefepime
-ceftriaxone
-ciprofloxacin
-imipenem
-tobramycin
-alt/sgpt
-ast/sgot
-partial_thromboplastin_time
-bacteria,_auto
-epithelial_cell,_auto
-hyaline_casts,_auto
-red_blood_cell,_auto
-white_blood_cell,_auto
-thyroid_stimulating_hormone
-b-peptide
-poc_base_excess
-poc_fio2
-poc_hco3
-poc_patient_temperature
-poc_pco2
-poc_pco2(pt_temp)
-poc_ph
-poc_ph(pt_temp)
-poc_po2
-poc_po2_(pt_temp)
-poc_so2
-poc_tco2
-reference_ranges
+urine_ketones 0
+urine_nitrite 0
+urine_ph 7.0
+urine_specific_gravity 1.0015
+urine_urobilinogen 0
+alt/sgpt 31
+ast/sgot 22.5
+partial_thromboplastin_time 30
+bacteria,_auto 0
+epithelial_cell,_auto 0
+hyaline_casts,_auto 0
+#red_blood_cell,_auto
+#white_blood_cell,_auto
+thyroid_stimulating_hormone 1.75
+b-peptide 100
+poc_base_excess 0.0
+poc_fio2 29
+poc_hco3 24
+poc_pco2 45
+poc_ph 7.4
+poc_po2 80
+poc_so2 94
+poc_tco2 26

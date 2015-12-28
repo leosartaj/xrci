@@ -248,6 +248,26 @@ def _pro_gfr(labs):
     return labs
 
 
+def _pro_fewdesccorrections(labs):
+    """
+    alt sgpt correction
+    alt_sgot correction
+    basophils correction
+    eosinophils correction
+    """
+    labs.ix[labs.description == 'alt_(sgpt)', 'description'] = 'alt/sgpt'
+    labs.ix[labs.description == 'ast_(sgot)', 'description'] = 'ast/sgot'
+    labs.ix[labs.description == 'basophils', 'description'] = 'basophils_%_(auto)'
+    labs.ix[labs.description == 'eosinophils', 'description'] = 'eosinophils_%_(auto)'
+    labs.ix[labs.description == 'lymphocytes', 'description'] = 'lymphocytes_%_(auto)'
+    labs.ix[labs.description == 'monocytes', 'description'] = 'monocytes_%_(auto)'
+    labs.ix[labs.description == 'neutrophils', 'description'] = 'neutrophils_%_(auto)'
+    labs.ix[labs.description == 'hct', 'description'] = 'hematocrit'
+    labs.ix[labs.description == 'hgb', 'description'] = 'hemoglobin'
+
+    return labs
+
+
 def _pro_clean_clientresults(labs):
     """
     creatine_kinase
@@ -653,7 +673,8 @@ def _pro_cat(labs):
             | (labs.description == 'poc_strep,_quick_result')
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
             | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
-            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab'))
+            | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab')
+            | (labs.description == 'mrsa_screen'))
 
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
@@ -929,6 +950,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = labs[(labs.description.str[-1] != '$')]
 
     labs = _pro_gfr(labs)
+    labs = _pro_fewdesccorrections(labs)
     labs = _pro_cat(labs)
     labs = _pro_clean_clientresults(labs)
 
