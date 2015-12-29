@@ -57,3 +57,19 @@ def pred_xy(df, n=None, normal=True):
     x = np.array(df.iloc[:, 2:-1])
     y = np.array(df.iloc[:, -1])
     return x, y
+
+
+def split_df(df, factor=.9, factor2=.9):
+    dis = df.columns[-1]
+    labels = pd.read_csv('datasets/pro/label.csv')
+
+    dis_ids = df[df[dis] == 1].id.unique()
+    non_ids = labels[labels[dis] == 0].id.unique()
+
+    dis_index = int(dis_ids.shape[0] * factor)
+    non_index = int(non_ids.shape[0] * factor2)
+
+    train_ids = np.concatenate([dis_ids[:dis_index], non_ids[:non_index]])
+    valid_ids = np.concatenate([dis_ids[dis_index:], non_ids[non_index:]])
+
+    return df[df.id.isin(train_ids)], df[df.id.isin(valid_ids)]
