@@ -1,0 +1,5 @@
+Random Forest n_estimators = 10
+factor = 1
+factor2 = 2
+specifity = 1
+958 correct hits
