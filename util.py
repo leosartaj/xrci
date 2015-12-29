@@ -10,7 +10,7 @@ def join_pred(id_,output):
 		for i_ in na_indices:
 			if row[i_] !='NA':
 				temp[i_]=row[i_]
-	
+
 	#print "inside join pred",temp
 	#raw_input()
 	return temp
@@ -84,7 +84,7 @@ def generate_lab_data(lab_fname):
 			dict_lab_lol[int(float(m[0]))]=[m]
 			dict_lab_time[int(float(m[0]))]=[int(float(m[1]))]
 	return dict_lab_lol,dict_lab_time
-			
+
 def generate_static_data(test_static_fname):
 	f=open(test_static_fname)
 	import csv
@@ -107,7 +107,7 @@ def generate_Rx_data(Rx_fname):
 	import csv
 	reader=csv.reader(f)
 	data=[]
-	
+
 	header=True
 	for row in reader:
 		if header==True:
@@ -132,7 +132,7 @@ def test_dict(dict_,str_):
 	print dict_.keys()[0]
 	print dict_[dict_.keys()[0]]
 	print "-----------------------"
-	
+
 def get_test_data(test_dir_path,sep,test_fnames):
 
 	vit_fname=test_dir_path+sep+test_fnames[0]
@@ -141,7 +141,7 @@ def get_test_data(test_dir_path,sep,test_fnames):
 	#test_dict(dict_vital_lol,"dict_vital_lol")
 	#test_dict(dict_vital_time,"dict_vital_time")
 	#raw_input()
-	
+
 	#get lab data
 	lab_fname=test_dir_path+sep+test_fnames[1]
 	dict_lab_lol,dict_lab_time=generate_lab_data(lab_fname)

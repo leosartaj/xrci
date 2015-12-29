@@ -5,16 +5,16 @@ import pandas as pd
 import pre, fea
 
 
-def read_lists(li, header=''):
+def read_lists(li, header):
     for i, l in enumerate(li):
-        li[i] = ','.join(l)
+        li[i] = ';'.join(l)
 
     s = StringIO('\n'.join([header, '\n'.join(li)]))
-    return pd.read_csv(s)
+    return pd.read_csv(s, sep=';')
 
 
 def vitals_features(vital_list):
-    vital_header = 'id,timestamp,measure,result,icu,seq'
+    vital_header = 'id;timestamp;measure;result;icu;seq'
 
     vitals = read_lists(vital_list, vital_header)
 
@@ -32,10 +32,11 @@ def vitals_features(vital_list):
 
 
 def static_featues(static_list):
-    static_header = 'id,age,gender,maritalstatus,ethnicgroup,admitspecialty'
+    static_header = 'id;age;gender;maritalstatus;ethnicgroup;admitspecialty'
 
-    s = StringIO('\n'.join([static_header, ','.join(static_list)]))
-    static = pd.read_csv(s)
+    s = StringIO('\n'.join([static_header, ';'.join(static_list)]))
+    static = pd.read_csv(s, sep=';')
+
     static.columns = [col.lower() for col in static.columns]
     static = static.applymap(lambda x: x.lower().replace(' ', '_').
                              replace('-', '_') if isinstance(x, str) else x)
@@ -46,7 +47,7 @@ def static_featues(static_list):
 
 
 def clean_labs(labs_list):
-    labs_header = 'id,timestamp,chstandard,clientresult,description,observationdescription,unitofmeasure,seq'
+    labs_header = 'id;timestamp;chstandard;clientresult;description;observationdescription;unitofmeasure;seq'
     labs = read_lists(labs_list, labs_header)
 
     del labs['chstandard']
@@ -130,9 +131,9 @@ def get_feature_set(vital_list, labs_list, static_list):
     vitals = vitals_features(vital_list)
     static = static_featues(static_list)
     labs = clean_labs(labs_list)
-    dis = ['pne']
-    features = []
+    diseases = ['pne']
+    features = {}
     for dis in diseases:
-        features.append(labs_features(labs.copy(), vitals.copy(), static.copy(), dis))
+        features[dis] = labs_features(labs.copy(), vitals.copy(), static.copy(), dis)
 
     return features
