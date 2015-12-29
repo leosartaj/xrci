@@ -4,3 +4,4 @@ datasets/
 *.py~
 .fuse_hidden*
 *.swp
+*.txt~
