@@ -19,22 +19,18 @@ def icd_9_codes(dire=TRAINPATH, save=PROPATH):
     labels = pd.read_csv(get_path(dire, 'train_label.csv'))
     icd_9 = labels.columns[1:].astype(np.float64)
     names = np.array(['pne', 'cao', 'seps', 'chf', 'hfu', 'ami', 'pulm_ei',
-                      'cshf', 'sseps', 'sepshock', 'cdhf', 'intes_infec',
-                      'pneitus', 'dhf', 'shf', 'sub_infrac', 'bas', 'tia',
-                      'ischemic_cd'])
+                      'sseps', 'sepshock', 'intes_infec',
+                      'pneitus', 'dhf', 'shf', 'sub_infrac', 'bas', 'ischemic_cd'])
     assert len(names) == len(icd_9)
     desc = np.array(['Pneumonia', 'Cerebral Artery Occlusion', 'Sepsis',
                      'Chronic Heart Failure', 'Heart Failure Unspecified',
                      'Acute Myocardial Infarction',
                      'Pulmonary Embolism & Infarction',
-                     'Chronic systolic heart failure',
                      'Severe Sepsis', 'Septic Shock',
-                     'Chronic Diastolic heart failure',
                      'Intestinal Infection due to clostridium difficile',
                       'Pneumonitus due to inhalation of food or vomitus',
                      'Diastolic Heart Failure', 'Systolic Heart Failure',
                      'Subendocardial Infarction', 'Basilar Artery Syndrome',
-                     'Transient Schemic Attack',
                      'Ischemic cerebrovascular disease'])
     assert len(desc) == len(icd_9)
 
@@ -54,14 +50,14 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     """
     labels = pd.read_csv(get_path(dire, 'train_label.csv'))
 
-    lsort = labels.sort_values('id_', ascending=True)
+    lsort = labels.sort_values('id', ascending=True)
     lsort = lsort.reset_index()
     del lsort['index']
 
     icd_9 = pd.read_csv(get_path(save, 'icd_9.csv'))
     assert all(lsort.columns[1:]) == all(icd_9.icd_9)
     lsort.columns = np.concatenate([['id'], icd_9.names])
-    assert len(lsort.columns) == 20
+    assert len(lsort.columns) == 17
 
     lsort = lsort.fillna(0)
     if save:
@@ -277,6 +273,8 @@ def _pro_fewdesccorrections(labs):
     labs.ix[labs.description == 'pco2m', 'description'] = 'pco2c'
     labs.ix[labs.description == 'phm', 'description'] = 'phc'
     labs.ix[labs.description == 'blood_urea_nitrogen', 'description'] = 'bun'
+    labs.ix[labs.description == 'poc_troponin_i_result', 'description'] = 'troponin_i'
+    labs.ix[labs.description == 'poc_lactic_acid', 'description'] = 'lactic_acid'
 
     return labs
 
@@ -976,16 +974,16 @@ def _pro_cat(labs):
     labs.ix[((wbcv) & (labs.clientresult == '.20-50')), 'clientresult'] = np.nan
 
     appr = (labs.description == 'appearance')
-    labs.ix[((appr) & (labs.clientresult == 'clear'), 'clientresult'] = 0
-    labs.ix[((appr) & (labs.clientresult == 'hazy'), 'clientresult'] = 1
-    labs.ix[((appr) & (labs.clientresult == 'cloudy'), 'clientresult'] = 2
-    labs.ix[((appr) & (labs.clientresult == 'bloody'), 'clientresult'] = 10
+    labs.ix[((appr) & (labs.clientresult == 'clear')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'hazy')), 'clientresult'] = 1
+    labs.ix[((appr) & (labs.clientresult == 'cloudy')), 'clientresult'] = 2
+    labs.ix[((appr) & (labs.clientresult == 'bloody')), 'clientresult'] = 10
     
     appr = (labs.description == 'blood')
-    labs.ix[((appr) & (labs.clientresult == 'trace-intact'), 'clientresult'] = 3
-    labs.ix[((appr) & (labs.clientresult == 'negative'), 'clientresult'] = 0
-    labs.ix[((appr) & (labs.clientresult == 'neg'), 'clientresult'] = 0
-    labs.ix[((appr) & (labs.clientresult == 'trace'), 'clientresult'] = 2
+    labs.ix[((appr) & (labs.clientresult == 'trace-intact')), 'clientresult'] = 3
+    labs.ix[((appr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'neg')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'trace')), 'clientresult'] = 2
 
     samp = labs.description == 'color'
     labs.ix[samp & (labs.clientresult == 'colorless'), 'clientresult'] = 0

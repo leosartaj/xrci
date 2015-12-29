@@ -68,7 +68,7 @@ ast/sgot 22.5
 carbon_dioxide 26
 glomerular_filtration_rate_cal 90
 d-dimer 0.5
-eosinophils_%_(manual) 0.8
+eosinophils_%_(manual) 2.0
 lymphocytes_%_(manual) 31
 monocytes_%_(manual) 8.5
 neutrophils_%_(manual) 57
@@ -92,7 +92,7 @@ urine_urobilinogen 0
 #poc_semi-quant_glucose_result 
 mrsa_screen 0
 basophils_%_(auto) 0.6
-eosinophils_%_(auto) 0.8
+eosinophils_%_(auto) 2.0
 immature_granulocyte 0.35
 lymphocytes_%_(auto) 31
 monocytes_%_(auto) 8.5
