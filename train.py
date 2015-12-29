@@ -7,12 +7,14 @@ import pandas as pd
 import sklearn
 
 
-def oversample(df, factor=10):
+def oversample(df, query=1, factor=10):
     dis = df.columns[-1]
-    p = df[df[dis] == 1]
+    p = df[df[dis] == query]
     n = pd.DataFrame()
-    for i in range(factor - 1):
+    for i in range(int(factor - 1)):
         n = n.append(p)
+    rem = int((factor - int(factor)) * p.shape[0])
+    n = n.append(p.iloc[:rem])
     return df.append(n)
 
 
@@ -32,9 +34,11 @@ def apply_normalize(df, n):
     return df
 
 
-def get_xy(df, normal=True, factor=1):
+def get_xy(df, normal=True, factor=1, factor2=1):
     if factor > 1:
-        df = oversample(df, factor)
+        df = oversample(df, 1, factor)
+    if factor2 > 1:
+        df = oversample(df, 0, factor2)
     n = {}
     if normal:
         df, n = normalize(df)

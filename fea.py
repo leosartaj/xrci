@@ -152,7 +152,7 @@ def cut_rows_seconds(df, labels, seconds):
     return df
 
 
-def get_feature_set(dis, cut=False, sec=0, dire=PROPATH, save=FEAPATH):
+def get_feature_set(dis, cut=False, sec=0, fname=None, dire=PROPATH, save=FEAPATH):
     vl = _get_feature(dis, dire, save)
 
     labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
@@ -168,7 +168,10 @@ def get_feature_set(dis, cut=False, sec=0, dire=PROPATH, save=FEAPATH):
     vl = set_y(vl, labels)
 
     if save:
-        vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
+        if fname:
+            vl.to_csv(get_path(save, fname), index=False)
+        else:
+            vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
 
     return vl
 
