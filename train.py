@@ -7,15 +7,20 @@ import pandas as pd
 import sklearn
 
 
-def oversample(df, query=1, factor=10):
+def oversample(df, factor=1, factor2=1):
+    labels = pd.read_csv('datasets/pro/label.csv')
     dis = df.columns[-1]
-    p = df[df[dis] == query]
     n = pd.DataFrame()
+
+    p = df[df[dis] == 1]
     for i in range(int(factor - 1)):
         n = n.append(p)
-    rem = int((factor - int(factor)) * p.shape[0])
-    if rem:
-        n = n.append(p.iloc[:rem])
+
+    ids = labels[labels[dis] == 0].id.unique()
+    p = df[df.id.isin(ids)]
+    for i in range(int(factor2 - 1)):
+        n = n.append(p)
+
     return df.append(n)
 
 
@@ -36,10 +41,8 @@ def apply_normalize(df, n):
 
 
 def get_xy(df, normal=True, factor=1, factor2=1):
-    if factor > 1:
-        df = oversample(df, 1, factor)
-    if factor2 > 1:
-        df = oversample(df, 0, factor2)
+    if factor > 1 or factor2 > 1:
+        df = oversample(df, factor, factor2)
     n = {}
     if normal:
         df, n = normalize(df)
