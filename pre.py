@@ -19,22 +19,18 @@ def icd_9_codes(dire=TRAINPATH, save=PROPATH):
     labels = pd.read_csv(get_path(dire, 'train_label.csv'))
     icd_9 = labels.columns[1:].astype(np.float64)
     names = np.array(['pne', 'cao', 'seps', 'chf', 'hfu', 'ami', 'pulm_ei',
-                      'cshf', 'sseps', 'sepshock', 'cdhf', 'intes_infec',
-                      'pneitus', 'dhf', 'shf', 'sub_infrac', 'bas', 'tia',
-                      'ischemic_cd'])
+                      'sseps', 'sepshock', 'intes_infec',
+                      'pneitus', 'dhf', 'shf', 'sub_infrac', 'bas', 'ischemic_cd'])
     assert len(names) == len(icd_9)
     desc = np.array(['Pneumonia', 'Cerebral Artery Occlusion', 'Sepsis',
                      'Chronic Heart Failure', 'Heart Failure Unspecified',
                      'Acute Myocardial Infarction',
                      'Pulmonary Embolism & Infarction',
-                     'Chronic systolic heart failure',
                      'Severe Sepsis', 'Septic Shock',
-                     'Chronic Diastolic heart failure',
                      'Intestinal Infection due to clostridium difficile',
                       'Pneumonitus due to inhalation of food or vomitus',
                      'Diastolic Heart Failure', 'Systolic Heart Failure',
                      'Subendocardial Infarction', 'Basilar Artery Syndrome',
-                     'Transient Schemic Attack',
                      'Ischemic cerebrovascular disease'])
     assert len(desc) == len(icd_9)
 
@@ -54,14 +50,14 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     """
     labels = pd.read_csv(get_path(dire, 'train_label.csv'))
 
-    lsort = labels.sort_values('id_', ascending=True)
+    lsort = labels.sort_values('id', ascending=True)
     lsort = lsort.reset_index()
     del lsort['index']
 
     icd_9 = pd.read_csv(get_path(save, 'icd_9.csv'))
     assert all(lsort.columns[1:]) == all(icd_9.icd_9)
     lsort.columns = np.concatenate([['id'], icd_9.names])
-    assert len(lsort.columns) == 20
+    assert len(lsort.columns) == 17
 
     lsort = lsort.fillna(0)
     if save:
@@ -267,6 +263,18 @@ def _pro_fewdesccorrections(labs):
     labs.ix[labs.description == 'neutrophils', 'description'] = 'neutrophils_%_(auto)'
     labs.ix[labs.description == 'hct', 'description'] = 'hematocrit'
     labs.ix[labs.description == 'hgb', 'description'] = 'hemoglobin'
+    labs.ix[labs.description == 'ketones,_urine' 'description'] = 'urine_ketones'
+    labs.ix[labs.description == 'ph_urine', 'description'] = 'urine_ph'
+    labs.ix[labs.description == 'specific_gravity', 'description'] = 'urine_specific_gravity'
+    labs.ix[labs.description == 'urobilinogen', 'description'] = 'urine_urobilinogen'
+    labs.ix[labs.description == 'bevt', 'description'] = 'poc_base_excess'
+    labs.ix[labs.description == 'hco3a', 'description'] = 'poc_hco3'
+    labs.ix[labs.description == 'lact', 'description'] = 'lactic_acid'
+    labs.ix[labs.description == 'pco2m', 'description'] = 'pco2c'
+    labs.ix[labs.description == 'phm', 'description'] = 'phc'
+    labs.ix[labs.description == 'blood_urea_nitrogen', 'description'] = 'bun'
+    labs.ix[labs.description == 'poc_troponin_i_result', 'description'] = 'troponin_i'
+    labs.ix[labs.description == 'poc_lactic_acid', 'description'] = 'lactic_acid'
 
     return labs
 
@@ -964,6 +972,30 @@ def _pro_cat(labs):
     labs.ix[((wbcv) & (labs.clientresult == '.0-2')), 'clientresult'] = np.nan
     labs.ix[((wbcv) & (labs.clientresult == '.5-10')), 'clientresult'] = np.nan
     labs.ix[((wbcv) & (labs.clientresult == '.20-50')), 'clientresult'] = np.nan
+
+    appr = (labs.description == 'appearance')
+    labs.ix[((appr) & (labs.clientresult == 'clear')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'hazy')), 'clientresult'] = 1
+    labs.ix[((appr) & (labs.clientresult == 'cloudy')), 'clientresult'] = 2
+    labs.ix[((appr) & (labs.clientresult == 'bloody')), 'clientresult'] = 10
+    
+    appr = (labs.description == 'blood')
+    labs.ix[((appr) & (labs.clientresult == 'trace-intact')), 'clientresult'] = 3
+    labs.ix[((appr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'neg')), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'trace')), 'clientresult'] = 2
+
+    samp = labs.description == 'color'
+    labs.ix[samp & (labs.clientresult == 'colorless'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'straw'), 'clientresult'] = 0.5
+    labs.ix[samp & (labs.clientresult == 'yello'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'yellow'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'dark_yellow'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'amber'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'yelloyellow'), 'clientresult'] = 4
+    labs.ix[samp & (labs.clientresult == 'orang'), 'clientresult'] = 5
+    labs.ix[samp & (labs.clientresult == 'red'), 'clientresult'] = 6
+
     return labs
 
 
