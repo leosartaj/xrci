@@ -132,32 +132,36 @@ def _get_feature(dis, dire=PROPATH, save=FEAPATH):
     return vl
 
 
-def cut_rows_time_cut(df, labels):
+def cut_rows_disease(df, labels):
+    dis = labels.columns[-1]
+    ids = labels[labels[dis] != 0].id.unique()
+    df = df[df.id.isin(ids)]
+
+    return df
+
+
+def cut_rows_seconds(df, labels, seconds):
     dis = labels.columns[-1]
 
     ids = labels[labels[dis] != 0].id.unique()
     ts = labels[labels[dis] != 0][dis]
 
-    df = df[df.id.isin(ids)]
-
     for i, idx in enumerate(ids):
-        df = df[~((df.id == idx) & (df.timestamp > ts.iloc[i]))]
+        df = df[~((df.id == idx) & (df.timestamp > (ts.iloc[i] + seconds)))]
 
     return df
 
 
-def cut_rows_disease_cut(df, labels):
-    dis = labels.columns[-1]
-    ids = labels[labels[dis] != 0].id.unique()
-    df = df[df.id.isin(ids)]
-    return df
-
-
-def get_feature_set_time_cut(dis, dire=PROPATH, save=FEAPATH):
+def get_feature_set(dis, cut=False, sec=0, dire=PROPATH, save=FEAPATH):
     vl = _get_feature(dis, dire, save)
 
     labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
-    vl = cut_rows_time_cut(vl, labels)
+
+    if cut:
+        vl = cut_rows_disease(vl, labels)
+    if sec:
+        vl = cut_rows_seconds(vl, labels, sec)
+
     vl = vl.reset_index()
     del vl['index']
 
@@ -169,40 +173,9 @@ def get_feature_set_time_cut(dis, dire=PROPATH, save=FEAPATH):
     return vl
 
 
-def get_feature_set_disease_cut(dis, dire=PROPATH, save=FEAPATH):
-    vl = _get_feature(dis, dire, save)
-
-    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
-    vl = cut_rows_disease_cut(vl, labels)
-    vl = vl.reset_index()
-    del vl['index']
-
-    vl = set_y(vl, labels)
-
-    if save:
-        vl.to_csv(get_path(save, dis + '_feature_disease.csv'), index=False)
-
-    return vl
-
-
-def get_feature_set_complete(dis, dire=PROPATH, save=FEAPATH):
-    vl = _get_feature(dis, dire, save)
-
-    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
-    vl = set_y(vl, labels)
-
-    if save:
-        vl.to_csv(get_path(save, dis + '_feature_complete.csv'), index=False)
-
-    return vl
-
-
 def process(dire=PROPATH, save=FEAPATH):
     mkdir(save)
     gen_vitals(dire, save)
-    get_feature_set_time_cut('pne', dire, save)
-    get_feature_set_time_cut('cao', dire, save)
-    get_feature_set_time_cut('ami', dire, save)
 
 
 if __name__ == '__main__':

@@ -18,24 +18,24 @@ def oversample(df, factor=10):
 
 def normalize(df):
     n = {}
-
-    for i, c in enumerate(df.columns[2:-1]):
+    for c in df.columns[2:-1]:
         d = df[c]
         n[c] = (d.mean(), d.std())
-        df.iloc[:, i] = df.iloc[:, i].apply(lambda x: (x - n[c][0]) / n[c][1])
+        df.ix[:, c] = df.ix[:, c].apply(lambda x: (x - n[c][0]) / n[c][1])
 
     return df, n
 
 
 def apply_normalize(df, n):
-    for i, c in enumerate(df.columns[2:-1]):
-        df.iloc[:, i] = df.iloc[:, i].apply(lambda x: (x - n[c][0]) / n[c][1])
+    for c in df.columns[2:-1]:
+        df.ix[:, c] = df.ix[:, c].apply(lambda x: (x - n[c][0]) / n[c][1])
     return df
 
 
 def get_xy(df, normal=True, factor=1):
     if factor > 1:
         df = oversample(df, factor)
+    n = {}
     if normal:
         df, n = normalize(df)
     x = np.array(df.iloc[:, 2:-1])
