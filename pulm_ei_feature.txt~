@@ -39,7 +39,7 @@ color 0
 urine_ketones 0
 leukocytes_esterase 0
 nitrites 0
-urine_ph 7.0
+ph_urine 7.0
 protein_qualitative 0
 urine_urobilinogen 0
 inorganic_phosphorus 3.25
