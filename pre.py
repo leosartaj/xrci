@@ -237,11 +237,12 @@ def _pro_gfr(labs):
     """
     gfr = labs[labs.clientresult == '>60'].description.unique()
 
-    labs = labs[labs.description != gfr[1]]
+    labs = labs[labs.description != 'estimated_gfr-other']
 
-    labs = labs[labs.description != gfr[3]]
+    labs = labs[labs.description != 'egfr_african_american']
 
-    labs.ix[(labs.description == gfr[0]) | (labs.description == gfr[2]),
+    labs.ix[(labs.description == 'estimated_gfr-african_american') |
+            (labs.description == 'egfr_non-african_american'),
             'description'] = 'gfr'
 
     labs.ix[(labs.description == 'gfr') &

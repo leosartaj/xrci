@@ -1,8 +1,21 @@
 from util import get_test_data,get_val,get_time_list,join_pred
+
+from util_my import get_path
+import train, test
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
 def train_model(train_dir_path):
-	clf=None
-	means=None
-	ret_parameters=[clf,means]
+        ret_parameters = {}
+
+        # pne model
+        pne_model = RandomForestClassifier(n_estimators=10)
+        pne = pd.read_csv(get_path(train_dir_path, 'pne_feature.csv'))
+        x, y, nor = train.get_xy(pne)
+        #pne_model.fit(x, y)
+        ret_parameters['pne'] = (pne_model, nor)
+
 	return ret_parameters
 
 def predict(trained_model_parameters,id_,time_,vit_data_list,lab_data_list,rx_data_list,stat):
@@ -10,25 +23,26 @@ def predict(trained_model_parameters,id_,time_,vit_data_list,lab_data_list,rx_da
 	#print id_
 	#raw_input()
 	#print time_
-	#raw_input()
-	#print stat
-	#raw_input()
-	#print vit_data_list
-	#raw_input()
-	#print lab_data_list
-	#raw_input()
-	#print rx_data_list
-	#raw_input()
-	#print "-----------------------------------------------"
+        #raw_input()
+        #print stat
+        #raw_input()
+        #print vit_data_list
+        #raw_input()
+        #print lab_data_list
+        #raw_input()
+        #print rx_data_list
+        #raw_input()
+        #print "-----------------------------------------------"
 
-	#diseases=['486','434.91','995.91','428.0','428.9','410.9','415.19','995.92','785.52','008.45','507.0','428.30','428.20','410.7','435','437.']
+        diseases=['486','434.91','995.91','428.0','428.9','410.9','415.19','995.92','785.52','008.45','507.0','428.30','428.20','410.7','435','437.']
 
-	#example 1: if you predict negative/no complications for all diseases then your return list will look like
-	#ret=[id_]+['NA']*16
+        #example 1: if you predict negative/no complications for all diseases then your return list will look like
+        #ret=[id_]+['NA']*16
 
-	#example 2: if you predict positive for  2nd(434.91), 4th(428.0) and 12th(428.30) complications and negative for others then your return list will be
-	ret=[id_,'NA',time_,'NA',time_,'NA','NA','NA','NA','NA','NA','NA',time_,'NA','NA','NA','NA']
+        #example 2: if you predict positive for  2nd(434.91), 4th(428.0) and 12th(428.30) complications and negative for others then your return list will be
+        ret=[id_,'NA',time_,'NA',time_,'NA','NA','NA','NA','NA','NA','NA',time_,'NA','NA','NA','NA']
 
+        features = test.get_feature_set(vit_data_list, lab_data_list, stat)
 	return ret
 
 def check_pred(pred,id_,time_):
