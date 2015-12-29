@@ -276,6 +276,7 @@ def _pro_fewdesccorrections(labs):
     labs.ix[labs.description == 'lact', 'description'] = 'lactic_acid'
     labs.ix[labs.description == 'pco2m', 'description'] = 'pco2c'
     labs.ix[labs.description == 'phm', 'description'] = 'phc'
+    labs.ix[labs.description == 'blood_urea_nitrogen', 'description'] = 'bun'
 
     return labs
 

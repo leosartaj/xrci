@@ -40,7 +40,7 @@ lactic_acid 1.3
 bacteria,_auto 0
 epithelial_cell,_auto 0
 platelets 300
-bun 13
+blood_urea_nitrogen 13
 glomerular_filtration_rate_cal 90
 basophils_%_(auto) 0.6
 eosinophils_%_(auto) 0.8

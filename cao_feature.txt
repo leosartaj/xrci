@@ -1,7 +1,6 @@
 albumin 4.5
 alkaline_phosphatase 95.5
 anion_gap 12
-bun 13.5
 calcium 9.75
 chloride 101
 co2_content 26
@@ -53,7 +52,7 @@ lymphocytes_%_(auto) 31
 monocytes_%_(auto) 8.5
 neutrophils_%_(auto) 57
 platelets 300
-blood_urea_nitrogen 13
+bun 13
 carbon_dioxide 26
 glomerular_filtration_rate_cal 90
 phosphorus 3.5

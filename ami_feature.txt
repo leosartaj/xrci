@@ -38,7 +38,7 @@ monocytes_%_(manual) 8.5
 neutrophils_%_(manual) 57
 alt/sgpt 31
 ast/sgot 22.5
-blood_urea_nitrogen 13
+bun 13
 carbon_dioxide 26
 glomerular_filtration_rate_cal 90
 bacteria,_auto 0
