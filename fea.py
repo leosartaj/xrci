@@ -7,7 +7,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from util import PROPATH, FEAPATH, get_path, mkdir
+from util_my import PROPATH, FEAPATH, get_path, mkdir
 
 
 def gen_vitals(dire=PROPATH, save=FEAPATH):
