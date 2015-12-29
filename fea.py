@@ -10,7 +10,7 @@ import pandas as pd
 from util import PROPATH, FEAPATH, get_path, mkdir
 
 
-def fea_vitals(dire=PROPATH, save=FEAPATH):
+def gen_vitals(dire=PROPATH, save=FEAPATH):
     vitals = pd.read_csv(get_path(dire, 'vitals.csv'))
     vp = vitals.pivot(columns='measure', values='result')
     vp['id'] = vitals.id
@@ -19,28 +19,92 @@ def fea_vitals(dire=PROPATH, save=FEAPATH):
     vp.columns = np.array(vp.columns)
     vpg = vp.groupby(['id', 'timestamp'], as_index=False).mean()
 
+    if save:
+        vpg.to_csv(get_path(save, 'vitals.csv'), index=False)
+
     return vpg
 
 
-def labs_features(fname, dire=PROPATH):
-    labs = pd.read_csv(get_path(dire, 'labs.csv'))
-
-    features = []
+def get_features_ranges(fname):
+    features, ranges = [], {}
     with open(fname) as f:
         for line in f.readlines():
             if not line.startswith('#') and line != '\n':
-                features.append(line.split()[0])
+                ls = line.split()
+                features.append(ls[0])
+                ranges[ls[0]] = float(ls[1])
+
+    return features, ranges
+
+
+def fill_normal_values(df, ranges):
+    df = df.groupby('id', as_index=False).fillna(method='pad')
+    return df.fillna(ranges)
+
+
+def merge_df(vitals, r_vitals, labs, r_labs):
+    vl = pd.merge(vitals, labs, on=['id', 'timestamp'], how='outer')
+    vl = vl.sort_values(['id', 'timestamp'], ascending=True)
+    vl = vl.reset_index()
+    del vl['index']
+    r_vitals.update(r_labs)
+    vl = fill_normal_values(vl, r_vitals)
+
+    return vl
+
+
+def cummean(df, cols):
+    dfg = df.groupby('id', as_index=False)
+    cc = dfg.cumcount() + 1
+    cs = dfg.cumsum()
+
+    for c in cols:
+        df[c] = cs[c].div(cc, axis='index')
+
+    return df
+
+
+def cut_rows(df, labels):
+    dis = labels.columns[-1]
+
+    ids = labels[labels[dis] != 0].id.unique()
+    ts = labels[labels[dis] != 0][dis]
+
+    df = df[df.id.isin(ids)]
+
+    for i, idx in enumerate(ids):
+        df = df[~((df.id == idx) & (df.timestamp > ts.iloc[i]))]
+
+    return df
+
+
+def set_y(df, dis):
+    length =  df.groupby('id').apply(lambda x: x.shape[0])
+
+    l = []
+    for i in length:
+        l.append(np.concatenate([np.zeros(i - 1), [1]]))
+
+    df[dis] = np.concatenate(l)
+    return df
+
+
+def labs_features(features, dire=PROPATH):
+    labs = pd.read_csv(get_path(dire, 'labs.csv'))
 
     query = labs.description == features[0]
 
     for f in features[1:]:
         query = query | (labs.description == f)
 
-    return labs[query]
+    labs = labs[query]
+
+    labs.clientresult = labs.clientresult.astype(np.float64)
+
+    return labs
 
 
 def fea_labs(labs):
-    labs.clientresult = labs.clientresult.astype(np.float64)
     lp = labs.pivot(columns='description', values='clientresult')
     lp['id'] = labs.id
     lp['timestamp'] = labs.timestamp
@@ -50,15 +114,47 @@ def fea_labs(labs):
     return lpg
 
 
-def pne(dire=PROPATH, save=FEAPATH):
-    labs = labs_features('pne_feature.txt', dire)
+def get_feature_set(dis, dire=PROPATH, save=FEAPATH):
+    features, r_labs = get_features_ranges(dis + '_feature.txt')
+    labs = labs_features(features, dire)
     labs = fea_labs(labs)
 
-    return labs
+    vitals = pd.read_csv(get_path(save, 'vitals.csv'))
+    del vitals['icu']
+    features_v, r_vitals = get_features_ranges('vitals.txt')
+
+    labels = pd.read_csv(get_path(dire, 'label.csv'))[['id', dis]]
+
+    vl = merge_df(vitals, r_vitals, labs, r_labs)
+    vl = cut_rows(vl, labels)
+
+    cols = list(features)
+    cols.extend(features_v)
+    vl = cummean(vl, cols) # can be changed
+
+    vl = vl.reset_index()
+    del vl['index']
+
+    static = pd.read_csv(get_path(dire, 'static.csv'))[['id', 'age', 'gender']]
+    vl = pd.merge(vl, static, on='id')
+
+    vl = set_y(vl, dis)
+
+    del vl['id']
+    del vl['timestamp']
+
+    if save:
+        vl.to_csv(get_path(save, dis + '_feature.csv'), index=False)
+
+    return vl
 
 
 def process(dire=PROPATH, save=FEAPATH):
     mkdir(save)
+    gen_vitals(dire, save)
+    get_feature_set('pne', dire, save)
+    get_feature_set('cao', dire, save)
+    get_feature_set('ami', dire, save)
 
 
 if __name__ == '__main__':

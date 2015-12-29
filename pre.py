@@ -63,7 +63,7 @@ def pro_label(dire=TRAINPATH, save=PROPATH):
     lsort.columns = np.concatenate([['id'], icd_9.names])
     assert len(lsort.columns) == 20
 
-    lsort = lsort.fillna(-1)
+    lsort = lsort.fillna(0)
     if save:
         lsort.to_csv(get_path(save, 'label.csv'), index=False)
 
@@ -87,6 +87,9 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     static.columns = [col.lower() for col in static.columns]
     static = static.applymap(lambda x: x.lower().replace(' ', '_').
                              replace('-', '_') if isinstance(x, str) else x)
+
+    static.ix[(static.gender == 'm'), 'gender'] = 0
+    static.ix[(static.gender == 'f'), 'gender'] = 1
 
     if save:
         static.to_csv(get_path(save, 'static.csv'), index=False)
@@ -248,6 +251,26 @@ def _pro_gfr(labs):
     return labs
 
 
+def _pro_fewdesccorrections(labs):
+    """
+    alt sgpt correction
+    alt_sgot correction
+    basophils correction
+    eosinophils correction
+    """
+    labs.ix[labs.description == 'alt_(sgpt)', 'description'] = 'alt/sgpt'
+    labs.ix[labs.description == 'ast_(sgot)', 'description'] = 'ast/sgot'
+    labs.ix[labs.description == 'basophils', 'description'] = 'basophils_%_(auto)'
+    labs.ix[labs.description == 'eosinophils', 'description'] = 'eosinophils_%_(auto)'
+    labs.ix[labs.description == 'lymphocytes', 'description'] = 'lymphocytes_%_(auto)'
+    labs.ix[labs.description == 'monocytes', 'description'] = 'monocytes_%_(auto)'
+    labs.ix[labs.description == 'neutrophils', 'description'] = 'neutrophils_%_(auto)'
+    labs.ix[labs.description == 'hct', 'description'] = 'hematocrit'
+    labs.ix[labs.description == 'hgb', 'description'] = 'hemoglobin'
+
+    return labs
+
+
 def remove_dash(x):
     """
     Removes dashes between digits
@@ -256,6 +279,8 @@ def remove_dash(x):
         return (int((str(x).split('-'))[0]) + int((str(x).split('-'))[1]))/2
     else:
         return x
+
+
 
 def _pro_clean_clientresults(labs):
     """
@@ -670,7 +695,8 @@ def _pro_cat(labs):
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
             | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
             | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab')
-            | (labs.description == 'chol/hdl_ratio') | (labs.description == 'ldl_cholesterol'))
+            | (labs.description == 'mrsa_screen') | (labs.description == 'chol/hdl_ratio')
+            | (labs.description == 'ldl_cholesterol'))
 
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
@@ -860,7 +886,7 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "large_(3+)")), 'clientresult'] = 3.5
     labs.ix[((col) & (labs.clientresult == "color_interference")), 'clientresult'] = np.nan
     labs.ix[((col) & (labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
-    
+
     col = labs.description == 'urine_blood'
     labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
@@ -875,7 +901,7 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "3+_(large)")), 'clientresult'] = 3
     labs.ix[((col) & (labs.clientresult == "2+_(moderate)")), 'clientresult'] = 2.5
     labs.ix[((col) & (labs.clientresult == "1+_(small)")), 'clientresult'] = 1.5
-    
+
     col = labs.description == 'urine_color'
     labs.ix[((col) & (labs.clientresult == "colorless")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "light-yellow")), 'clientresult'] = 0.5
@@ -908,13 +934,13 @@ def _pro_cat(labs):
     labs.ix[((col) & (labs.clientresult == "3+_(large)")), 'clientresult'] = 3.5
     labs.ix[((col) & (labs.clientresult == "80")), 'clientresult'] = 7
     labs.ix[((col) & (labs.clientresult == "150")), 'clientresult'] = 8
-    
+
     col = labs.description == 'urine_nitrite'
     labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "positive")), 'clientresult'] = 1
     labs.ix[((labs.clientresult == "color_interference")), 'clientresult'] = np.nan
     labs.ix[((labs.clientresult == "unable_to_report_dipstick_results_due_to_urine_color_interference.")), 'clientresult'] = np.nan
-    
+
     col = labs.description == 'urine_urobilinogen'
     labs.ix[((col) & (labs.clientresult == "negative")), 'clientresult'] = 0
     labs.ix[((col) & (labs.clientresult == "trace")), 'clientresult'] = 0.5
@@ -958,6 +984,7 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = labs[(labs.description.str[-1] != '$')]
 
     labs = _pro_gfr(labs)
+    labs = _pro_fewdesccorrections(labs)
     labs = _pro_cat(labs)
     labs = _pro_clean_clientresults(labs)
 

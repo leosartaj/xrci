@@ -1,0 +1,7 @@
+#icu 0
+bp_diastolic 80
+bp_systolic 120
+heart_rate 83
+respiration_rate 19
+o2_saturation 95
+temperature 98.6
