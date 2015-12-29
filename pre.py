@@ -271,6 +271,17 @@ def _pro_fewdesccorrections(labs):
     return labs
 
 
+def remove_dash(x):
+    """
+    Removes dashes between digits
+    """
+    if ('-' in str(x)) and ((((str(x)).split('-'))[0]).isdigit()) and ((((str(x)).split('-'))[1]).isdigit()):
+        return (int((str(x).split('-'))[0]) + int((str(x).split('-'))[1]))/2
+    else:
+        return x
+
+
+
 def _pro_clean_clientresults(labs):
     """
     creatine_kinase
@@ -427,16 +438,19 @@ def _pro_clean_clientresults(labs):
     labs.ix[(labs.clientresult == '2-5'), 'clientresult'] = 3.5
     labs.ix[(labs.clientresult == '1_/hpf'), 'clientresult'] = 1
     labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hct_previously_reported_as:___28.2__l_%'), 'clientresult'] = 28.2
-    labs.ix[(labs.clientresult == '--__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
+    labs.ix[(labs.clientresult == '---__11/25/11_0858_---_hgb_previously_reported_as:___8.5__l_gm/dl'), 'clientresult'] = 8.5
+    labs.ix[(labs.clientresult == "---__11/25/11_0858_---_rbc_previously_reported_as:___4.03__l_mm3"), 'clientresult'] =4.03
+    labs.ix[(labs.clientresult == "---__11/25/11_0858_---_mchc_previously_reported_as:___30.1__l_%"), 'clientresult'] = 30.1
 
     lym = labs.description == 'lymphocytes'
     labs.ix[(lym) & (labs.clientresult == "0.0"), 'clientresult'] = np.nan
     labs.ix[(lym) & (labs.clientresult == "0"), 'clientresult'] = np.nan
     labs.ix[labs.clientresult == 'specimen_drawn_from_arterial_line.', 'clientresult'] = np.nan
 
-    rbc = labs.description == 'rbc'
-    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
-    labs.ix[(rbc) & (labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+    labs.ix[(labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
+    
+    labs['clientresult'].apply(lambda x: remove_dash(x))
 
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
 
@@ -449,6 +463,8 @@ def _pro_clean_clientresults(labs):
 
     ri = labs.description == 'rifampin'
     labs.ix[((ri) & (labs.clientresult == "1_<=1")), 'clientresult'] = np.nan
+
+    labs['clientresult'] = labs.clientresult.apply(lambda x: remove_dash(x))
 
     ch = ['<', '>', '_', '=', '_']
     for c in ch:
@@ -679,7 +695,8 @@ def _pro_cat(labs):
             | (labs.description == 'rotavirus,_stool') | (labs.description == 'urn/csf_strep_pneumo_antigen') | (labs.description == 'benzodiazepines')
             | (labs.description == 'c.difficile_toxins_a_b,_eia') | (labs.description == 'direct_strep_a,_culture_if_neg')
             | (labs.description == 'urine_benzodiazepine') | (labs.description == 'rh') | (labs.description == 'smooth_muscle_ab')
-            | (labs.description == 'mrsa_screen') | (labs.description == 'chol/hdl_ratio'))
+            | (labs.description == 'mrsa_screen') | (labs.description == 'chol/hdl_ratio')
+            | (labs.description == 'ldl_cholesterol'))
 
     labs.ix[nit & (labs.clientresult == 'negative'), 'clientresult'] = 0
     labs.ix[nit & (labs.clientresult == 'tnp'), 'clientresult'] = np.nan
@@ -938,6 +955,15 @@ def _pro_cat(labs):
     labs.ix[(labs.clientresult == "drawn_below_iv_mrh's_established_therapeutic_range_for_heparin_therapy_(prophylaxis___treatment_of_dvt/pe)_is_75_-_116_seconds."), 'clientresult'] = 75
     labs.ix[(labs.clientresult == "hdl_<10,_unable_to_calculate"), 'clientresult'] = np.nan
 
+    rbcv = ((labs.description == 'rbc') | (labs.description == 'wbc'))
+    labs.ix[((rbcv) & (labs.clientresult == 'rare')), 'clientresult'] = np.nan
+
+    wbcv = (labs.description == 'wbc')
+    labs.ix[((wbcv) & (labs.clientresult == 'specimen_drawn_from_port-a-cath.')), 'clientresult'] = np.nan
+    labs.ix[((wbcv) & (labs.clientresult == 'specimen_drawn_from_picc_line._---__11/25/11_0856_---_wbc_previously_reported_as:___6.4_mm3_specimen_drawn_from_picc_line.')), 'clientresult'] = np.nan
+    labs.ix[((wbcv) & (labs.clientresult == '.0-2')), 'clientresult'] = np.nan
+    labs.ix[((wbcv) & (labs.clientresult == '.5-10')), 'clientresult'] = np.nan
+    labs.ix[((wbcv) & (labs.clientresult == '.20-50')), 'clientresult'] = np.nan
     return labs
 
 
