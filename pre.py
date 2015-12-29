@@ -267,6 +267,15 @@ def _pro_fewdesccorrections(labs):
     labs.ix[labs.description == 'neutrophils', 'description'] = 'neutrophils_%_(auto)'
     labs.ix[labs.description == 'hct', 'description'] = 'hematocrit'
     labs.ix[labs.description == 'hgb', 'description'] = 'hemoglobin'
+    labs.ix[labs.description == 'ketones,_urine' 'description'] = 'urine_ketones'
+    labs.ix[labs.description == 'ph_urine', 'description'] = 'urine_ph'
+    labs.ix[labs.description == 'specific_gravity', 'description'] = 'urine_specific_gravity'
+    labs.ix[labs.description == 'urobilinogen', 'description'] = 'urine_urobilinogen'
+    labs.ix[labs.description == 'bevt', 'description'] = 'poc_base_excess'
+    labs.ix[labs.description == 'hco3a', 'description'] = 'poc_hco3'
+    labs.ix[labs.description == 'lact', 'description'] = 'lactic_acid'
+    labs.ix[labs.description == 'pco2m', 'description'] = 'pco2c'
+    labs.ix[labs.description == 'phm', 'description'] = 'phc'
 
     return labs
 
@@ -964,6 +973,30 @@ def _pro_cat(labs):
     labs.ix[((wbcv) & (labs.clientresult == '.0-2')), 'clientresult'] = np.nan
     labs.ix[((wbcv) & (labs.clientresult == '.5-10')), 'clientresult'] = np.nan
     labs.ix[((wbcv) & (labs.clientresult == '.20-50')), 'clientresult'] = np.nan
+
+    appr = (labs.description == 'appearance')
+    labs.ix[((appr) & (labs.clientresult == 'clear'), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'hazy'), 'clientresult'] = 1
+    labs.ix[((appr) & (labs.clientresult == 'cloudy'), 'clientresult'] = 2
+    labs.ix[((appr) & (labs.clientresult == 'bloody'), 'clientresult'] = 10
+    
+    appr = (labs.description == 'blood')
+    labs.ix[((appr) & (labs.clientresult == 'trace-intact'), 'clientresult'] = 3
+    labs.ix[((appr) & (labs.clientresult == 'negative'), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'neg'), 'clientresult'] = 0
+    labs.ix[((appr) & (labs.clientresult == 'trace'), 'clientresult'] = 2
+
+    samp = labs.description == 'color'
+    labs.ix[samp & (labs.clientresult == 'colorless'), 'clientresult'] = 0
+    labs.ix[samp & (labs.clientresult == 'straw'), 'clientresult'] = 0.5
+    labs.ix[samp & (labs.clientresult == 'yello'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'yellow'), 'clientresult'] = 1
+    labs.ix[samp & (labs.clientresult == 'dark_yellow'), 'clientresult'] = 2
+    labs.ix[samp & (labs.clientresult == 'amber'), 'clientresult'] = 3
+    labs.ix[samp & (labs.clientresult == 'yelloyellow'), 'clientresult'] = 4
+    labs.ix[samp & (labs.clientresult == 'orang'), 'clientresult'] = 5
+    labs.ix[samp & (labs.clientresult == 'red'), 'clientresult'] = 6
+
     return labs
 
 
