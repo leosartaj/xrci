@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from util import get_path, TRAINPATH, PROPATH, mkdir
+from util_my import get_path, TRAINPATH, PROPATH, mkdir
 
 
 def icd_9_codes(dire=TRAINPATH, save=PROPATH):
@@ -449,7 +449,7 @@ def _pro_clean_clientresults(labs):
 
     labs.ix[(labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
     labs.ix[(labs.clientresult == 'none_seen'), 'clientresult'] = np.nan
-    
+
     labs['clientresult'].apply(lambda x: remove_dash(x))
 
     labs.ix[(labs.clientresult == 'unpt'), 'clientresult'] = np.nan
