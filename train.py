@@ -14,7 +14,8 @@ def oversample(df, query=1, factor=10):
     for i in range(int(factor - 1)):
         n = n.append(p)
     rem = int((factor - int(factor)) * p.shape[0])
-    n = n.append(p.iloc[:rem])
+    if rem:
+        n = n.append(p.iloc[:rem])
     return df.append(n)
 
 
