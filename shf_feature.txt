@@ -49,7 +49,6 @@ platelets 300
 partial_thromboplastin_time 30
 phosphorus 3.5
 b-peptide 100
-#poc_semi-quant_glucose_result
 thyroid_stimulating_hormone 1.75
 saturated_transferrin 35
 lactic_acid 1.3
