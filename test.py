@@ -3,6 +3,88 @@ import numpy as np
 import pandas as pd
 
 import pre, fea
+from util_my import TESTPATH, get_path, PROPATH
+
+
+def remove_rows(dire=TESTPATH):
+    fpath = get_path(dire, 'test_RawLabData.csv')
+    rows = []
+    while True:
+        try:
+            labs = pd.read_csv(fpath, skiprows=rows)
+            break
+        except pd.parser.CParserError as e:
+            line = e.args[0]
+            row = line[line.index('line') + 5:line.index(',')]
+            rows.append(int(row) - 1)
+    labs.to_csv(get_path(dire, 'labs_cut.csv'), index=False)
+
+    return labs, rows
+
+
+def clean_labs_pre(dire=TESTPATH):
+    labs_header = 'id,timestamp,chstandard,clientresult,description,observationdescription,unitofmeasure,seq'
+    fpath = get_path(dire, 'labs_cut.csv')
+    labs = pd.read_csv(fpath, header=0, names=labs_header.split(','), sep=',')
+
+    labs['description'] = labs['description'].map(lambda x: x.lower().
+                                                    replace(' ', '_'))
+
+    labs['clientresult'] = (labs['clientresult'].
+                                      map(lambda x: x.lower().replace(' ', '_')
+                                          if not x is np.nan else x))
+    labs = labs.drop_duplicates()
+
+    desc = []
+    with open('remove_labs.txt') as f:
+        for line in f.readlines():
+
+            if not line.startswith('#') and line != '\n':
+                if line.endswith('\n'):
+                    line = line[:-1]
+                desc.append(line)
+
+    rem = labs.description == desc[0]
+    for d in desc[1:]:
+        rem = rem | (labs.description == d)
+
+    labs = labs[~rem]
+
+    labs = labs.reset_index()
+    del labs['index']
+
+    labs = labs[(labs.clientresult != 'canceled')]
+    labs = labs[(labs.description.str[-1] != '$')]
+
+    labs = pre._pro_gfr(labs)
+    labs = pre._pro_fewdesccorrections(labs)
+    labs = pre._pro_cat(labs)
+    labs = pre._pro_clean_clientresults(labs)
+
+    labs.to_csv(get_path(dire, 'labs_almost.csv'), index=False)
+
+    return labs
+
+
+def clean_labs_test(pro=PROPATH, dire=TESTPATH):
+    labs_header = 'id,timestamp,chstandard,clientresult,description,observationdescription,unitofmeasure,seq'
+    fpath = get_path(dire, 'labs_almost.csv')
+    labs = pd.read_csv(fpath, header=0, names=labs_header.split(','), sep=',')
+
+    fpath2 = get_path(pro, 'labs.csv')
+    labs2 = pd.read_csv(fpath2)
+
+    des = labs2.description.unique()
+    query = labs.description == des[0]
+
+    for d in des[1:]:
+        query = query | (labs.description == d)
+
+    labs = labs[query]
+
+    labs.to_csv(get_path(dire, 'test_RawLabData.csv'), index=False)
+
+    return labs
 
 
 def read_lists(li, header):
@@ -46,7 +128,7 @@ def static_featues(static_list):
     return static
 
 
-def clean_labs(labs_list):
+def read_labs(labs_list):
     labs_header = 'id;timestamp;chstandard;clientresult;description;observationdescription;unitofmeasure;seq'
     labs = read_lists(labs_list, labs_header)
 
@@ -54,40 +136,6 @@ def clean_labs(labs_list):
     del labs['observationdescription']
     del labs['unitofmeasure']
     del labs['seq']
-
-    labs['description'] = labs['description'].map(lambda x: x.lower().
-                                                    replace(' ', '_'))
-
-    labs['clientresult'] = (labs['clientresult'].
-                                      map(lambda x: x.lower().replace(' ', '_')
-                                          if not x is np.nan else x))
-    labs = labs.drop_duplicates()
-
-    desc = []
-    with open('remove_labs.txt') as f:
-        for line in f.readlines():
-
-            if not line.startswith('#') and line != '\n':
-                if line.endswith('\n'):
-                    line = line[:-1]
-                desc.append(line)
-
-    rem = labs.description == desc[0]
-    for d in desc[1:]:
-        rem = rem | (labs.description == d)
-
-    labs = labs[~rem]
-
-    labs = labs.reset_index()
-    del labs['index']
-
-    labs = labs[(labs.clientresult != 'canceled')]
-    labs = labs[(labs.description.str[-1] != '$')]
-
-    labs = pre._pro_gfr(labs)
-    labs = pre._pro_fewdesccorrections(labs)
-    labs = pre._pro_cat(labs)
-    labs = pre._pro_clean_clientresults(labs)
 
     return labs
 
@@ -130,7 +178,7 @@ def labs_features(labs, vitals, static, dis):
 def get_feature_set(vital_list, labs_list, static_list):
     vitals = vitals_features(vital_list)
     static = static_featues(static_list)
-    labs = clean_labs(labs_list)
+    labs = read_labs(labs_list)
     diseases = ['pne']
     features = {}
     for dis in diseases:
