@@ -4,6 +4,7 @@ import pandas as pd
 
 import pre, fea
 from util_my import TESTPATH, get_path, PROPATH
+import sys
 
 
 def remove_rows(dire=TESTPATH):
@@ -92,14 +93,14 @@ def clean_labs_test(pro=PROPATH, dire=TESTPATH):
 
 def read_lists(li, header):
     for i, l in enumerate(li):
-        li[i] = ';'.join(l)
+        li[i] = '`'.join(l)
 
     s = StringIO('\n'.join([header, '\n'.join(li)]))
-    return pd.read_csv(s, sep=';')
+    return pd.read_csv(s, sep='`')
 
 
 def vitals_features(vital_list):
-    vital_header = 'id;timestamp;measure;result;icu;seq'
+    vital_header = 'id`timestamp`measure`result`icu`seq'
 
     vitals = read_lists(vital_list, vital_header)
 
@@ -117,10 +118,10 @@ def vitals_features(vital_list):
 
 
 def static_featues(static_list):
-    static_header = 'id;age;gender;maritalstatus;ethnicgroup;admitspecialty'
+    static_header = 'id`age`gender`maritalstatus`ethnicgroup`admitspecialty'
 
-    s = StringIO('\n'.join([static_header, ';'.join(static_list)]))
-    static = pd.read_csv(s, sep=';')
+    s = StringIO('\n'.join([static_header, '`'.join(static_list)]))
+    static = pd.read_csv(s, sep='`')
 
     static.columns = [col.lower() for col in static.columns]
     static = static.applymap(lambda x: x.lower().replace(' ', '_').
@@ -132,7 +133,7 @@ def static_featues(static_list):
 
 
 def read_labs(labs_list):
-    labs_header = 'id;timestamp;chstandard;clientresult;description;observationdescription;unitofmeasure;seq'
+    labs_header = 'id`timestamp`chstandard`clientresult`description`observationdescription`unitofmeasure`seq'
     labs = read_lists(labs_list, labs_header)
 
     del labs['chstandard']
@@ -155,18 +156,37 @@ def labs_features(labs, vitals, static, dis):
 
     labs.clientresult = labs.clientresult.astype(np.float64)
 
-    lp = labs.pivot(columns='description', values='clientresult')
-    lp['id'] = labs.id
-    lp['timestamp'] = labs.timestamp
-    lp.columns = np.array(lp.columns)
-    lpg = lp.groupby(['id', 'timestamp'], as_index=False).mean()
+    if labs.shape[0] == 0:
+        return None
+        #new_f = np.concatenate([['id', 'timestamp'], features])
+        #n = pd.DataFrame(columns=new_f)
+        #ids = vitals.id.unique()[0]
+        #for i in range(vitals.shape[0]):
+            #t = vitals.iloc[i, 1]
+            #l = []
+            #l.append(ids)
+            #l.append(t)
+            #l.extend([np.nan for f in features])
+            #n.loc[i] = l
+        #lpg = n.copy()
+    else:
+        lp = labs.pivot(columns='description', values='clientresult')
+        lp['id'] = labs.id
+        lp['timestamp'] = labs.timestamp
+        lp.columns = np.array(lp.columns)
+        lpg = lp.groupby(['id', 'timestamp'], as_index=False).mean()
 
-    for f in features:
-        if not f in lpg.columns:
-            lpg[f] = np.nan
+        for f in features:
+            if not f in lpg.columns:
+                lpg[f] = np.nan
 
     features_v, r_vitals = fea.get_features_ranges('vitals.txt')
-    lpg = fea.merge_df(vitals, r_vitals, lpg, r_labs)
+
+    for f in features_v:
+        if not f in vitals.columns:
+            vitals[f] = np.nan
+
+    lpg = fea.merge_df(vitals, r_vitals, lpg.copy(), r_labs)
 
     cols = list(features)
     cols.extend(features_v)

@@ -64,14 +64,17 @@ def predict(trained_model_parameters,id_,time_,vit_data_list,lab_data_list,rx_da
         for dis in diseases:
             model = trained_model_parameters[dis]
             if model:
-                df = features[dis]
-                n = model[1]
-                for c in df.columns:
-                    df.ix[:, c] = df.ix[:, c].apply(lambda x: (x - n[c][0]) / n[c][1])
-                x = np.array(df)
-                pred = model[0].predict(x)[-1]
-                if pred:
-                    ret.append(time_)
+                df = features.get(dis, None)
+                if df is not None:
+                    n = model[1]
+                    for c in df.columns:
+                        df.ix[:, c] = df.ix[:, c].apply(lambda x: (x - n[c][0]) / n[c][1])
+                    x = np.array(df)
+                    pred = model[0].predict(x)[-1]
+                    if pred:
+                        ret.append(time_)
+                    else:
+                        ret.append('NA')
                 else:
                     ret.append('NA')
             else:

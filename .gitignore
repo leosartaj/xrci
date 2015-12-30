@@ -5,3 +5,4 @@ datasets/
 .fuse_hidden*
 *.swp
 *.txt~
+output*
