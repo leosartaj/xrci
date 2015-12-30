@@ -8,6 +8,7 @@ import os
 TRAINPATH = 'datasets/train'
 PROPATH = 'datasets/pro'
 FEAPATH = 'datasets/fea'
+TESTPATH = 'datasets/test'
 MODELPATH = 'datasets/models'
 
 

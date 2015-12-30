@@ -56,7 +56,7 @@ neutrophils_%_(manual) 57
 bands_neutrophils_% 5.5
 poc_fio2 29 
 poc_hco3 24
-poc_lactic_acid 1.8
+lactic_acid 1.8
 poc_pco2 45
 poc_ph 7.4
 poc_po2 80

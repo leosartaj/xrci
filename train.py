@@ -5,8 +5,9 @@ Scikit-learn ready
 import numpy as np
 import pandas as pd
 from sklearn.externals import joblib
+from sklearn.ensemble import RandomForestClassifier
 
-from util_my import get_path, mkdir, MODELPATH
+from util_my import get_path, mkdir, MODELPATH, FEAPATH
 
 
 def oversample(df, factor=1, factor2=1):
@@ -77,10 +78,22 @@ def split_df(df, factor=.9, factor2=.9):
     return df[df.id.isin(train_ids)], df[df.id.isin(valid_ids)]
 
 
-def save_model(model, fname, save=MODELPATH):
+def save_model(model, fname, nor, nor_fname, save=MODELPATH):
     mkdir(save)
     joblib.dump(model, get_path(save, fname))
+    joblib.dump(nor, get_path(save, nor_fname))
 
 
-def get_model(fname, dire=MODELPATH):
-    return joblib.load(get_path(dire, fname))
+def get_model(fname, nor_fname, dire=MODELPATH):
+    model = joblib.load(get_path(dire, fname))
+    nor = joblib.load(get_path(dire, nor_fname))
+    return model, nor
+
+
+def train_model_pne(dire=FEAPATH):
+    vlt = pd.read_csv(get_path(dire, 'pne_feature.csv'))
+    x, y, nor = get_xy(vlt, factor=1, factor2=1)
+    n = RandomForestClassifier(n_estimators=30)
+    n.fit(x, y)
+    save_model(n, 'pne_model', nor, 'pne_nor')
+    return n, nor

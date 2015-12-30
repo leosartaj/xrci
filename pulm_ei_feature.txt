@@ -35,11 +35,11 @@ creatine_kinase 400
 glucose_poc_result 180
 appearance 0
 blood 0
-color 0
+#color 0
 urine_ketones 0
 leukocytes_esterase 0
 nitrites 0
-urine_p 7.0
+urine_ph 7.0
 protein_qualitative 0
 urine_urobilinogen 0
 inorganic_phosphorus 3.25
@@ -51,7 +51,7 @@ pco2c 45
 phc 7.4
 po2c 80
 rh 0
-absc 0
+#absc 0
 troponin_i 0.01
 chol/hdl_ratio 3.5
 cholesterol 200

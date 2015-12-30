@@ -76,6 +76,9 @@ def pro_static(dire=TRAINPATH, save=PROPATH):
     """
     static = pd.read_csv(get_path(dire, 'train_Static_data.csv'))
 
+    ids = pd.read_csv(get_path(save, 'label.csv')).id.unique()
+    static = static[static.id.isin(ids)]
+
     static = static.sort_values('id', ascending=True)
     static = static.reset_index()
     del static['index']
@@ -104,6 +107,8 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
     """
     vitals = pd.read_csv(get_path(dire, 'train_RawVitalData.csv'))
 
+    ids = pd.read_csv(get_path(save, 'label.csv')).id.unique()
+
     vitals = vitals.sort_values(['Episode', 'ObservationDate'], ascending=True)
     vitals = vitals.reset_index()
     del vitals['index']
@@ -112,6 +117,8 @@ def pro_vitals(dire=TRAINPATH, save=PROPATH):
     cols = vitals.columns
     vitals.columns = np.concatenate([['id', 'timestamp'],
                                      cols[2:].map(lambda x: x.lower())])
+
+    vitals = vitals[vitals.id.isin(ids)]
 
     vitals['measure'] = vitals['measure'].map(lambda x: x.lower().
                                              replace(' ', '_'))
@@ -178,6 +185,9 @@ def pro_labs_basic(dire=PROPATH, save=PROPATH):
     labs.columns = np.concatenate([['id', 'timestamp'],
                                      cols[2:].map(lambda x: x.lower())])
 
+    ids = pd.read_csv(get_path(save, 'label.csv')).id.unique()
+    labs = labs[labs.id.isin(ids)]
+
     labs['description'] = labs['description'].map(lambda x: x.lower().
                                                     replace(' ', '_'))
     labs['observationdescription'] = (labs['observationdescription'].
@@ -233,11 +243,12 @@ def _pro_gfr(labs):
     """
     gfr = labs[labs.clientresult == '>60'].description.unique()
 
-    labs = labs[labs.description != gfr[1]]
+    labs = labs[labs.description != 'estimated_gfr-other']
 
-    labs = labs[labs.description != gfr[3]]
+    labs = labs[labs.description != 'egfr_african_american']
 
-    labs.ix[(labs.description == gfr[0]) | (labs.description == gfr[2]),
+    labs.ix[(labs.description == 'estimated_gfr-african_american') |
+            (labs.description == 'egfr_non-african_american'),
             'description'] = 'gfr'
 
     labs.ix[(labs.description == 'gfr') &
@@ -978,7 +989,7 @@ def _pro_cat(labs):
     labs.ix[((appr) & (labs.clientresult == 'hazy')), 'clientresult'] = 1
     labs.ix[((appr) & (labs.clientresult == 'cloudy')), 'clientresult'] = 2
     labs.ix[((appr) & (labs.clientresult == 'bloody')), 'clientresult'] = 10
-    
+
     appr = (labs.description == 'blood')
     labs.ix[((appr) & (labs.clientresult == 'trace-intact')), 'clientresult'] = 3
     labs.ix[((appr) & (labs.clientresult == 'negative')), 'clientresult'] = 0
@@ -1019,11 +1030,6 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_fewdesccorrections(labs)
     labs = _pro_cat(labs)
     labs = _pro_clean_clientresults(labs)
-
-    #del labs['observationdescription']
-    #del labs['unitofmeasure']
-
-    #labs = labs.dropna()
 
     if save:
         labs.to_csv(get_path(save, 'labs.csv'), index=False)
