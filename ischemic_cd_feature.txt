@@ -85,18 +85,13 @@ lymphocytes_%_(manual) 31
 monocytes_%_(manual) 8.5
 neutrophils_%_(manual) 57
 anisocytosis 0.5
-ammonia 
-iron
-saturated_transferrin
-total_iron_binding_capacity
-direct_bilirubin
-partial_thromboplastin_time
-bands_neutrophils_%
-urine_sodium_random
-folate
-u_methlenedioxymethamphetamine
-urine_amphetamines
-urine_benzodiazepines
-urine_methadone
-urine_creatinine_random
-free_t4
+ammonia 21 
+iron 110
+saturated_transferrin 35
+total_iron_binding_capacity 93
+partial_thromboplastin_time 30
+bands_neutrophils_% 5.5
+urine_sodium_random 40
+folate 11
+urine_creatinine_random 1.0
+free_t4 0.7
