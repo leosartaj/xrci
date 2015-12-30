@@ -8,6 +8,7 @@ import os
 TRAINPATH = 'datasets/train'
 PROPATH = 'datasets/pro'
 FEAPATH = 'datasets/fea'
+MODELPATH = 'datasets/models'
 
 
 def get_path(dire, fName):
