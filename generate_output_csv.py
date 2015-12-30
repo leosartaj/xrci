@@ -5,16 +5,12 @@ import train, test
 
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
 
 def train_model(train_dir_path):
         ret_parameters = {}
 
         # pne model
-        pne_model = RandomForestClassifier(n_estimators=1)
-        pne = pd.read_csv(get_path(train_dir_path, 'pne_feature.csv'))
-        x, y, nor = train.get_xy(pne, factor=1, factor2=1)
-        pne_model.fit(x, y)
+        pne_model, nor = train.get_model('pne_model', 'pne_nor')
         ret_parameters['pne'] = (pne_model, nor)
 
         #ret_parameters['pne'] = None

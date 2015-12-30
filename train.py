@@ -77,10 +77,13 @@ def split_df(df, factor=.9, factor2=.9):
     return df[df.id.isin(train_ids)], df[df.id.isin(valid_ids)]
 
 
-def save_model(model, fname, save=MODELPATH):
+def save_model(model, fname, nor, nor_fname, save=MODELPATH):
     mkdir(save)
     joblib.dump(model, get_path(save, fname))
+    joblib.dump(nor, get_path(save, nor_fname))
 
 
-def get_model(fname, dire=MODELPATH):
-    return joblib.load(get_path(dire, fname))
+def get_model(fname, nor_fname, dire=MODELPATH):
+    model = joblib.load(get_path(dire, fname))
+    nor = joblib.load(get_path(dire, nor_fname))
+    return model, nor
