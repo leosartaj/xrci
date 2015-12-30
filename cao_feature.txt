@@ -17,13 +17,13 @@ magnesium 2.0
 inorganic_phosphorus 3.25
 absolute_neutrophil_count_automated 5.0
 ig_% 11
-#mchc 34.5
+mchc 34.5
 mcv 86
 mpv 9.5
-platelet_count 280
-#rbc 5.1
+#platelet_count 280
+rbc 5.1
 rdw 13
-#wbc 7.25
+wbc 7.25
 aptt 95
 inr 1.0
 prothrombin_time 12.5
@@ -36,7 +36,7 @@ lipase 160
 chol/hdl_ratio 3.521
 cholesterol 200
 hdl_cholesterol 60
-#ldl_cholesterol 100
+ldl_cholesterol 100
 triglycerides 175
 hemoglobin_a1c 6.05
 vitamin_b12 350
@@ -46,7 +46,7 @@ mrsa_screen 0
 basophils_%_(auto) 0.6
 eosinophils_%_(auto) 0.8
 hematocrit 42.5 
-#hemoglobin 14.75
+hemoglobin 14.75
 immature_granulocyte 0.35
 lymphocytes_%_(auto) 31
 monocytes_%_(auto) 8.5
@@ -62,7 +62,6 @@ neutrophils_%_(manual) 57
 urine_bilirubin 0
 urine_blood 0
 urine_color 0
-#urine_glucose
 urine_ketones 0
 urine_nitrite 0
 urine_ph 7.0
@@ -74,8 +73,6 @@ partial_thromboplastin_time 30
 bacteria,_auto 0
 epithelial_cell,_auto 0
 hyaline_casts,_auto 0
-#red_blood_cell,_auto
-#white_blood_cell,_auto
 thyroid_stimulating_hormone 1.75
 b-peptide 100
 poc_base_excess 0.0

@@ -5,7 +5,7 @@ mcv 86
 #monocytes
 mpv 9.5
 #neutrophils
-platelet_count 280
+#platelet_count 280
 rbc 5.1
 rdw 13
 wbc 7.25

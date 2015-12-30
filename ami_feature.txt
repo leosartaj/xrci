@@ -77,7 +77,7 @@ thyroid_stimulating_hormone 1.75
 aptt 95
 absolute_neutrophil_count_automated 4.5
 ig_% 11
-platelet_count 280
+#platelet_count 280
 bun 13.5
 co2_content 26
 hemolysis_index 0
