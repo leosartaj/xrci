@@ -14,9 +14,9 @@ calcium 9.75
 chloride 101
 co2_content 26
 glucose 85
-hemolysis_index 0.05
-icteric_index 0.08
-lipemia_index 0.01
+hemolysis_index 0
+icteric_index 0
+lipemia_index 0
 potassium 4.25
 sodium 140
 magnesium 2.0

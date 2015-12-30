@@ -5,7 +5,7 @@ alkaline_phosphatase 94
 anion_gap 12
 calcium 9.75
 chloride
-creatinine
+creatinine 1.1
 glucose 85
 potassium 4.25
 sodium 140
