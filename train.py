@@ -4,7 +4,9 @@ Scikit-learn ready
 
 import numpy as np
 import pandas as pd
-import sklearn
+from sklearn.externals import joblib
+
+from util_my import get_path, mkdir, MODELPATH
 
 
 def oversample(df, factor=1, factor2=1):
@@ -73,3 +75,12 @@ def split_df(df, factor=.9, factor2=.9):
     valid_ids = np.concatenate([dis_ids[dis_index:], non_ids[non_index:]])
 
     return df[df.id.isin(train_ids)], df[df.id.isin(valid_ids)]
+
+
+def save_model(model, fname, save=MODELPATH):
+    mkdir(save)
+    joblib.dump(model, get_path(save, fname))
+
+
+def get_model(fname, dire=MODELPATH):
+    return joblib.load(get_path(dire, fname))
