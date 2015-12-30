@@ -82,6 +82,9 @@ def clean_labs_test(pro=PROPATH, dire=TESTPATH):
 
     labs = labs[query]
 
+    # dirty things should be nan
+    labs['clientresult'] = labs.clientresult.apply(pd.to_numeric, args=('coerce',))
+
     labs.to_csv(get_path(dire, 'test_RawLabData.csv'), index=False)
 
     return labs

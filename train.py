@@ -5,8 +5,9 @@ Scikit-learn ready
 import numpy as np
 import pandas as pd
 from sklearn.externals import joblib
+from sklearn.ensemble import RandomForestClassifier
 
-from util_my import get_path, mkdir, MODELPATH
+from util_my import get_path, mkdir, MODELPATH, FEAPATH
 
 
 def oversample(df, factor=1, factor2=1):
@@ -87,3 +88,12 @@ def get_model(fname, nor_fname, dire=MODELPATH):
     model = joblib.load(get_path(dire, fname))
     nor = joblib.load(get_path(dire, nor_fname))
     return model, nor
+
+
+def train_model_pne(dire=FEAPATH):
+    vlt = pd.read_csv(get_path(dire, 'pne_feature.csv'))
+    x, y, nor = get_xy(vlt, factor=1, factor2=1)
+    n = RandomForestClassifier(n_estimators=30)
+    n.fit(x, y)
+    save_model(n, 'pne_model', nor, 'pne_nor')
+    return n, nor

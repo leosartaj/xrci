@@ -1031,11 +1031,6 @@ def pro_labs(dire=PROPATH, save=PROPATH):
     labs = _pro_cat(labs)
     labs = _pro_clean_clientresults(labs)
 
-    #del labs['observationdescription']
-    #del labs['unitofmeasure']
-
-    #labs = labs.dropna()
-
     if save:
         labs.to_csv(get_path(save, 'labs.csv'), index=False)
 
