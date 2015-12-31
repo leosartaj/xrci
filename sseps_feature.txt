@@ -43,20 +43,19 @@ troponin_i 0.01
 hemoglobin_a1c 6.05
 cortisol 10
 poc_base_excess 0
-poc_fio2
-poc_hco3
-poc_pco2
-poc_ph
-poc_po2
-poc_so2
-poc_tco2
-eosinophils_%_(manual)
-lymphocytes_%_(manual)
-monocytes_%_(manual)
-myelocyte_%
-neutrophils_%_(manual)
-bands_neutrophils_%
-c.difficile_toxin
+poc_fio2 29
+poc_hco3 24
+poc_pco2 45
+poc_ph 7.4
+poc_po2 80
+poc_so2 94
+poc_tco2 26
+eosinophils_%_(manual) 2.0
+lymphocytes_%_(manual) 31
+monocytes_%_(manual) 8.5
+neutrophils_%_(manual) 57
+bands_neutrophils_% 5.5
+c.difficile_toxin 0
 hyaline_casts,_manual 15
 magnesium 2.0
 creatine_kinase 400
