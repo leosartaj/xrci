@@ -14,9 +14,9 @@ calcium 9.75
 chloride 101
 co2_content 26
 glucose 85
-hemolysis_index 0.05
-icteric_index 0.08
-lipemia_index 0.01
+hemolysis_index 0
+icteric_index 0
+lipemia_index 0
 potassium 4.25
 sodium 140
 magnesium 2.0
@@ -50,14 +50,6 @@ carbon_dioxide 26
 glomerular_filtration_rate_cal 90
 b-peptide 100
 phosphorus 3.5
-#urine_appearance
-#urine_bilirubin
-#urine_blood
-#urine_color
-#urine_glucose
-#urine_ketones
-#urine_nitrite
-#urine_ph
 #urine_specific_gravity
 #urine_urobilinogen
 #bacteria,_manual

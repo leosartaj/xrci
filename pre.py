@@ -286,6 +286,8 @@ def _pro_fewdesccorrections(labs):
     labs.ix[labs.description == 'blood_urea_nitrogen', 'description'] = 'bun'
     labs.ix[labs.description == 'poc_troponin_i_result', 'description'] = 'troponin_i'
     labs.ix[labs.description == 'poc_lactic_acid', 'description'] = 'lactic_acid'
+    labs.ix[labs.description == 'ckmb', 'description'] = 'ck_mb'
+    labs.ix[labs.description == 'platelet_count', 'description'] = 'platelets'
 
     return labs
 
