@@ -71,7 +71,7 @@ def predict(trained_model_parameters,id_,time_,vit_data_list,lab_data_list,rx_da
                         df.ix[:, c] = df.ix[:, c].apply(lambda x: (x - n[c][0]) / n[c][1])
                     x = np.array(df)
                     pred = model[0].predict(x).sum()
-                    if pred:
+                    if pred > 0:
                         ret.append(time_)
                     else:
                         ret.append('NA')
